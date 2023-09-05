@@ -133,8 +133,12 @@ export interface IPassengerCard {
 export interface Token {
   token: string;
 }
-export interface IUser {
-  username: string | null | File;
-  password: string | null | File;
+export interface axiosResponse {
+  error: string | null;
+  isLoading: boolean;
+  data: object[] | string;
 }
-
+export interface IUser {
+  username: string;
+  password: string;
+}

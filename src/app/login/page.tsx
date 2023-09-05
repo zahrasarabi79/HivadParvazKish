@@ -1,5 +1,5 @@
 "use client";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Card, InputAdornment, IconButton, CardContent, Container, Grid, Typography, Button } from "@mui/material";
 import Image from "next/image";
 import { TextFildCustom } from "../Components/TextFildCustom/TextFiledCustom";
@@ -21,7 +21,7 @@ export default function Page() {
       <Card
         sx={{
           py: 2,
-          width: "439px",
+          maxWidth: "439px",
           minHeight: "518px",
           borderRadius: "24px",
           border: "1px solid white",
@@ -68,9 +68,7 @@ function LoginForm() {
       const { data } = await axiosInstance.post("/login", user);
       await getToken(data);
     } catch (error: AxiosError | any) {
-      // setError("username", { type: "custom", message: "" });
       setError("password", { type: "text", message: "نام کاربری یا پسورد را مجددا وارد کنید." });
-      console.log(error.message);
     }
   };
   const getToken = async (response: Token) => {

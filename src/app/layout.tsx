@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Theme from "./Theme/themeRegistry";
+import { CssBaseline } from "@mui/material";
 
 export const metadata: Metadata = {
   title: "hivad Parvaz kish",
@@ -11,6 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <Theme>
+      <CssBaseline />
         <body>{children}</body>
       </Theme>
     </html>
