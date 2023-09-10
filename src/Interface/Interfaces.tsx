@@ -1,3 +1,5 @@
+import { StringLiteralType } from "typescript";
+
 // api response
 export interface IpassengersApiResponse {
   id: number;
@@ -141,4 +143,24 @@ export interface axiosResponse {
 export interface IUser {
   username: string;
   password: string;
+}
+
+export interface SidebarItem {
+  title: string;
+  icon: string;
+  route?: string;
+  children?: SidebarItemChildren[];
+}
+export interface SidebarItemChildren {
+  title: string;
+  route?: string;
+  children?: SidebarItemChildrenOfChildren[];
+}
+export interface SidebarItemChildrenOfChildren {
+  title: string;
+  route: string;
+}
+export interface IDrawerWidth {
+  desktop: string | number;
+  mobile: string | number;
 }

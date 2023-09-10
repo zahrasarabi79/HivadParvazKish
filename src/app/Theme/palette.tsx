@@ -2,7 +2,7 @@ export const palette = {
   mode: "dark" as const,
   primary: {
     light: "rgba(85, 174, 255, 1)",
-    main: "rgba(43, 154, 255, 1)",
+    main: "rgb(43, 154, 255)",
     dark: "rgba(39, 139, 229, 1)",
     contrastText: "#fff",
   },
