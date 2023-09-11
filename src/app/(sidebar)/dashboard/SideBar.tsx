@@ -46,10 +46,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         </Typography>
       </div>
       <div>
-        <List
-          sx={{
-            gap: 2,
-          }}
+        <List sx={{ gap: 2,}}
         >
           <SidebarItem open={open} />
         </List>
