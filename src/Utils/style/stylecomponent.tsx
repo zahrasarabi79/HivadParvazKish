@@ -1,4 +1,4 @@
-import { drawerWidth } from "@/app/(sidebar)/dashboard/SideBar";
+import { drawerWidth } from "@/app/(sidebar)/SideBar";
 import { CSSObject } from "@emotion/react";
 import { AppBarProps, Theme, styled } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";

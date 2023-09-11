@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from "react";
-import Sidebar from "./dashboard/SideBar";
+import Sidebar from "./SideBar";
 
 export interface ChildrenType {
   children: ReactNode;
@@ -8,7 +8,7 @@ export interface ChildrenType {
 const layout: FC<ChildrenType> = ({ children }: { children: React.ReactNode }) => {
   return (
     <Sidebar>
-      <div>lorem</div>
+      {children}
     </Sidebar>
   );
 };

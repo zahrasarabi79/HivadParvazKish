@@ -1,17 +1,9 @@
-"use client";
-import { Grid } from "@mui/material";
-import useAuth from "../../../Utils/Hooks/authentication";
-import SideBar from "./SideBar";
+import React from 'react'
 
-
-export default function page() {
-  useAuth();
-
+const page = () => {
   return (
-    <Grid direction={"row-reverse"} container>
-      <Grid item xs={12}>
-        <SideBar />
-      </Grid>
-    </Grid>
-  );
+    <div>page</div>
+  )
 }
+
+export default page
