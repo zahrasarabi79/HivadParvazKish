@@ -43,13 +43,13 @@ const typography: TypographyOptions = {
     },
   },
   h5: {
-    fontSize: "24px",
+    fontSize: "20px",
     fontWeight: 400,
     lineHeight: "39px",
     letterSpacing: "0em",
     textAlign: "left",
     "@media (max-width:600px)": {
-      fontSize: "22px",
+      fontSize: "16px",
     },
   },
   h6: {

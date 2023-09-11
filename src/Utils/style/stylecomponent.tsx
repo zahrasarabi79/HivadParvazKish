@@ -1,6 +1,6 @@
 import { drawerWidth } from "@/app/(sidebar)/SideBar";
 import { CSSObject } from "@emotion/react";
-import { AppBarProps, Theme, styled } from "@mui/material";
+import { AppBarProps, TableCell, TableRow, Theme, styled, tableCellClasses } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import MuiDrawer from "@mui/material/Drawer";
 
@@ -41,5 +41,27 @@ export const DrawerDesktop = styled(MuiDrawer, { shouldForwardProp: (prop) => pr
     ...closedMixin(theme),
     "& .MuiDrawer-paper": closedMixin(theme),
   }),
+}));
+
+// table style
+export const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.common.white,
+    borderBottom: "1px solid white",
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    border: "none",
+  },
+}));
+
+export const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(even)": {
+    backgroundColor: "#1e1c30",
+  },
+  "&:nth-of-type(odd)": {
+    backgroundColor: "#343248",
+  },
 }));
 

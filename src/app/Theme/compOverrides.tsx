@@ -1,4 +1,4 @@
-import { Components, keyframes } from "@mui/material";
+import { Components, keyframes, useTheme } from "@mui/material";
 
 const wave = keyframes`
   from {
@@ -10,7 +10,6 @@ const wave = keyframes`
     transform: translate(0px)
   }
 `;
-
 const components: Components = {
   MuiAlertTitle: {
     styleOverrides: {
@@ -53,6 +52,9 @@ const components: Components = {
   },
   MuiButton: {
     styleOverrides: {
+      root: {
+        boxShadow: "none",
+      },
       sizeLarge: {
         fontSize: "15px",
         fontWeight: 700,
@@ -257,6 +259,7 @@ const components: Components = {
     styleOverrides: {
       root: {
         animation: `${wave} 0.3s linear alternate`,
+        
       },
     },
   },

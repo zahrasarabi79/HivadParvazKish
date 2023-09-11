@@ -164,3 +164,11 @@ export interface IDrawerWidth {
   desktop: string | number;
   mobile: string | number;
 }
+
+export interface ISelectListItem {
+  focusindex: boolean;
+  openChildrenItem: boolean;
+}
+export interface ISidebarItemComponent {
+  open: boolean;
+}

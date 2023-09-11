@@ -1,4 +1,4 @@
-import { SidebarItem, SidebarItemChildren, SidebarItemChildrenOfChildren } from "@/Interface/Interfaces";
+import { ISelectListItem, ISidebarItemComponent, SidebarItem, SidebarItemChildren, SidebarItemChildrenOfChildren } from "@/Interface/Interfaces";
 import Icon from "@/app/Components/Icon";
 import { Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, useMediaQuery, useTheme } from "@mui/material";
 import React, { useState } from "react";
@@ -22,30 +22,15 @@ const HivadSidebarItems: SidebarItem[] = [
   },
 ];
 
-export interface ISelectListItem {
-  focusindex: boolean;
-  openChildrenItem: boolean;
-}
-export default function SidebarItem({ open }) {
+
+const SidebarItem:React.FC< ISidebarItemComponent> = ({ open }) => {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.up("sm"));
-  const [openChildren, setOpenChildren] = useState(false);
-  const [focusColor, setFocusColor] = useState(false);
+
   const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(
     HivadSidebarItems.map(() => ({ focusindex: false, openChildrenItem: false }))
   );
 
-  // const handleSelectedListItem = (index: number) => {
-  //   setSelectListItem((prevItems: ISelectListItem[]) => {
-  //     const updatedItems = [...prevItems];
-  //     updatedItems[index] = {
-  //       ...prevItems[index],
-  //       openChildrenItem: !prevItems[index]?.openChildrenItem,
-  //       focusindex: !prevItems[index]?.focusindex,
-  //     };
-  //     return updatedItems;
-  //   });
-  // };
   const handleSelectedListItem = (index: number) => {
     setSelectListItem((prevItems: ISelectListItem[]) => {
       const updatedItems = prevItems.map((item, i) => ({
@@ -56,7 +41,7 @@ export default function SidebarItem({ open }) {
       return updatedItems;
     });
   };
-  
+
   return HivadSidebarItems.map((item: SidebarItem, index: number) => (
     <React.Fragment key={item.title}>
       <ListItem sx={{ px: 2, py: 0, justifyContent: "space-between" }}>
@@ -78,7 +63,7 @@ export default function SidebarItem({ open }) {
           }}
           // onFocus={() => setFocused(index)}
           // onBlur={() => setFocused(null)}
-          onClick={()=> handleSelectedListItem(index)}
+          onClick={() => handleSelectedListItem(index)}
         >
           {item.children ? (
             <Icon
@@ -143,4 +128,5 @@ export default function SidebarItem({ open }) {
         ))}
     </React.Fragment>
   ));
-}
+};
+export default SidebarItem;
