@@ -171,4 +171,38 @@ export interface ISelectListItem {
 }
 export interface ISidebarItemComponent {
   open: boolean;
+  handleSelectedListItem: (index: number) => void;
+  selectListItem: ISelectListItem[];
+  [index: number]: boolean;
+}
+
+export interface IContractApiResponse {
+  id: number;
+  typeReport: string;
+  dateContract: string;
+  numContract: string;
+  passengers: IpassengersApiResponse[];
+  report: IReportApiResponse[];
+}
+export interface IpassengersApiResponse {
+  id: number;
+  passenger: string;
+  contractId: number;
+}
+export interface IReportApiResponse {
+  id: number;
+  number: number;
+  costTitle: string;
+  presenter: string;
+  reportPayment: IReportPaymentApiResponse[];
+  contractId: number;
+}
+
+export interface IReportPaymentApiResponse {
+  id: number;
+  datepayment: string;
+  payments: string;
+  bank: string;
+  reportId: number;
+  contractId: number;
 }

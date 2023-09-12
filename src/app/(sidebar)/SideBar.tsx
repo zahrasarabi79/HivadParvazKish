@@ -4,13 +4,13 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Toolbar from "@mui/material/Toolbar";
 import Navbar from "./Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import SidebarItem from "./SidebarItem";
+import SidebarItem, { HivadSidebarItems } from "./SidebarItem";
 import Typography from "@mui/material/Typography";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { DrawerDesktop } from "@/Utils/style/stylecomponent";
-import { IDrawerWidth } from "@/Interface/Interfaces";
+import { IDrawerWidth, ISelectListItem } from "@/Interface/Interfaces";
 
 export const drawerWidth: IDrawerWidth = { desktop: 240, mobile: 60 };
 
@@ -21,6 +21,10 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(
+    HivadSidebarItems.map(() => ({ focusindex: false, openChildrenItem: false }))
+  );
+
   const handleDrawerOpen = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -29,7 +33,29 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   };
   const handleCloseDrawer = () => {
     setOpen(!open);
+    setSelectListItem((prevItems: ISelectListItem[]) =>
+      prevItems.map((item) => ({
+        ...item,
+        openChildrenItem: false,
+      }))
+    );
   };
+
+  const handleSelectedListItem = (index: number) => {
+    if (open) {
+      setSelectListItem((prevItems: ISelectListItem[]) => {
+        const updatedItems = prevItems.map((item, i) => ({
+          ...item,
+          openChildrenItem: i === index ? !item.openChildrenItem : false,
+          focusindex: i === index ? !item.focusindex : false,
+        }));
+        return updatedItems;
+      });
+    } else {
+      setOpen(!open);
+    }
+  };
+
   const drawer = (
     <>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: 25 }}>
@@ -46,9 +72,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         </Typography>
       </div>
       <div>
-        <List sx={{ gap: 2,}}
-        >
-          <SidebarItem open={open} />
+        <List sx={{ gap: 2 }}>
+          <SidebarItem open={open} handleSelectedListItem={handleSelectedListItem} selectListItem={selectListItem} />
         </List>
       </div>
     </>

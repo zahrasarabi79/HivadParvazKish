@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { Card, InputAdornment, IconButton, CardContent, Container, Grid, Typography, Button } from "@mui/material";
 import Image from "next/image";
-import { TextFildCustom } from "../Components/TextFildCustom/TextFiledCustom";
+import { TextFildCustom } from "../Components/TextFiledCustom";
 import { useEffect, useState } from "react";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { IUser, Token } from "@/Interface/Interfaces";

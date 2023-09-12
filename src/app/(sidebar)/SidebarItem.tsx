@@ -3,7 +3,7 @@ import Icon from "@/app/Components/Icon";
 import { Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, useMediaQuery, useTheme } from "@mui/material";
 import React, { useState } from "react";
 
-const HivadSidebarItems: SidebarItem[] = [
+export const HivadSidebarItems: SidebarItem[] = [
   {
     title: "داشبورد",
     route: "dashboard",
@@ -22,25 +22,11 @@ const HivadSidebarItems: SidebarItem[] = [
   },
 ];
 
-
-const SidebarItem:React.FC< ISidebarItemComponent> = ({ open }) => {
+const SidebarItem: React.FC<ISidebarItemComponent> = ({ open,handleSelectedListItem, selectListItem }) => {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.up("sm"));
 
-  const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(
-    HivadSidebarItems.map(() => ({ focusindex: false, openChildrenItem: false }))
-  );
-
-  const handleSelectedListItem = (index: number) => {
-    setSelectListItem((prevItems: ISelectListItem[]) => {
-      const updatedItems = prevItems.map((item, i) => ({
-        ...item,
-        openChildrenItem: i === index ? !item.openChildrenItem : false,
-        focusindex: i === index ? !item.focusindex : false,
-      }));
-      return updatedItems;
-    });
-  };
+  
 
   return HivadSidebarItems.map((item: SidebarItem, index: number) => (
     <React.Fragment key={item.title}>

@@ -24,6 +24,7 @@ const Icon: FC<IconComponentProps> = ({ pathName, color = "#fff", size = "24px",
           backgroundColor: focused ? theme.palette.primary.main : color,
           width: size,
           height: size,
+
           ...style,
         }}
       />

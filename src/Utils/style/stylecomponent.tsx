@@ -54,6 +54,7 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
     border: "none",
   },
+  
 }));
 
 export const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -64,4 +65,3 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: "#343248",
   },
 }));
-
