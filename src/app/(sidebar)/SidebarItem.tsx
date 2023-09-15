@@ -1,6 +1,7 @@
 import { ISelectListItem, ISidebarItemComponent, SidebarItem, SidebarItemChildren, SidebarItemChildrenOfChildren } from "@/Interface/Interfaces";
 import Icon from "@/app/Components/Icon";
 import { Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, useMediaQuery, useTheme } from "@mui/material";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export const HivadSidebarItems: SidebarItem[] = [
@@ -13,20 +14,19 @@ export const HivadSidebarItems: SidebarItem[] = [
     title: "قرارداد های هیواد",
     icon: "plainicon.svg",
     children: [
-      { title: "ایجاد", route: "HivadContract/List" },
+      { title: "ایجاد", route: "/Contracts/CreateContract" },
       {
         title: "لیست",
-        route: "HivadContract/Create",
+        route: "/Contracts/ContractList",
       },
     ],
   },
 ];
 
-const SidebarItem: React.FC<ISidebarItemComponent> = ({ open,handleSelectedListItem, selectListItem }) => {
+const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedListItem, selectListItem }) => {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.up("sm"));
-
-  
+  const router = useRouter();
 
   return HivadSidebarItems.map((item: SidebarItem, index: number) => (
     <React.Fragment key={item.title}>
@@ -82,6 +82,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open,handleSelectedListI
           <Collapse in={selectListItem[index].openChildrenItem}>
             <List component="div" disablePadding>
               <ListItemButton
+                onClick={() => router.push(childerItem.route || "")}
                 sx={{
                   borderRadius: 1,
                   transition: ".1s all",
@@ -103,7 +104,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open,handleSelectedListI
                 childerItem.children.map((childerItemchildren: SidebarItemChildrenOfChildren) => (
                   <Collapse>
                     <List component="div" disablePadding>
-                      <ListItemButton>
+                      <ListItemButton onClick={() => router.push(childerItemchildren.route || "")}>
                         <ListItemText sx={{ m: 0 }} inset primary={childerItemchildren.title} />
                       </ListItemButton>
                     </List>
