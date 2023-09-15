@@ -2,7 +2,9 @@
 body {
   font-family: "Vazirmatn", sans-serif;
 }
-
+body::-webkit-scrollbar {
+  display: none;
+}
 div {
   font-family: "Vazirmatn", sans-serif;
 }
