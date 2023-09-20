@@ -28,26 +28,23 @@ import {
 import Tooltip from "@mui/material/Tooltip";
 import { AxiosError } from "axios";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
+import AssignmentReturnOutlinedIcon from "@mui/icons-material/AssignmentReturnOutlined";
 
-function createData(numRow: string, numContracts: number, dateContracts: number | string) {
-  return { numRow, numContracts, dateContracts };
-}
-
-const rows = [
-  createData("1", 123, "1402/02/01"),
-  createData("2", 1234, "1402/02/01"),
-  createData("3", 12345, "1402/02/01"),
-  createData("4", 123456, "1402/02/01"),
-  createData("5", 1234567, "1402/02/01"),
-];
 const ListOfReport = () => {
   const [listOfContracts, setListOfContracts] = useState<IContractApiResponse[]>([]);
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  console.log(searchParams);
+
   const getListOfReports = async () => {
     try {
+      // const router = useRouter();
+      // const { page } = router.query;
       const { data } = await axiosInstance.post("/listOfReports");
       const { Contracts } = data;
       setListOfContracts(Contracts);
@@ -62,6 +59,7 @@ const ListOfReport = () => {
 
   const handleChangePage = (event: React.ChangeEvent<unknown> | null, newPage: number) => {
     setPage(newPage);
+    router.push(`/Contracts/ContractList/?page=${newPage || "1"}`);
   };
   const emptyRows = page > 0 ? Math.max(0, (0 + page) * rowsPerPage - listOfContracts.length) : 0;
   const startIndex = (page - 1) * rowsPerPage;
@@ -86,14 +84,14 @@ const ListOfReport = () => {
                   <StyledTableCell style={{ width: "5%" }} align="center">
                     ردیف
                   </StyledTableCell>
-                  <StyledTableCell style={{ width: "20%" }} align="left">
+                  <StyledTableCell  style={{ width: "15%" }} align="left">
                     شماره قراراداد
                   </StyledTableCell>
-                  <StyledTableCell style={{ width: "85%" }} align="left">
+                  <StyledTableCell style={{ width: "90%" }} align="left">
                     تاریخ قرارداد
                   </StyledTableCell>
 
-                  <StyledTableCell align="center" colSpan={2}>
+                  <StyledTableCell align="center" colSpan={3}>
                     عملیات
                   </StyledTableCell>
                 </TableRow>
@@ -110,14 +108,21 @@ const ListOfReport = () => {
                     <StyledTableCell sortDirection={"asc"} align="left">
                       {new Date(contract?.dateContract).toLocaleDateString("fa")}
                     </StyledTableCell>
-
-                    <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: 0 } }}>
+                    <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
+                      <Tooltip title="بازگشت" placement="bottom-start">
+                        <IconButton>
+                          <Icon pathName="paymentReturn.svg"/>
+                        </IconButton>
+                      </Tooltip>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
                       <Tooltip title="ویرایش" placement="bottom-start">
                         <IconButton>
                           <Icon pathName="edit.svg" />
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
+
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 16px 0px 0px" } }}>
                       <Tooltip title="مشاهده" placement="bottom-start">
                         <IconButton>

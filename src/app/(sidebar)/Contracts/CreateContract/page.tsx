@@ -2,6 +2,7 @@
 import { TextFildCustom } from "@/app/Components/TextFiledCustom";
 import {
   Accordion,
+  AccordionActions,
   AccordionDetails,
   AccordionSummary,
   Button,
@@ -10,89 +11,190 @@ import {
   CardContent,
   CardHeader,
   Divider,
+  FormHelperText,
   Grid,
+  IconButton,
+  MenuItem,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
+import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers";
+import { useState } from "react";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Icon from "@/app/Components/Icon";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useRef } from "react";
+import { IContract, IReports } from "@/Interface/Interfaces";
+import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form";
+import ReportAccordion from "./ReportAccordion";
+import { v4 as uuidv4 } from "uuid";
+
 const CreateContract = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IContract>({
+    defaultValues: {
+      reports: [
+        {
+          reportDescription: "",
+          totalCost: "",
+          presenter: "",
+          reportsPayment: [
+            {
+              bank: "",
+              payments: "",
+              datepayment: "",
+              paymentDescription: "",
+            },
+          ],
+        },
+      ],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray<IContract>({
+    control,
+    name: "reports",
+  });
+  const [isExpended, setIsExpended] = useState(false);
+  const theme = useTheme();
+  const [description, setDescription] = useState("");
+  const typeOfReport = ["خرید", "فروش"];
+
+  const onSubmit = (data: IContract) => {
+    console.log(data); // Access form data here
+  };
+
   return (
     <Card>
       <CardHeader title={"ایجاد قرارداد"} />
       <Divider variant="middle" />
-      <CardContent>
-        <Grid container spacing={3} alignItems={"center"}>
-          <Grid item xs={4}>
-            <TextFildCustom fullWidth label={"شماره قرارداد"} />
-          </Grid>
-          <Grid item xs={4}>
-            <TextFildCustom fullWidth label={"تاریخ قرارداد"} />
-          </Grid>
-          <Grid item xs={4}>
-            <TextFildCustom fullWidth label={"نوع قرارداد"} />
-          </Grid>
-          <Grid item xs={4}>
-            <TextFildCustom fullWidth label={"طرف قرارداد"} />
-          </Grid>
-          <Grid item xs={0.25}>
-            <Button sx={{ height: 50 }} fullWidth color="primary" variant="outlined">
-              <AddRoundedIcon />
-            </Button>
-          </Grid>
-        </Grid>
-        <Accordion
-          sx={{
-            marginY: 2,
-            "&:before": { backgroundColor: "transparent" },
-          }}
-        >
-          <AccordionSummary
-            dir="rtl"
-            sx={{
-              bgcolor: "#4B495c",
-              borderRadius: "0.5rem",
-              justifyContent: "space-between",
-              "&.Mui-expanded": {
-                borderBottom: "2px solid #FF7535",
-                borderTopLeftRadius: "1rem",
-                borderTopRightRadius: "1rem",
-                borderBottomLeftRadius: "0", // Set bottom-left radius to 0 when expanded
-                borderBottomRightRadius: "0",
-                minHeight: "auto",
-              },
-            }}
-            expandIcon={<ExpandCircleDownOutlinedIcon />}
-          >
-            <DeleteIcon />
-            <Typography>شرح مشخصات</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Grid container spacing={3} alignItems={"center"} sx={{ my: 1 }}>
-              <Grid item xs={4}>
-                <TextFildCustom fullWidth label={"شرح مشخصات"} />
-              </Grid>
-              <Grid item xs={4}>
-                <TextFildCustom fullWidth label={"مجری"} />
-              </Grid>
-              <Grid item xs={4}>
-                <TextFildCustom fullWidth label={"نوع قرارداد"} />
-              </Grid>
-              <Grid item xs={12}>
-                <TextFildCustom fullWidth label={"توضیحات"} />
-              </Grid>
+      <form noValidate onSubmit={handleSubmit(onSubmit)}>
+        <CardContent>
+          <Grid container spacing={3} alignItems={"center"}>
+            <Grid item xs={12} sm={4}>
+              <Controller
+                name="numContract"
+                control={control}
+                defaultValue=""
+                rules={{ required: "شماره قرارداد را وارد کنید." }}
+                render={({ field }) => (
+                  <TextFildCustom
+                    {...field}
+                    name="numContract"
+                    required
+                    fullWidth
+                    label="شماره قرارداد"
+                    error={!!errors.numContract}
+                    helperText={errors.numContract ? (errors.numContract as FieldError).message : " "}
+                  />
+                )}
+              />
             </Grid>
-          </AccordionDetails>
-        </Accordion>
-      </CardContent>
-      <CardActions dir="ltr">
-        <Button variant="contained" color="primary">
-          ثبت
-        </Button>
-      </CardActions>
+            <Grid item xs={12} sm={4}>
+              <LocalizationProvider dateAdapter={AdapterDateFnsJalali}>
+                <Controller
+                  name="dateContract"
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: "تاریخ قرارداد را وارد کنید." }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      sx={{ width: "100%" }}
+                      label="تاریخ قرارداد"
+                      value={null}
+                      slotProps={{
+                        textField: {
+                          helperText: errors.dateContract ? "تاریخ قرار داد را وارد کنید" : " ",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Controller
+                name="typeContract"
+                control={control}
+                defaultValue="خرید"
+                rules={{ required: "نوع قرارداد را وارد کنید." }}
+                render={({ field }) => (
+                  <TextFildCustom
+                    {...field}
+                    name="typeContract"
+                    required
+                    select
+                    fullWidth
+                    label={"نوع قرارداد"}
+                    helperText={errors.typeContract ? (errors.typeContract as FieldError).message : " "}
+                  >
+                    {typeOfReport.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextFildCustom>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Controller
+                name="customers"
+                control={control}
+                defaultValue={[]}
+                rules={{ required: "طرف قرارداد را وارد کنید." }}
+                render={({ field }) => (
+                  <TextFildCustom
+                    {...field}
+                    name="customers"
+                    required
+                    fullWidth
+                    label="طرف قرارداد"
+                    placeholder=""
+                    error={!!errors.customers}
+                    helperText={errors.customers ? (errors.customers as FieldError).message : " "}
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+
+          {fields.map((report, index) => (
+            <ReportAccordion
+              key={uuidv4()}
+              report={report as IReports}
+              removeReport={() => remove(index)}
+              appendReport={append}
+              reportIndex={index}
+              isExpended={isExpended}
+              setIsExpended={setIsExpended}
+              description={description}
+              control={control}
+              errors={errors}
+            />
+          ))}
+          <Grid
+            item
+            xs={12}
+            onClick={() => append({ reportDescription: "", totalCost: "", presenter: "", reportsPayment: [] })}
+            sx={{ pt: 5, display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
+            <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
+          </Grid>
+        </CardContent>
+        <CardActions dir="ltr">
+          <Button type="submit" variant="contained" color="primary">
+            ثبت
+          </Button>
+        </CardActions>
+      </form>
       {/* <CardContent sx={{ height: "600px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
         <Typography variant="h6">در حال حاضر درخواستی وجود ندارد</Typography>
         <Image src={"/icon/Vector.svg"} width={400} height={400} alt="Vector" />

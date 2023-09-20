@@ -85,7 +85,7 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
           <IconButton>
 
             <Image
-              src="icon/notification.svg"
+              src="/icon/notification.svg"
               width={20}
               height={20}
               alt="notification"
