@@ -20,6 +20,7 @@ export interface IReportsApiResponse {
   totalCost: string;
   presenter: string;
   reportsPayment: IReportPaymentApiResponse[];
+  reportsReturnPayment: IReportReturnPaymentApiResponse[];
   contractId: number;
 }
 
@@ -32,12 +33,21 @@ export interface IReportPaymentApiResponse {
   reportId: number;
   contractId: number;
 }
+export interface IReportReturnPaymentApiResponse {
+  id: number;
+  dateReturnPayment: string;
+  returnPayments: string;
+  returnPaymentsbank: string;
+  returnPaymentDescription: string;
+  reportId: number;
+  contractId: number;
+}
 
 // data
 export interface IContract {
   dateContract: string | Date;
   numContract: string;
-  customers: string[];
+  customer: string[];
   typeContract: string;
   reports: IReports[];
 }
@@ -47,9 +57,17 @@ export interface IReports {
   totalCost: string;
   presenter: string;
   reportsPayment: IReportPayment[];
+  reportsReturnPayment: IReportReturnPayment[];
   [reportIndex: number]: string | IReportPayment[];
 }
 
+export interface IReportReturnPayment {
+  dateReturnPayment: string;
+  returnPayments: string;
+  returnPaymentsbank: string;
+  returnPaymentDescription: string;
+  [index: number | string]: string;
+}
 export interface IReportPayment {
   datepayment: string;
   payments: string;

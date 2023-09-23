@@ -31,6 +31,7 @@ import { IContract, IReports } from "@/Interface/Interfaces";
 import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form";
 import ReportAccordion from "./ReportAccordion";
 import { v4 as uuidv4 } from "uuid";
+import axiosInstance from "@/AxiosInstance/AxiosInstance";
 
 const CreateContract = () => {
   const {
@@ -52,6 +53,14 @@ const CreateContract = () => {
               paymentDescription: "",
             },
           ],
+          reportsReturnPayment: [
+            {
+              returnPaymentsbank: "",
+              returnPayments: "",
+              dateReturnPayment: "",
+              returnPaymentDescription: "",
+            },
+          ],
         },
       ],
     },
@@ -61,13 +70,27 @@ const CreateContract = () => {
     control,
     name: "reports",
   });
-  const [isExpended, setIsExpended] = useState(false);
+  const [isExpended, setIsExpended] = useState<number | null>(null);
   const theme = useTheme();
   const [description, setDescription] = useState("");
   const typeOfReport = ["خرید", "فروش"];
 
+  const handleIsExpended: (id: number | null) => void = (id) => {
+    setIsExpended((isExpended) => (isExpended === id ? null : id));
+  };
   const onSubmit = (data: IContract) => {
-    console.log(data); // Access form data here
+    console.log(data);
+
+    saveContract(data); // Access form data here
+  };
+
+  const saveContract = async (contract: IContract) => {
+    try {
+      const { data } = await axiosInstance.post("/AddReports", contract);
+      console.log(data);
+    } catch (error) {
+      console.log("problem:", error);
+    }
   };
 
   return (
@@ -146,20 +169,20 @@ const CreateContract = () => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <Controller
-                name="customers"
+                name="customer"
                 control={control}
                 defaultValue={[]}
                 rules={{ required: "طرف قرارداد را وارد کنید." }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
-                    name="customers"
+                    name="customer"
                     required
                     fullWidth
                     label="طرف قرارداد"
                     placeholder=""
-                    error={!!errors.customers}
-                    helperText={errors.customers ? (errors.customers as FieldError).message : " "}
+                    error={!!errors.customer}
+                    helperText={errors.customer ? (errors.customer as FieldError).message : " "}
                   />
                 )}
               />
@@ -173,8 +196,8 @@ const CreateContract = () => {
               removeReport={() => remove(index)}
               appendReport={append}
               reportIndex={index}
-              isExpended={isExpended}
-              setIsExpended={setIsExpended}
+              isExpended={isExpended === index}
+              handleIsExpended={() => handleIsExpended(index)}
               description={description}
               control={control}
               errors={errors}
@@ -183,7 +206,29 @@ const CreateContract = () => {
           <Grid
             item
             xs={12}
-            onClick={() => append({ reportDescription: "", totalCost: "", presenter: "", reportsPayment: [] })}
+            onClick={() =>
+              append({
+                reportDescription: "",
+                totalCost: "",
+                presenter: "",
+                reportsPayment: [
+                  {
+                    bank: "",
+                    payments: "",
+                    datepayment: "",
+                    paymentDescription: "",
+                  },
+                ],
+                reportsReturnPayment: [
+                  {
+                    returnPaymentsbank: "",
+                    returnPayments: "",
+                    dateReturnPayment: "",
+                    returnPaymentDescription: "",
+                  },
+                ],
+              })
+            }
             sx={{ pt: 5, display: "flex", justifyContent: "center", alignItems: "center" }}
           >
             <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />

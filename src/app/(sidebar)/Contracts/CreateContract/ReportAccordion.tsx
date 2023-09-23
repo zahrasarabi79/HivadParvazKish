@@ -8,13 +8,14 @@ import { TextFildCustom } from "@/app/Components/TextFiledCustom";
 import { IContract, IReports } from "@/Interface/Interfaces";
 import ReportPayment from "./ReportPayment";
 import { v4 as uuidv4 } from "uuid";
+import ReportReturnPayment from "./ReportReturnPayment";
 
 export interface IReportAccordion {
   report: IReports;
   removeReport: UseFieldArrayRemove;
   appendReport: UseFieldArrayAppend<IContract>;
   isExpended: boolean;
-  setIsExpended: (value: boolean) => void;
+  handleIsExpended: () => void;
   description: string;
   control: Control<any>;
   errors: FieldErrors<IContract>;
@@ -23,7 +24,7 @@ export interface IReportAccordion {
 
 const ReportAccordion: React.FC<IReportAccordion> = ({
   isExpended,
-  setIsExpended,
+  handleIsExpended,
   description,
   report,
   removeReport,
@@ -32,15 +33,19 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
   reportIndex,
 }) => {
   const theme = useTheme();
-  const { fields, append, remove } = useFieldArray<IContract>({
+  const { fields: reportsPaymentFields, append: appendReportsPayment } = useFieldArray<IContract>({
     control,
     name: `reports.${reportIndex}.reportsPayment`,
+  });
+  const { fields: reportsReturnPaymentFields, append: appendReportsReturnPayment } = useFieldArray<IContract>({
+    control,
+    name: `reports.${reportIndex}.reportsReturnPayment`,
   });
   return (
     <>
       <Accordion
         expanded={isExpended}
-        onChange={() => setIsExpended(!isExpended)}
+        onChange={handleIsExpended}
         sx={{
           marginY: 2,
           boxShadow: "none",
@@ -76,7 +81,6 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
           {isExpended && (
             <Stack direction={"row"} gap={1}>
               <DeleteIcon />
-              <Icon pathName="paymentReturn.svg" />
             </Stack>
           )}
         </AccordionSummary>
@@ -101,8 +105,12 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
                     required
                     fullWidth
                     label={"شرح مشخصات"}
-                    error={!!errors.reports?.[0]?.reportDescription}
-                    helperText={errors.reports?.[0]?.reportDescription ? (errors.reports?.[0]?.reportDescription as FieldError).message : " "}
+                    error={!!errors.reports?.[reportIndex]?.reportDescription}
+                    helperText={
+                      errors.reports?.[reportIndex]?.reportDescription
+                        ? (errors.reports?.[reportIndex]?.reportDescription as FieldError).message
+                        : " "
+                    }
                   />
                 )}
               />
@@ -120,8 +128,8 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
                     required
                     fullWidth
                     label={"مجری"}
-                    error={!!errors.reports?.[0]?.presenter}
-                    helperText={errors.reports?.[0]?.presenter ? (errors.reports?.[0]?.presenter as FieldError).message : " "}
+                    error={!!errors.reports?.[reportIndex]?.presenter}
+                    helperText={errors.reports?.[reportIndex]?.presenter ? (errors.reports?.[reportIndex]?.presenter as FieldError).message : " "}
                   />
                 )}
               />
@@ -139,8 +147,8 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
                     required
                     fullWidth
                     label={"قیمت کل"}
-                    error={!!errors.reports?.[0]?.totalCost}
-                    helperText={errors.reports?.[0]?.totalCost ? (errors.reports?.[0]?.totalCost as FieldError).message : " "}
+                    error={!!errors.reports?.[reportIndex]?.totalCost}
+                    helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
                   />
                 )}
               />
@@ -152,19 +160,19 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
               <Divider />
             </Grid>
 
-            {fields.map((reportPayment, index) => (
+            {reportsPaymentFields.map((reportPayment, index) => (
               <ReportPayment key={uuidv4()} control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} />
             ))}
             <Grid
               item
               xs={12}
               onClick={() =>
-                append({
+                appendReportsPayment({
                   bank: "",
                   payments: "",
                   datepayment: "",
                   paymentDescription: "",
-                },)
+                })
               }
               display={"flex"}
               justifyContent={"center"}
@@ -174,6 +182,34 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
                 <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
               </IconButton>
             </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body1" sx={{ p: 1 }}>
+                برگشت
+              </Typography>
+              <Divider />
+            </Grid>
+            {reportsReturnPaymentFields.map((reportReturnPayment, index) => (
+              <ReportReturnPayment control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} />
+            ))}
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            onClick={() =>
+              appendReportsReturnPayment({
+                returnPaymentsbank: "",
+                returnPayments: "",
+                dateReturnPayment: "",
+                returnPaymentDescription: "",
+              })
+            }
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <IconButton>
+              <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
+            </IconButton>
           </Grid>
         </AccordionDetails>
       </Accordion>
