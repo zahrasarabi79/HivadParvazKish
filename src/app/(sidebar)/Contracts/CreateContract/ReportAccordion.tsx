@@ -3,36 +3,57 @@ import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOu
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Icon from "@/app/Components/Icon";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Control, Controller, FieldError, FieldErrors, UseFieldArrayAppend, UseFieldArrayRemove, useFieldArray, useForm } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  FieldError,
+  FieldErrors,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
+  UseFormWatch,
+  useFieldArray,
+  useForm,
+  useWatch,
+} from "react-hook-form";
 import { TextFildCustom } from "@/app/Components/TextFiledCustom";
 import { IContract, IReports } from "@/Interface/Interfaces";
 import ReportPayment from "./ReportPayment";
 import { v4 as uuidv4 } from "uuid";
 import ReportReturnPayment from "./ReportReturnPayment";
+import { watch } from "fs";
+import { describe } from "node:test";
+import { useEffect, useState } from "react";
+import debounce from "lodash/debounce";
+import SnackBar from "@/app/Components/SnackBar";
 
-export interface IReportAccordion {
+export interface IReportAccordionProps {
   report: IReports;
   removeReport: UseFieldArrayRemove;
   appendReport: UseFieldArrayAppend<IContract>;
   isExpended: boolean;
+  watch: UseFormWatch<any>;
   handleIsExpended: () => void;
-  description: string;
   control: Control<any>;
   errors: FieldErrors<IContract>;
+  setValue: any;
   reportIndex: number;
+  register: any;
 }
 
-const ReportAccordion: React.FC<IReportAccordion> = ({
+const ReportAccordion: React.FC<IReportAccordionProps> = ({
   isExpended,
   handleIsExpended,
-  description,
+  setValue,
+  watch,
   report,
   removeReport,
   control,
   errors,
   reportIndex,
+  register,
 }) => {
   const theme = useTheme();
+
   const { fields: reportsPaymentFields, append: appendReportsPayment } = useFieldArray<IContract>({
     control,
     name: `reports.${reportIndex}.reportsPayment`,
@@ -41,6 +62,21 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
     control,
     name: `reports.${reportIndex}.reportsReturnPayment`,
   });
+  const [isOpenSnackBarDelete, setIsOpenSnackBarDelete] = useState(false);
+  const handleCloseSnackBarDelete = () => setIsOpenSnackBarDelete(true);
+
+  const removeReports = (indexToRemove: number) => {
+    if (indexToRemove !== 0) {
+      removeReport(indexToRemove);
+    }
+    if (indexToRemove === 0) {
+      handleCloseSnackBarDelete();
+    }
+  };
+
+  const Describtion = useWatch({ control, name: `reports.${reportIndex}.reportDescription` });
+  // we can not use watch and instead of it ,we use "useWatch"
+  // const Describtion2 = watch(`reports.${reportIndex}.reportDescription`);
   return (
     <>
       <Accordion
@@ -77,10 +113,12 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
           }}
           expandIcon={<ExpandCircleDownOutlinedIcon />}
         >
-          <Typography> {description || "شرح مشخصات"}</Typography>
+          <Typography>{Describtion || "شرح و مشخصات"}</Typography>
           {isExpended && (
             <Stack direction={"row"} gap={1}>
-              <DeleteIcon />
+              <IconButton onClick={() => removeReports(reportIndex)}>
+                <DeleteIcon />
+              </IconButton>
             </Stack>
           )}
         </AccordionSummary>
@@ -96,12 +134,10 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
               <Controller
                 name={`reports.${reportIndex}.reportDescription`}
                 control={control}
-                defaultValue=""
                 rules={{ required: "شرح مشخصات را وارد کنید." }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
-                    name={`reports.${reportIndex}.reportDescription`}
                     required
                     fullWidth
                     label={"شرح مشخصات"}
@@ -124,7 +160,6 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
-                    name={`report.${reportIndex}.presenter`}
                     required
                     fullWidth
                     label={"مجری"}
@@ -143,7 +178,6 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
-                    name={`report.${reportIndex}.totalCost`}
                     required
                     fullWidth
                     label={"قیمت کل"}
@@ -189,7 +223,7 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
               <Divider />
             </Grid>
             {reportsReturnPaymentFields.map((reportReturnPayment, index) => (
-              <ReportReturnPayment control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} />
+              <ReportReturnPayment key={uuidv4()} control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} />
             ))}
           </Grid>
           <Grid
@@ -211,6 +245,13 @@ const ReportAccordion: React.FC<IReportAccordion> = ({
               <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
             </IconButton>
           </Grid>
+          <SnackBar
+            horizontal={"center"}
+            vertical={"top"}
+            message={"اجازه حذف این آیتم را ندارید. "}
+            handleClose={handleCloseSnackBarDelete}
+            isOpen={isOpenSnackBarDelete}
+          />
         </AccordionDetails>
       </Accordion>
     </>

@@ -17,7 +17,7 @@ export const HivadSidebarItems: SidebarItem[] = [
       { title: "ایجاد", route: "/Contracts/CreateContract" },
       {
         title: "لیست",
-        route: "/Contracts/ContractList?page=1",
+        route: "/Contracts/ContractList",
       },
     ],
   },

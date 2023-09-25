@@ -259,7 +259,6 @@ const components: Components = {
     styleOverrides: {
       root: {
         animation: `${wave} 0.3s linear alternate`,
-        
       },
     },
   },

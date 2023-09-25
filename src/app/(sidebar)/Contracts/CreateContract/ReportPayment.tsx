@@ -2,6 +2,8 @@ import { IContract } from "@/Interface/Interfaces";
 import Icon from "@/app/Components/Icon";
 import { TextFildCustom } from "@/app/Components/TextFiledCustom";
 import { Divider, Grid, IconButton, Typography, useTheme } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import React from "react";
 import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
 
@@ -62,27 +64,30 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ control, errors, rep
         />
       </Grid>
       <Grid item xs={12} sm={4}>
-        <Controller
-          name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].datepayment`}
-          control={control}
-          defaultValue=""
-          rules={{ required: "تاریخ پرداخت/دریافت را وارد کنید." }}
-          render={({ field }) => (
-            <TextFildCustom
-              {...field}
-              name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].datepayment`}
-              required
-              fullWidth
-              label={"تاریخ پرداخت/دریافت"}
-              error={!!errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.datepayment}
-              helperText={
-                errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.datepayment
-                  ? (errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.datepayment as FieldError).message
-                  : " "
-              }
-            />
-          )}
-        />
+        <LocalizationProvider dateAdapter={AdapterDateFnsJalali}>
+          <Controller
+            name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].datepayment`}
+            control={control}
+            defaultValue=""
+            rules={{ required: "تاریخ پرداخت/دریافت را وارد کنید." }}
+            render={({ field }) => (
+              <DatePicker
+                {...field}
+                sx={{ width: "100%" }}
+                label={"تاریخ پرداخت/دریافت"}
+                value={null}
+                slotProps={{
+                  textField: {
+                    error: !!errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.datepayment,
+                    helperText: errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.datepayment
+                      ? (errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.datepayment as FieldError).message
+                      : " ",
+                  },
+                }}
+              />
+            )}
+          />
+        </LocalizationProvider>
       </Grid>
       <Grid item xs={12}>
         <Controller

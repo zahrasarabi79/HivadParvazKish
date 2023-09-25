@@ -1,9 +1,18 @@
+import { IContract } from "@/Interface/Interfaces";
 import { TextFildCustom } from "@/app/Components/TextFiledCustom";
 import { Grid } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import React from "react";
-import { Controller, FieldError } from "react-hook-form";
+import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
+export interface IReportReturnPaymentProps {
+  control: Control<any>;
+  errors: FieldErrors<IContract>;
+  reportIndex: number;
+  paymentIndex: number;
+}
 
-const ReportReturnPayment = ({ control, errors, reportIndex, paymentIndex }) => {
+const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, errors, reportIndex, paymentIndex }) => {
   return (
     <>
       <Grid item xs={12} sm={4}>
@@ -53,27 +62,30 @@ const ReportReturnPayment = ({ control, errors, reportIndex, paymentIndex }) => 
         />
       </Grid>
       <Grid item xs={12} sm={4}>
-        <Controller
-          name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].dateReturnPayment`}
-          control={control}
-          defaultValue=""
-          rules={{ required: "تاریخ برگشت از خرید یا فروش را وارد کنید." }}
-          render={({ field }) => (
-            <TextFildCustom
-              {...field}
-              name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].dateReturnPayment`}
-              required
-              fullWidth
-              label={"تاریخ برگشت از خرید/فروش"}
-              error={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment}
-              helperText={
-                errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment
-                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment as FieldError).message
-                  : " "
-              }
-            />
-          )}
-        />
+        <LocalizationProvider dateAdapter={AdapterDateFnsJalali}>
+          <Controller
+            name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].dateReturnPayment`}
+            control={control}
+            defaultValue=""
+            rules={{ required: "تاریخ برگشت از خرید یا فروش را وارد کنید." }}
+            render={({ field }) => (
+              <DatePicker
+                {...field}
+                sx={{ width: "100%" }}
+                label={"تاریخ برگشت از خرید/فروش"}
+                value={null}
+                slotProps={{
+                  textField: {
+                    error: !!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment,
+                    helperText: errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment
+                      ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment as FieldError).message
+                      : " ",
+                  },
+                }}
+              />
+            )}
+          />
+        </LocalizationProvider>
       </Grid>
       <Grid item xs={12}>
         <Controller

@@ -32,11 +32,16 @@ import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form"
 import ReportAccordion from "./ReportAccordion";
 import { v4 as uuidv4 } from "uuid";
 import axiosInstance from "@/AxiosInstance/AxiosInstance";
+import SnackBar from "@/app/Components/SnackBar";
+import { useRouter } from "next/navigation";
 
 const CreateContract = () => {
   const {
     control,
     handleSubmit,
+    watch,
+    setValue,
+    register,
     formState: { errors },
   } = useForm<IContract>({
     defaultValues: {
@@ -70,24 +75,30 @@ const CreateContract = () => {
     control,
     name: "reports",
   });
+  const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
+  const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
+
   const [isExpended, setIsExpended] = useState<number | null>(null);
   const theme = useTheme();
-  const [description, setDescription] = useState("");
   const typeOfReport = ["خرید", "فروش"];
 
   const handleIsExpended: (id: number | null) => void = (id) => {
     setIsExpended((isExpended) => (isExpended === id ? null : id));
   };
+  const router = useRouter();
+
   const onSubmit = (data: IContract) => {
     console.log(data);
-
-    saveContract(data); // Access form data here
+    saveContract(data);
+    setTimeout(() => {
+      router.push("/Contracts/ContractList");
+    }, 1500);
   };
 
   const saveContract = async (contract: IContract) => {
     try {
       const { data } = await axiosInstance.post("/AddReports", contract);
-      console.log(data);
+      handleCloseSnackBar();
     } catch (error) {
       console.log("problem:", error);
     }
@@ -134,6 +145,7 @@ const CreateContract = () => {
                       value={null}
                       slotProps={{
                         textField: {
+                          error: !!errors.dateContract,
                           helperText: errors.dateContract ? "تاریخ قرار داد را وارد کنید" : " ",
                         },
                       }}
@@ -193,12 +205,14 @@ const CreateContract = () => {
             <ReportAccordion
               key={uuidv4()}
               report={report as IReports}
-              removeReport={() => remove(index)}
+              removeReport={remove}
               appendReport={append}
               reportIndex={index}
               isExpended={isExpended === index}
+              watch={watch}
+              register={register}
+              setValue={setValue}
               handleIsExpended={() => handleIsExpended(index)}
-              description={description}
               control={control}
               errors={errors}
             />
@@ -238,6 +252,13 @@ const CreateContract = () => {
           <Button type="submit" variant="contained" color="primary">
             ثبت
           </Button>
+          <SnackBar
+            horizontal={"center"}
+            vertical={"top"}
+            message={"قرارداد با موفقیت ثبت شد."}
+            isOpen={isOpenSnackBar}
+            handleClose={handleCloseSnackBar}
+          />
         </CardActions>
       </form>
       {/* <CardContent sx={{ height: "600px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>

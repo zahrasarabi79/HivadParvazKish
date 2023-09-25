@@ -56,6 +56,9 @@ const ListOfReport = () => {
   useEffect(() => {
     getListOfReports();
   }, []);
+  const handleViewContract = (id: number) => {
+    console.log(id);
+  };
 
   const handleChangePage = (event: React.ChangeEvent<unknown> | null, newPage: number) => {
     setPage(newPage);
@@ -69,8 +72,8 @@ const ListOfReport = () => {
       <CardHeader
         title={"لیست قرارداد ها"}
         action={
-          <Button color="primary" variant="contained">
-            ایجاد قرارداد جدید
+          <Button color="primary" variant="contained" onClick={() => router.push(`/Contracts/CreateContract`)}>
+            ایجاد قرارداد
           </Button>
         }
       />
@@ -81,10 +84,10 @@ const ListOfReport = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <StyledTableCell style={{ width: "5%" }} align="center">
+                  <StyledTableCell style={{ width: "10%" }} align="center">
                     ردیف
                   </StyledTableCell>
-                  <StyledTableCell  style={{ width: "15%" }} align="left">
+                  <StyledTableCell style={{ width: "20%" }} align="left">
                     شماره قراراداد
                   </StyledTableCell>
                   <StyledTableCell style={{ width: "90%" }} align="left">
@@ -111,7 +114,7 @@ const ListOfReport = () => {
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
                       <Tooltip title="بازگشت" placement="bottom-start">
                         <IconButton>
-                          <Icon pathName="paymentReturn.svg"/>
+                          <Icon pathName="paymentReturn.svg" />
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
@@ -125,7 +128,7 @@ const ListOfReport = () => {
 
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 16px 0px 0px" } }}>
                       <Tooltip title="مشاهده" placement="bottom-start">
-                        <IconButton>
+                        <IconButton onClick={() => handleViewContract(contract.id)}>
                           <Icon pathName="user-search.svg" />
                         </IconButton>
                       </Tooltip>
