@@ -59,7 +59,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const drawer = (
     <>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: 25 }}>
-        <Image src="/image/pouyagaranLogo.svg" width={40} height={40} alt="pouyagaranLogo" onClick={handleCloseDrawer} />
+        <Image src="/image/pouyagaranLogo.svg" priority={true} width={40} height={40} alt="pouyagaranLogo" onClick={handleCloseDrawer} />
 
         <Typography
           my={2}

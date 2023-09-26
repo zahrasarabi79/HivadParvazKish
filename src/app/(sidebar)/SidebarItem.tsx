@@ -14,7 +14,7 @@ export const HivadSidebarItems: SidebarItem[] = [
     title: "قرارداد های هیواد",
     icon: "plainicon.svg",
     children: [
-      { title: "ایجاد", route: "/Contracts/CreateContract" },
+      { title: "ایجاد", route: "/Contracts/ModifyContract" },
       {
         title: "لیست",
         route: "/Contracts/ContractList",
@@ -78,8 +78,8 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
         </ListItemButton>
       </ListItem>
       {item.children &&
-        item.children.map((childerItem: SidebarItemChildren) => (
-          <Collapse in={selectListItem[index].openChildrenItem}>
+        item.children.map((childerItem: SidebarItemChildren, parentIndex: number) => (
+          <Collapse key={parentIndex} in={selectListItem[index].openChildrenItem}>
             <List component="div" disablePadding>
               <ListItemButton
                 onClick={() => router.push(childerItem.route || "")}
@@ -101,8 +101,8 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
                 <ListItemText sx={{ m: 0 }} inset primary={childerItem.title} />
               </ListItemButton>
               {childerItem.children &&
-                childerItem.children.map((childerItemchildren: SidebarItemChildrenOfChildren) => (
-                  <Collapse>
+                childerItem.children.map((childerItemchildren: SidebarItemChildrenOfChildren , childIndex: number) => (
+                  <Collapse key={childIndex}>
                     <List component="div" disablePadding>
                       <ListItemButton onClick={() => router.push(childerItemchildren.route || "")}>
                         <ListItemText sx={{ m: 0 }} inset primary={childerItemchildren.title} />

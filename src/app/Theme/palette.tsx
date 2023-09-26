@@ -37,7 +37,7 @@ export const palette = {
     contrastText: "#fff",
   },
   background: {
-    paper: "#232138",
+    paper: "#201f33",
     default: "#080620",
   },
   divider: "rgba(190,196,209)",

@@ -32,6 +32,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
 import AssignmentReturnOutlinedIcon from "@mui/icons-material/AssignmentReturnOutlined";
+import KeepMountedModal from "./ShowModal";
 
 const ListOfReport = () => {
   const [listOfContracts, setListOfContracts] = useState<IContractApiResponse[]>([]);
@@ -39,8 +40,10 @@ const ListOfReport = () => {
   const rowsPerPage = 5;
   const router = useRouter();
   const searchParams = useSearchParams();
-  console.log(searchParams);
-
+  // modal
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const getListOfReports = async () => {
     try {
       // const router = useRouter();
@@ -58,6 +61,7 @@ const ListOfReport = () => {
   }, []);
   const handleViewContract = (id: number) => {
     console.log(id);
+    handleOpen();
   };
 
   const handleChangePage = (event: React.ChangeEvent<unknown> | null, newPage: number) => {
@@ -120,7 +124,7 @@ const ListOfReport = () => {
                     </StyledTableCell>
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
                       <Tooltip title="ویرایش" placement="bottom-start">
-                        <IconButton>
+                        <IconButton onClick={() => router.push(`/Contracts/ModifyContract/id:${contract.id}`)}>
                           <Icon pathName="edit.svg" />
                         </IconButton>
                       </Tooltip>
@@ -132,6 +136,7 @@ const ListOfReport = () => {
                           <Icon pathName="user-search.svg" />
                         </IconButton>
                       </Tooltip>
+                      <KeepMountedModal open={open} handleClose={handleClose} handleOpen={handleOpen} />
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}

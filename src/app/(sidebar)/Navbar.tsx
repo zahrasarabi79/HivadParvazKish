@@ -46,19 +46,13 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
       <Toolbar variant="dense" sx={{ bgcolor: theme.palette.background.paper, justifyContent: "space-between" }}>
         <Stack>
           <IconButton onClick={onDrawerOpen} sx={{ display: { sm: "none", xs: "block" } }}>
-            <Image src="/image/pouyagaranLogo.svg" width={30} height={30} alt="pouyagaranLogo" />
+            <Image src="/image/pouyagaranLogo.svg" priority={true} width={30} height={30} alt="pouyagaranLogo" />
           </IconButton>
         </Stack>
         <Stack direction={"row"}>
           {/* profile */}
-          <IconButton>
-            <Image
-              src="/icon/profile.svg"
-              width={20}
-              height={20}
-              alt="profile"
-              onClick={(e: React.MouseEvent<HTMLImageElement>) => setAnchorElProfile(e.currentTarget)}
-            />
+          <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => setAnchorElProfile(e.currentTarget)}>
+            <Image src="/icon/profile.svg" width={20} height={20} alt="profile" />
           </IconButton>
           <Menu
             dir="rtl"
@@ -82,15 +76,8 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
             </MenuItem>
           </Menu>
           {/* notification */}
-          <IconButton>
-
-            <Image
-              src="/icon/notification.svg"
-              width={20}
-              height={20}
-              alt="notification"
-              onClick={(e: React.MouseEvent<HTMLImageElement>) => setAnchorElNotification(e.currentTarget)}
-            />
+          <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => setAnchorElNotification(e.currentTarget)}>
+            <Image src="/icon/notification.svg" width={20} height={20} alt="notification" />
           </IconButton>
           <Menu
             dir="rtl"
