@@ -22,20 +22,27 @@ import {
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Icon from "@/app/Components/Icon";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { IContract, IReports } from "@/Interface/Interfaces";
+import { IContract, IContractApiResponse, IReports } from "@/Interface/Interfaces";
 import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form";
 import ReportAccordion from "./ReportAccordion";
 import { v4 as uuidv4 } from "uuid";
 import axiosInstance from "@/AxiosInstance/AxiosInstance";
 import SnackBar from "@/app/Components/SnackBar";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 
-const CreateContract = () => {
+export interface ICreateContractProps {
+  ContractId: number;
+}
+const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
+  const theme = useTheme();
+  const router = useRouter();
+
   const {
     control,
     handleSubmit,
@@ -70,22 +77,18 @@ const CreateContract = () => {
       ],
     },
   });
-
   const { fields, append, remove } = useFieldArray<IContract>({
     control,
     name: "reports",
   });
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
-  const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
-
   const [isExpended, setIsExpended] = useState<number | null>(null);
-  const theme = useTheme();
   const typeOfReport = ["خرید", "فروش"];
 
+  const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
   const handleIsExpended: (id: number | null) => void = (id) => {
     setIsExpended((isExpended) => (isExpended === id ? null : id));
   };
-  const router = useRouter();
 
   const onSubmit = (data: IContract) => {
     console.log(data);
@@ -95,6 +98,24 @@ const CreateContract = () => {
     }, 1500);
   };
 
+  const getContract = async (id: number) => {
+    try {
+      const { data } = await axiosInstance.post("/showReports", { id });
+     let  uptadedData = data?.Contracts[0];
+      console.log(data.Contracts[0]);
+    } catch (error: AxiosError | any) {
+      console.log("problem:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (ContractId) {
+      getContract(ContractId);
+    } else {
+      console.log("add data");
+    }
+  }, []);
+
   const saveContract = async (contract: IContract) => {
     try {
       const { data } = await axiosInstance.post("/AddReports", contract);
@@ -103,6 +124,7 @@ const CreateContract = () => {
       console.log("problem:", error);
     }
   };
+
 
   return (
     <Card>

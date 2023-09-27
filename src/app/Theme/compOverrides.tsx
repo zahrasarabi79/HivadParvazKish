@@ -237,6 +237,7 @@ const components: Components = {
       },
     },
   },
+  
 
   // ... other components ...
 
@@ -260,6 +261,7 @@ const components: Components = {
       root: {
         animation: `${wave} 0.3s linear alternate`,
       },
+      
     },
   },
   // MuiTable: {

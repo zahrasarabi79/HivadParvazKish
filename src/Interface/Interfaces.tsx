@@ -6,20 +6,16 @@ export interface IContractApiResponse {
   typeContract: string;
   dateContract: string;
   numContract: string;
-  customers: ICustomersApiResponse[];
+  customer: string;
   reports: IReportsApiResponse[];
 }
-export interface ICustomersApiResponse {
-  id: number;
-  customer: string;
-  contractId: number;
-}
+
 export interface IReportsApiResponse {
   id: number;
   reportDescription: string;
   totalCost: string;
   presenter: string;
-  reportsPayment: IReportPaymentApiResponse[];
+  reportsPayment: IReportPaymentApiResponse [];
   reportsReturnPayment: IReportReturnPaymentApiResponse[];
   contractId: number;
 }

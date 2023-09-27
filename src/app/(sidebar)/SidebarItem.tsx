@@ -14,7 +14,7 @@ export const HivadSidebarItems: SidebarItem[] = [
     title: "قرارداد های هیواد",
     icon: "plainicon.svg",
     children: [
-      { title: "ایجاد", route: "/Contracts/ModifyContract" },
+      { title: "ایجاد", route: "/Contracts/CreateContract" },
       {
         title: "لیست",
         route: "/Contracts/ContractList",

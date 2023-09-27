@@ -40,5 +40,5 @@ export const palette = {
     paper: "#201f33",
     default: "#080620",
   },
-  divider: "rgba(190,196,209)",
+  divider: "rgba(107,107,107,1)",
 };

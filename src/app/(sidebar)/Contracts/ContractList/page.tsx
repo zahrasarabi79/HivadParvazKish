@@ -36,14 +36,15 @@ import KeepMountedModal from "./ShowModal";
 
 const ListOfReport = () => {
   const [listOfContracts, setListOfContracts] = useState<IContractApiResponse[]>([]);
+  const [modalData, setModalData] = useState<IContractApiResponse>();
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
   const router = useRouter();
-  const searchParams = useSearchParams();
-  // modal
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+  const handleCloseModal = () => setOpenModal(false);
   const getListOfReports = async () => {
     try {
       // const router = useRouter();
@@ -59,9 +60,10 @@ const ListOfReport = () => {
   useEffect(() => {
     getListOfReports();
   }, []);
-  const handleViewContract = (id: number) => {
-    console.log(id);
-    handleOpen();
+
+  const handleViewContract = (contract: any) => {
+    setModalData(contract);
+    handleOpenModal();
   };
 
   const handleChangePage = (event: React.ChangeEvent<unknown> | null, newPage: number) => {
@@ -124,7 +126,7 @@ const ListOfReport = () => {
                     </StyledTableCell>
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
                       <Tooltip title="ویرایش" placement="bottom-start">
-                        <IconButton onClick={() => router.push(`/Contracts/ModifyContract/id:${contract.id}`)}>
+                        <IconButton onClick={() => router.push(`/Contracts/UpdateContract/${contract.id}`)}>
                           <Icon pathName="edit.svg" />
                         </IconButton>
                       </Tooltip>
@@ -132,11 +134,10 @@ const ListOfReport = () => {
 
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 16px 0px 0px" } }}>
                       <Tooltip title="مشاهده" placement="bottom-start">
-                        <IconButton onClick={() => handleViewContract(contract.id)}>
+                        <IconButton onClick={() => handleViewContract(contract)}>
                           <Icon pathName="user-search.svg" />
                         </IconButton>
                       </Tooltip>
-                      <KeepMountedModal open={open} handleClose={handleClose} handleOpen={handleOpen} />
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
@@ -165,6 +166,7 @@ const ListOfReport = () => {
           <Image src={"/icon/Vector.svg"} width={400} height={400} alt="Vector" />
         </CardContent>
       )}
+      <KeepMountedModal open={openModal} handleClose={handleCloseModal} handleOpen={handleOpenModal} data={modalData as IContractApiResponse} />
     </Card>
   );
 };
