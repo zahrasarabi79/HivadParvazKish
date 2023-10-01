@@ -1,14 +1,59 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CreateContract from "../../CreateContract/page";
 import axiosInstance from "@/AxiosInstance/AxiosInstance";
 import { AxiosError } from "axios";
 import { useParams } from "next/navigation";
+import { IContractApiResponse } from "@/Interface/Interfaces";
 
 const page = () => {
   const { id } = useParams();
+  const [dataUpdated, setDataUpdated] = useState<IContractApiResponse>();
 
-  return <CreateContract ContractId={id} />;
+  const getContract = async () => {
+    try {
+      const { data } = await axiosInstance.post("/showReports", { id });
+      console.log(data.Contracts[0]);
+      const updated = {
+        numContract: "",
+        dateContract: "",
+        typeContract: "",
+        customer: "",
+        reports: [
+          {
+            reportDescription: "",
+            totalCost: "",
+            presenter: "",
+            reportsPayment: [
+              {
+                bank: "",
+                payments: "",
+                datepayment: "",
+                paymentDescription: "",
+              },
+            ],
+            reportsReturnPayment: [
+              {
+                returnPaymentsbank: "",
+                returnPayments: "",
+                dateReturnPayment: "",
+                returnPaymentDescription: "",
+              },
+            ],
+          },
+        ],
+      };
+      setDataUpdated(data.Contracts[0]);
+      console.log(data.Contracts[0]);
+    } catch (error: AxiosError | any) {
+      console.log("problem:", error);
+    }
+  };
+  useEffect(() => {
+    getContract();
+  }, []);
+
+  return <CreateContract Contract={dataUpdated} />;
 };
 
 export default page;

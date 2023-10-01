@@ -27,30 +27,25 @@ import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOu
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Icon from "@/app/Components/Icon";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { IContract, IContractApiResponse, IReports } from "@/Interface/Interfaces";
+import { IContract, IContractApiResponse, IReports, IReportsApiResponse } from "@/Interface/Interfaces";
 import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form";
 import ReportAccordion from "./ReportAccordion";
 import { v4 as uuidv4 } from "uuid";
 import axiosInstance from "@/AxiosInstance/AxiosInstance";
 import SnackBar from "@/app/Components/SnackBar";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 
 export interface ICreateContractProps {
-  ContractId: number;
+  Contract: IContractApiResponse | undefined;
 }
-const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
+
+const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const theme = useTheme();
   const router = useRouter();
-
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    register,
-    formState: { errors },
-  } = useForm<IContract>({
+  const pathname = usePathname();
+  const IsReturnPathName = pathname === `/Contracts/ReturnPayments/${Contract?.id}`;
+  const defaultvalue = {
     defaultValues: {
       reports: [
         {
@@ -61,7 +56,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
             {
               bank: "",
               payments: "",
-              datepayment: "",
+              datepayment: null,
               paymentDescription: "",
             },
           ],
@@ -69,14 +64,20 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
             {
               returnPaymentsbank: "",
               returnPayments: "",
-              dateReturnPayment: "",
+              dateReturnPayment: null,
               returnPaymentDescription: "",
             },
           ],
         },
       ],
     },
-  });
+  };
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IContract>(defaultvalue);
   const { fields, append, remove } = useFieldArray<IContract>({
     control,
     name: "reports",
@@ -84,38 +85,22 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
   const [isExpended, setIsExpended] = useState<number | null>(null);
   const typeOfReport = ["خرید", "فروش"];
-
   const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
   const handleIsExpended: (id: number | null) => void = (id) => {
     setIsExpended((isExpended) => (isExpended === id ? null : id));
   };
-
   const onSubmit = (data: IContract) => {
-    console.log(data);
-    saveContract(data);
+    if (Contract) {
+      console.log(data);
+      updateDataContract(data, Contract.id);
+    } else {
+      console.log(data);
+      saveContract(data);
+    }
     setTimeout(() => {
       router.push("/Contracts/ContractList");
     }, 1500);
   };
-
-  const getContract = async (id: number) => {
-    try {
-      const { data } = await axiosInstance.post("/showReports", { id });
-     let  uptadedData = data?.Contracts[0];
-      console.log(data.Contracts[0]);
-    } catch (error: AxiosError | any) {
-      console.log("problem:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (ContractId) {
-      getContract(ContractId);
-    } else {
-      console.log("add data");
-    }
-  }, []);
-
   const saveContract = async (contract: IContract) => {
     try {
       const { data } = await axiosInstance.post("/AddReports", contract);
@@ -124,7 +109,49 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
       console.log("problem:", error);
     }
   };
-
+  const updateDataContract = async (contract: IContract, id: number) => {
+    try {
+      const { data } = await axiosInstance.post("/updateReports", { ...contract, id });
+      console.log(data);
+    } catch (error: AxiosError | any) {
+      console.log("problem");
+    }
+  };
+  useEffect(() => {
+    if (Contract) {
+      const resetReports = (reports: IReportsApiResponse[]) => {
+        if (Array.isArray(reports)) {
+          return reports.map((report) => ({
+            reportDescription: report?.reportDescription,
+            presenter: report?.presenter,
+            totalCost: report.totalCost,
+            reportsPayment: report?.reportsPayment.map((reportPayment) => ({
+              bank: reportPayment?.bank,
+              payments: reportPayment?.payments,
+              datepayment: new Date(reportPayment?.datepayment),
+              paymentDescription: reportPayment?.paymentDescription,
+            })),
+            reportsReturnPayment: report?.reportsReturnPayment.map((reportReturnPayment) => ({
+              returnPaymentsbank: reportReturnPayment?.returnPaymentsbank,
+              returnPayments: reportReturnPayment?.returnPayments,
+              returnPaymentDescription: reportReturnPayment?.returnPaymentDescription,
+              dateReturnPayment: new Date(reportReturnPayment?.dateReturnPayment),
+            })),
+          }));
+        }
+        return [];
+      };
+      reset({
+        numContract: Contract?.numContract,
+        dateContract: new Date(Contract?.dateContract),
+        typeContract: Contract?.typeContract,
+        customer: Contract?.customer,
+        reports: resetReports(Contract?.reports), // Assuming ContractId.reports is an array of objects
+      });
+    } else {
+      console.log("add data");
+    }
+  }, [Contract]);
 
   return (
     <Card>
@@ -137,7 +164,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
               <Controller
                 name="numContract"
                 control={control}
-                defaultValue=""
+                defaultValue={""}
                 rules={{ required: "شماره قرارداد را وارد کنید." }}
                 render={({ field }) => (
                   <TextFildCustom
@@ -145,6 +172,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
                     name="numContract"
                     required
                     fullWidth
+                    disabled={IsReturnPathName}
                     label="شماره قرارداد"
                     error={!!errors.numContract}
                     helperText={errors.numContract ? (errors.numContract as FieldError).message : " "}
@@ -157,14 +185,14 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
                 <Controller
                   name="dateContract"
                   control={control}
-                  defaultValue=""
                   rules={{ required: "تاریخ قرارداد را وارد کنید." }}
                   render={({ field }) => (
                     <DatePicker
                       {...field}
+                      disabled={IsReturnPathName}
                       sx={{ width: "100%" }}
                       label="تاریخ قرارداد"
-                      value={null}
+                      value={field.value} // when we fetch data an set default value it is correct to set value to show data as default value
                       slotProps={{
                         textField: {
                           error: !!errors.dateContract,
@@ -185,6 +213,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
+                    disabled={IsReturnPathName}
                     name="typeContract"
                     required
                     select
@@ -205,11 +234,12 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
               <Controller
                 name="customer"
                 control={control}
-                defaultValue={[]}
+                defaultValue={""}
                 rules={{ required: "طرف قرارداد را وارد کنید." }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
+                    disabled={IsReturnPathName}
                     name="customer"
                     required
                     fullWidth
@@ -223,20 +253,17 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
             </Grid>
           </Grid>
 
-          {fields.map((report, index) => (
+          {fields.map((report, index: number) => (
             <ReportAccordion
               key={uuidv4()}
-              report={report as IReports}
-              removeReport={remove}
-              appendReport={append}
-              reportIndex={index}
+              IsReturnPathName={IsReturnPathName}
               isExpended={isExpended === index}
-              watch={watch}
-              register={register}
-              setValue={setValue}
               handleIsExpended={() => handleIsExpended(index)}
+              removeReport={remove}
               control={control}
               errors={errors}
+              reportIndex={index}
+              appendReport={append}
             />
           ))}
           <Grid
@@ -251,7 +278,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
                   {
                     bank: "",
                     payments: "",
-                    datepayment: "",
+                    datepayment: null,
                     paymentDescription: "",
                   },
                 ],
@@ -259,7 +286,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ ContractId }) => {
                   {
                     returnPaymentsbank: "",
                     returnPayments: "",
-                    dateReturnPayment: "",
+                    dateReturnPayment: null,
                     returnPaymentDescription: "",
                   },
                 ],

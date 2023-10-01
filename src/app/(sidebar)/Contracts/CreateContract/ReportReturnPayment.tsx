@@ -1,10 +1,11 @@
 import { IContract } from "@/Interface/Interfaces";
 import { TextFildCustom } from "@/app/Components/TextFiledCustom";
-import { Grid } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import React from "react";
 import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 export interface IReportReturnPaymentProps {
   control: Control<any>;
   errors: FieldErrors<IContract>;
@@ -20,7 +21,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
           name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentsbank`}
           control={control}
           defaultValue=""
-          rules={{ required: " بانک/شرکاء/صندوق را وارد کنید." }}
+          rules={{ required: paymentIndex === 0 ? " بانک/شرکاء/صندوق را وارد کنید." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}
@@ -43,20 +44,17 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
           name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPayments`}
           control={control}
           defaultValue=""
-          rules={{ required: "مبلغ برگشت از خرید یا فروش  را وارد کنید." }}
+          rules={{ required: paymentIndex === 0 ? "مبلغ برگشت از خرید یا فروش  را وارد کنید." : undefined }}
           render={({ field }) => (
-            <TextFildCustom
-              {...field}
-              name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPayments`}
+            <NumericFormat
+              value={field.value}
+              customInput={TextField}
+              thousandSeparator
               required
               fullWidth
-              label={" مبلغ برگشت از خرید/فروش"}
-              error={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments}
-              helperText={
-                errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments
-                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments as FieldError).message
-                  : " "
-              }
+              label={"قیمت کل"}
+              error={!!errors.reports?.[reportIndex]?.totalCost}
+              helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
             />
           )}
         />
@@ -67,13 +65,13 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
             name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].dateReturnPayment`}
             control={control}
             defaultValue=""
-            rules={{ required: "تاریخ برگشت از خرید یا فروش را وارد کنید." }}
+            rules={{ required: paymentIndex === 0 ? "تاریخ برگشت از خرید یا فروش را وارد کنید." : undefined }}
             render={({ field }) => (
               <DatePicker
                 {...field}
                 sx={{ width: "100%" }}
+                value={field.value}
                 label={"تاریخ برگشت از خرید/فروش"}
-                value={null}
                 slotProps={{
                   textField: {
                     error: !!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment,
@@ -92,7 +90,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
           name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentDescription`}
           control={control}
           defaultValue=""
-          rules={{ required: "توضیحات را وارد کنید." }}
+          rules={{ required: paymentIndex === 0 ? "توضیحات را وارد کنید." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}

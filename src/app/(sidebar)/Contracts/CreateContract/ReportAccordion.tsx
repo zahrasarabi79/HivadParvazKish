@@ -1,56 +1,26 @@
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, IconButton, Stack, Typography, useTheme } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, IconButton, Stack, TextField, Typography, useTheme } from "@mui/material";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Icon from "@/app/Components/Icon";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  Control,
-  Controller,
-  FieldError,
-  FieldErrors,
-  UseFieldArrayAppend,
-  UseFieldArrayRemove,
-  UseFormWatch,
-  useFieldArray,
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { Controller, FieldError, useFieldArray, useWatch } from "react-hook-form";
 import { TextFildCustom } from "@/app/Components/TextFiledCustom";
-import { IContract, IReports } from "@/Interface/Interfaces";
+import { IContract, IReportAccordionProps, IReports } from "@/Interface/Interfaces";
 import ReportPayment from "./ReportPayment";
 import { v4 as uuidv4 } from "uuid";
 import ReportReturnPayment from "./ReportReturnPayment";
-import { watch } from "fs";
-import { describe } from "node:test";
 import { useEffect, useState } from "react";
-import debounce from "lodash/debounce";
+import { NumericFormat } from "react-number-format";
+
 import SnackBar from "@/app/Components/SnackBar";
 
-export interface IReportAccordionProps {
-  report: IReports;
-  removeReport: UseFieldArrayRemove;
-  appendReport: UseFieldArrayAppend<IContract>;
-  isExpended: boolean;
-  watch: UseFormWatch<any>;
-  handleIsExpended: () => void;
-  control: Control<any>;
-  errors: FieldErrors<IContract>;
-  setValue: any;
-  reportIndex: number;
-  register: any;
-}
-
 const ReportAccordion: React.FC<IReportAccordionProps> = ({
+  IsReturnPathName,
   isExpended,
   handleIsExpended,
-  setValue,
-  watch,
-  report,
   removeReport,
   control,
   errors,
   reportIndex,
-  register,
 }) => {
   const theme = useTheme();
 
@@ -75,8 +45,8 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
   };
 
   const Describtion = useWatch({ control, name: `reports.${reportIndex}.reportDescription` });
-  // we can not use watch and instead of it ,we use "useWatch"
-  // const Describtion2 = watch(`reports.${reportIndex}.reportDescription`);
+  //* we can not use watch and instead of it ,we use "useWatch"
+  //* const Describtion2 = watch(`reports.${reportIndex}.reportDescription`);
   return (
     <>
       <Accordion
@@ -134,10 +104,11 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
               <Controller
                 name={`reports.${reportIndex}.reportDescription`}
                 control={control}
-                rules={{ required: "شرح مشخصات را وارد کنید." }}
+                rules={{ required: reportIndex === 0 ? "شرح مشخصات را وارد کنید." : undefined }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
+                    disabled={IsReturnPathName}
                     required
                     fullWidth
                     label={"شرح مشخصات"}
@@ -156,10 +127,11 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 name={`reports.${reportIndex}.presenter`}
                 control={control}
                 defaultValue=""
-                rules={{ required: " مشخصات مجری را وارد کنید." }}
+                rules={{ required: reportIndex === 0 ? " مشخصات مجری را وارد کنید." : undefined }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
+                    disabled={IsReturnPathName}
                     required
                     fullWidth
                     label={"مجری"}
@@ -174,16 +146,34 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 name={`reports.${reportIndex}.totalCost`}
                 control={control}
                 defaultValue=""
-                rules={{ required: "قیمت کل را وارد کنید." }}
+                rules={{
+                  required: reportIndex === 0 ? "قیمت کل را وارد کنید." : undefined,
+                }}
                 render={({ field }) => (
-                  <TextFildCustom
-                    {...field}
+                  //*we use Numeric Format librarry for seprated number
+                  //* we can not use js function like Number.prototype.toLocaleString()
+                  <NumericFormat
+                    value={field.value}
+                    customInput={TextField}
+                    thousandSeparator
+                    disabled={IsReturnPathName}
                     required
                     fullWidth
+                    
                     label={"قیمت کل"}
                     error={!!errors.reports?.[reportIndex]?.totalCost}
                     helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
                   />
+                  // <TextFildCustom
+                  //   {...field}
+                  //   disabled={IsReturnPathName}
+                  //   required
+                  //   fullWidth
+                  //   type="number"
+                  //   label={"قیمت کل"}
+                  //   error={!!errors.reports?.[reportIndex]?.totalCost}
+                  //   helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
+                  // />
                 )}
               />
             </Grid>
@@ -195,7 +185,14 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
             </Grid>
 
             {reportsPaymentFields.map((reportPayment, index) => (
-              <ReportPayment key={uuidv4()} control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} />
+              <ReportPayment
+                key={uuidv4()}
+                control={control}
+                errors={errors}
+                reportIndex={reportIndex}
+                paymentIndex={index}
+                IsReturnPathName={IsReturnPathName}
+              />
             ))}
             <Grid
               item
@@ -204,7 +201,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 appendReportsPayment({
                   bank: "",
                   payments: "",
-                  datepayment: "",
+                  datepayment: null,
                   paymentDescription: "",
                 })
               }
@@ -212,9 +209,11 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <IconButton>
-                <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
-              </IconButton>
+              {!IsReturnPathName && (
+                <IconButton>
+                  <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
+                </IconButton>
+              )}
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" sx={{ p: 1 }}>
@@ -233,7 +232,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
               appendReportsReturnPayment({
                 returnPaymentsbank: "",
                 returnPayments: "",
-                dateReturnPayment: "",
+                dateReturnPayment: null,
                 returnPaymentDescription: "",
               })
             }

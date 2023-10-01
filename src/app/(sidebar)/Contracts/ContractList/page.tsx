@@ -28,10 +28,9 @@ import {
 import Tooltip from "@mui/material/Tooltip";
 import { AxiosError } from "axios";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
-import AssignmentReturnOutlinedIcon from "@mui/icons-material/AssignmentReturnOutlined";
 import KeepMountedModal from "./ShowModal";
 
 const ListOfReport = () => {
@@ -118,8 +117,8 @@ const ListOfReport = () => {
                       {new Date(contract?.dateContract).toLocaleDateString("fa")}
                     </StyledTableCell>
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
-                      <Tooltip title="بازگشت" placement="bottom-start">
-                        <IconButton>
+                      <Tooltip title="بازگشت وجه" placement="bottom-start" >
+                        <IconButton onClick={() => router.push(`/Contracts/ReturnPayments/${contract.id}`)}>
                           <Icon pathName="paymentReturn.svg" />
                         </IconButton>
                       </Tooltip>

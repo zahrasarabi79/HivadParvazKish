@@ -1,10 +1,11 @@
+import { Control, FieldErrors, UseFieldArrayAppend, UseFieldArrayRemove } from "react-hook-form";
 import { StringLiteralType } from "typescript";
 
 // api response
 export interface IContractApiResponse {
   id: number;
   typeContract: string;
-  dateContract: string;
+  dateContract: Date;
   numContract: string;
   customer: string;
   reports: IReportsApiResponse[];
@@ -15,14 +16,14 @@ export interface IReportsApiResponse {
   reportDescription: string;
   totalCost: string;
   presenter: string;
-  reportsPayment: IReportPaymentApiResponse [];
+  reportsPayment: IReportPaymentApiResponse[];
   reportsReturnPayment: IReportReturnPaymentApiResponse[];
   contractId: number;
 }
 
 export interface IReportPaymentApiResponse {
   id: number;
-  datepayment: string;
+  datepayment: Date;
   payments: string;
   bank: string;
   paymentDescription: string;
@@ -31,7 +32,7 @@ export interface IReportPaymentApiResponse {
 }
 export interface IReportReturnPaymentApiResponse {
   id: number;
-  dateReturnPayment: string;
+  dateReturnPayment: Date;
   returnPayments: string;
   returnPaymentsbank: string;
   returnPaymentDescription: string;
@@ -41,9 +42,9 @@ export interface IReportReturnPaymentApiResponse {
 
 // data
 export interface IContract {
-  dateContract: string | Date;
+  dateContract: Date;
   numContract: string;
-  customer: string[];
+  customer: string;
   typeContract: string;
   reports: IReports[];
 }
@@ -58,18 +59,18 @@ export interface IReports {
 }
 
 export interface IReportReturnPayment {
-  dateReturnPayment: string;
+  dateReturnPayment: Date | null;
   returnPayments: string;
   returnPaymentsbank: string;
   returnPaymentDescription: string;
-  [index: number | string]: string;
+  [index: number]: string | Date;
 }
 export interface IReportPayment {
-  datepayment: string;
+  datepayment: Date | null;
   payments: string;
   bank: string;
   paymentDescription: string;
-  [index: number | string]: string;
+  [index: number]: string | Date;
 }
 
 // log in
@@ -115,4 +116,22 @@ export interface ISidebarItemComponent {
   handleSelectedListItem: (index: number) => void;
   selectListItem: ISelectListItem[];
   [index: number]: boolean;
+}
+
+export interface IReportAccordionProps {
+  isExpended: boolean;
+  handleIsExpended: () => void;
+  removeReport: UseFieldArrayRemove;
+  control: Control<any>;
+  errors: FieldErrors<IContract>;
+  reportIndex: number;
+  appendReport: UseFieldArrayAppend<IContract>;
+  IsReturnPathName: boolean;
+}
+export interface IReportPaymentComponent {
+  control: Control<any>;
+  errors: FieldErrors<IContract>;
+  reportIndex: number;
+  paymentIndex: number;
+  IsReturnPathName: boolean;
 }

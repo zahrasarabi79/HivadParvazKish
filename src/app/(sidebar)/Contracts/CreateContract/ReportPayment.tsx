@@ -1,20 +1,13 @@
-import { IContract } from "@/Interface/Interfaces";
-import Icon from "@/app/Components/Icon";
+import { IContract, IReportPaymentComponent } from "@/Interface/Interfaces";
 import { TextFildCustom } from "@/app/Components/TextFiledCustom";
-import { Divider, Grid, IconButton, Typography, useTheme } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import React from "react";
 import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
-export interface IReportPaymentComponent {
-  control: Control<any>;
-  errors: FieldErrors<IContract>;
-  reportIndex: number;
-  paymentIndex: number;
-}
-const ReportPayment: React.FC<IReportPaymentComponent> = ({ control, errors, reportIndex, paymentIndex }) => {
-  const theme = useTheme();
+const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, control, errors, reportIndex, paymentIndex }) => {
   return (
     <>
       <Grid item xs={12} sm={4}>
@@ -22,10 +15,11 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ control, errors, rep
           name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].bank`}
           control={control}
           defaultValue=""
-          rules={{ required: " بانک/شرکاء/صندوق را وارد کنید." }}
+          rules={{ required: paymentIndex === 0 ? " بانک/شرکاء/صندوق را وارد کنید." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}
+              disabled={IsReturnPathName}
               name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].bank`}
               required
               fullWidth
@@ -45,20 +39,18 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ control, errors, rep
           name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].payments`}
           control={control}
           defaultValue=""
-          rules={{ required: "مبلغ پرداختی/دریافتی را وارد کنید." }}
+          rules={{ required: paymentIndex === 0 ? "مبلغ پرداختی/دریافتی را وارد کنید." : undefined }}
           render={({ field }) => (
-            <TextFildCustom
-              {...field}
-              name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].payments`}
+            <NumericFormat
+              value={field.value}
+              customInput={TextField}
+              thousandSeparator
+              disabled={IsReturnPathName}
               required
               fullWidth
-              label={"مبلغ پرداختی/دریافتی"}
-              error={!!errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.payments}
-              helperText={
-                errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.payments
-                  ? (errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.payments as FieldError).message
-                  : " "
-              }
+              label={"قیمت کل"}
+              error={!!errors.reports?.[reportIndex]?.totalCost}
+              helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
             />
           )}
         />
@@ -69,13 +61,14 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ control, errors, rep
             name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].datepayment`}
             control={control}
             defaultValue=""
-            rules={{ required: "تاریخ پرداخت/دریافت را وارد کنید." }}
+            rules={{ required: paymentIndex === 0 ? "تاریخ پرداخت/دریافت را وارد کنید." : undefined }}
             render={({ field }) => (
               <DatePicker
                 {...field}
+                disabled={IsReturnPathName}
                 sx={{ width: "100%" }}
                 label={"تاریخ پرداخت/دریافت"}
-                value={null}
+                value={field.value}
                 slotProps={{
                   textField: {
                     error: !!errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.datepayment,
@@ -94,10 +87,11 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ control, errors, rep
           name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].paymentDescription`}
           control={control}
           defaultValue=""
-          rules={{ required: "توضیحات را وارد کنید." }}
+          rules={{ required: paymentIndex === 0 ? "توضیحات را وارد کنید." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}
+              disabled={IsReturnPathName}
               name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].paymentDescription`}
               fullWidth
               label={"توضیحات"}
