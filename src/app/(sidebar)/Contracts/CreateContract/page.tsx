@@ -159,13 +159,13 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       <Divider variant="middle" />
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
         <CardContent>
-          <Grid container spacing={3} alignItems={"center"}>
+          <Grid container spacing={3} rowSpacing={1} alignItems={"center"}>
             <Grid item xs={12} sm={4}>
               <Controller
                 name="numContract"
                 control={control}
                 defaultValue={""}
-                rules={{ required: "شماره قرارداد را وارد کنید." }}
+                rules={{ required: "شماره قرارداد الزامی است." }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
@@ -185,10 +185,12 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 <Controller
                   name="dateContract"
                   control={control}
-                  rules={{ required: "تاریخ قرارداد را وارد کنید." }}
+                  rules={{ required: "تاریخ قراردادالزامی است." }}
                   render={({ field }) => (
                     <DatePicker
                       {...field}
+                      format="yyyy-MM-dd"
+                      formatDensity="dense"
                       disabled={IsReturnPathName}
                       sx={{ width: "100%" }}
                       label="تاریخ قرارداد"
@@ -196,7 +198,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                       slotProps={{
                         textField: {
                           error: !!errors.dateContract,
-                          helperText: errors.dateContract ? "تاریخ قرار داد را وارد کنید" : " ",
+                          helperText: errors.dateContract ? "تاریخ قرار داد الزامی است" : " ",
                         },
                       }}
                     />
@@ -209,7 +211,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 name="typeContract"
                 control={control}
                 defaultValue="خرید"
-                rules={{ required: "نوع قرارداد را وارد کنید." }}
+                rules={{ required: "نوع قرارداد الزامی است." }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
@@ -235,7 +237,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 name="customer"
                 control={control}
                 defaultValue={""}
-                rules={{ required: "طرف قرارداد را وارد کنید." }}
+                rules={{ required: "طرف قرارداد الزامی است." }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
@@ -294,7 +296,12 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
             }
             sx={{ pt: 5, display: "flex", justifyContent: "center", alignItems: "center" }}
           >
-            <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
+            <Stack justifyContent={"center"} alignItems={"center"}>
+              <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
+              <Typography variant="body1" color={theme.palette.primary.main}>
+                افزودن شرح و مشخصات
+              </Typography>
+            </Stack>
           </Grid>
         </CardContent>
         <CardActions dir="ltr">

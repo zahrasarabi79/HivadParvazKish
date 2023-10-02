@@ -15,15 +15,11 @@ import {
   TableRow,
   TableBody,
   Paper,
-  useTheme,
-  useMediaQuery,
   Pagination,
-  Fade,
   IconButton,
   Typography,
-  TablePagination,
-  TableFooter,
-  Box,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { AxiosError } from "axios";
@@ -32,6 +28,8 @@ import { useRouter } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
 import KeepMountedModal from "./ShowModal";
+import { formatDate } from "@/app/Components/format date";
+import { Contrast } from "@mui/icons-material";
 
 const ListOfReport = () => {
   const [listOfContracts, setListOfContracts] = useState<IContractApiResponse[]>([]);
@@ -43,12 +41,14 @@ const ListOfReport = () => {
   const handleOpenModal = () => {
     setOpenModal(true);
   };
+  const paginationFetchData = { page, limitPerPage: 10 };
   const handleCloseModal = () => setOpenModal(false);
   const getListOfReports = async () => {
     try {
-      // const router = useRouter();
-      // const { page } = router.query;
-      const { data } = await axiosInstance.post("/listOfReports");
+      console.log(paginationFetchData);
+
+      const { data } = await axiosInstance.post("/listOfReports", paginationFetchData);
+      router.push(`/Contracts/ContractList?page=${page || "1"}`);
       const { Contracts } = data;
       setListOfContracts(Contracts);
     } catch (error: AxiosError | any) {
@@ -64,14 +64,18 @@ const ListOfReport = () => {
     setModalData(contract);
     handleOpenModal();
   };
-
+  const theme = useTheme();
   const handleChangePage = (event: React.ChangeEvent<unknown> | null, newPage: number) => {
     setPage(newPage);
-    router.push(`/Contracts/ContractList/?page=${newPage || "1"}`);
+    getListOfReports();
   };
   const emptyRows = page > 0 ? Math.max(0, (0 + page) * rowsPerPage - listOfContracts.length) : 0;
   const startIndex = (page - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
+  const xlUp = useMediaQuery(theme.breakpoints.up("xl"));
+  const lgUp = useMediaQuery(theme.breakpoints.up("lg"));
+  const mdUp = useMediaQuery(theme.breakpoints.up("md"));
+
   return (
     <Card>
       <CardHeader
@@ -89,10 +93,10 @@ const ListOfReport = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <StyledTableCell style={{ width: "10%" }} align="center">
+                  <StyledTableCell style={{ width: "3%" }} align="left">
                     ردیف
                   </StyledTableCell>
-                  <StyledTableCell style={{ width: "20%" }} align="left">
+                  <StyledTableCell align="left" style={{ width: mdUp ? "30%" : "50%" }}>
                     شماره قراراداد
                   </StyledTableCell>
                   <StyledTableCell style={{ width: "90%" }} align="left">
@@ -107,26 +111,26 @@ const ListOfReport = () => {
               <TableBody>
                 {(rowsPerPage > 0 ? listOfContracts.slice(startIndex, endIndex) : listOfContracts).map((contract, index) => (
                   <StyledTableRow key={contract.id}>
-                    <StyledTableCell component="th" scope="row" align="center">
+                    <StyledTableCell component="th" scope="row" align="left">
                       {index + 1}
                     </StyledTableCell>
                     <StyledTableCell sortDirection={"desc"} align="left">
                       {contract.numContract}
                     </StyledTableCell>
                     <StyledTableCell sortDirection={"asc"} align="left">
-                      {new Date(contract?.dateContract).toLocaleDateString("fa")}
+                      {formatDate(contract?.dateContract) || ""}
                     </StyledTableCell>
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
-                      <Tooltip title="بازگشت وجه" placement="bottom-start" >
+                      <Tooltip title="بازگشت وجه" placement="bottom-start">
                         <IconButton onClick={() => router.push(`/Contracts/ReturnPayments/${contract.id}`)}>
-                          <Icon pathName="paymentReturn.svg" />
+                          <Icon pathName="paymentReturn.svg" color={theme.palette.primary.main} />
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
                       <Tooltip title="ویرایش" placement="bottom-start">
                         <IconButton onClick={() => router.push(`/Contracts/UpdateContract/${contract.id}`)}>
-                          <Icon pathName="edit.svg" />
+                          <Icon pathName="edit.svg" color={theme.palette.primary.main} />
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
@@ -134,7 +138,7 @@ const ListOfReport = () => {
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 16px 0px 0px" } }}>
                       <Tooltip title="مشاهده" placement="bottom-start">
                         <IconButton onClick={() => handleViewContract(contract)}>
-                          <Icon pathName="user-search.svg" />
+                          <Icon pathName="user-search.svg" color={theme.palette.primary.main} />
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
@@ -152,7 +156,14 @@ const ListOfReport = () => {
               </TableBody>
             </Table>
             <Pagination
-              sx={{ p: 2, display: "flex", flexDirection: "row", justifyContent: "center" }}
+              sx={{
+                p: 2,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                "& .MuiPaginationItem-icon ": { bgcolor: "rgb(255, 255, 255) !important", borderRadius: "50%", color: "black" },
+                "& .MuiButtonBase-root.MuiPaginationItem-root.Mui-selected": { bgcolor: "#Dbead9", color: "black" },
+              }}
               count={Math.ceil(listOfContracts.length / rowsPerPage)} // Calculate the total number of pages
               page={page}
               onChange={handleChangePage}
@@ -161,7 +172,7 @@ const ListOfReport = () => {
         </CardContent>
       ) : (
         <CardContent sx={{ height: "600px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-          <Typography variant="h6">در حال حاضر درخواستی وجود ندارد</Typography>
+          <Typography variant="h6">در حال حاضر قراردادی وجود ندارد.</Typography>
           <Image src={"/icon/Vector.svg"} width={400} height={400} alt="Vector" />
         </CardContent>
       )}

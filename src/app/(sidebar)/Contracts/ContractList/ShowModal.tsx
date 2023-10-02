@@ -12,6 +12,7 @@ import {
   IReportReturnPaymentApiResponse,
   IReportsApiResponse,
 } from "@/Interface/Interfaces";
+import { formatDate } from "@/app/Components/format date";
 
 const style = {
   position: "absolute" as "absolute",
@@ -59,6 +60,8 @@ export interface IKeepMountedModalProps {
 }
 
 const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose, data }) => {
+ 
+
   return (
     <React.Fragment>
       <Container>
@@ -70,14 +73,16 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
           aria-describedby="keep-mounted-modal-description"
         >
           <Box sx={style} justifyContent={"center"} alignContent={"center"}>
-            <Grid sx={{ pb: "32px", px: "8px" , }} spacing={4} container>
+            <Grid sx={{ pb: "32px", px: "8px" }} spacing={4} container>
               <Grid item xs={12}>
                 <Typography variant="h6">گزارش خرید </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={4} justifyContent={"space-between"}>
                   <ModalText xs={4} name="شماره قراداد" value={data?.numContract || ""} />
-                  <ModalText xs={4} name="تاریخ قراداد" value={new Date(data?.dateContract || "").toLocaleDateString("fa")} />
+
+                  {/* <ModalText xs={4} name="تاریخ قراداد" value={new Date(data?.dateContract || "").toLocaleDateString("fa")} /> */}
+                  <ModalText xs={4} name="تاریخ قراداد" value={formatDate(data?.dateContract || "")} />
                   <ModalText xs={4} name="نوع قرارداد" value={data?.typeContract || ""} />
                 </Grid>
               </Grid>
@@ -97,7 +102,7 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                       {report.reportsPayment.map((reportPayment: IReportPaymentApiResponse) => (
                         <React.Fragment key={reportPayment.id}>
                           <Grid sx={{ borderLeft: "2px solid white", ml: 2, mb: 3, mt: 0 }} container justifyContent={"space-between"}>
-                            <ModalText xs={12} name="تاریخ پرداخت/دریافت" value={new Date(reportPayment.datepayment).toLocaleDateString("fa")} />
+                            <ModalText xs={12} name="تاریخ پرداخت/دریافت" value={formatDate(reportPayment.datepayment || "")} />
                             <ModalText xs={6} name="مبلغ پرداختی/دریافتی" value={reportPayment.payments} />
                             <ModalText xs={6} name="بانک /شرکاء/صندوق" value={reportPayment.bank} />
                             <ModalText xs={12} name="توضیحات" value={reportPayment.paymentDescription} />
@@ -111,11 +116,7 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                       {report?.reportsReturnPayment.map((reportReturnPayment: IReportReturnPaymentApiResponse) => (
                         <React.Fragment key={reportReturnPayment.id}>
                           <Grid sx={{ borderLeft: "2px solid white", ml: 2, mb: 3, mt: 0 }} container justifyContent={"space-between"}>
-                            <ModalText
-                              xs={12}
-                              name="تاریخ برگشت از خرید"
-                              value={new Date(reportReturnPayment.dateReturnPayment).toLocaleDateString("fa")}
-                            />
+                            <ModalText xs={12} name="تاریخ برگشت از خرید" value={formatDate(reportReturnPayment.dateReturnPayment || "")} />
                             <ModalText xs={6} name="مبلغ برگشت از خرید" value={reportReturnPayment.returnPayments} />
                             <ModalText xs={6} name="بانک /شرکاء/صندوق" value={reportReturnPayment.returnPaymentsbank} />
                             <ModalText xs={12} name="توضیحات" value={reportReturnPayment.returnPaymentDescription} />

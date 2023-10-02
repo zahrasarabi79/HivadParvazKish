@@ -15,7 +15,7 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
           name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].bank`}
           control={control}
           defaultValue=""
-          rules={{ required: paymentIndex === 0 ? " بانک/شرکاء/صندوق را وارد کنید." : undefined }}
+          rules={{ required: reportIndex === 0 ? " بانک/شرکاء/صندوق الزامی است." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}
@@ -39,18 +39,26 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
           name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].payments`}
           control={control}
           defaultValue=""
-          rules={{ required: paymentIndex === 0 ? "مبلغ پرداختی/دریافتی را وارد کنید." : undefined }}
+          rules={{ required: reportIndex === 0 ? "مبلغ پرداختی/دریافتی الزامی است." : undefined }}
           render={({ field }) => (
             <NumericFormat
+              //*value & onValueChange must be writen otherwise react hook form didnot get updated valu of input
               value={field.value}
+              onValueChange={(v) => {
+                field.onChange(v.value);
+              }}
               customInput={TextField}
               thousandSeparator
               disabled={IsReturnPathName}
               required
               fullWidth
-              label={"قیمت کل"}
-              error={!!errors.reports?.[reportIndex]?.totalCost}
-              helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
+              label={"مبلغ پرداختی/دریافتی (ریال)"}
+              error={!!errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.payments}
+              helperText={
+                errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.payments
+                  ? (errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.payments as FieldError).message
+                  : " "
+              }
             />
           )}
         />
@@ -61,10 +69,11 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
             name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].datepayment`}
             control={control}
             defaultValue=""
-            rules={{ required: paymentIndex === 0 ? "تاریخ پرداخت/دریافت را وارد کنید." : undefined }}
+            rules={{ required: reportIndex === 0 ? "تاریخ پرداخت/دریافت الزامی است." : undefined }}
             render={({ field }) => (
               <DatePicker
                 {...field}
+                format="yyyy-MM-dd"
                 disabled={IsReturnPathName}
                 sx={{ width: "100%" }}
                 label={"تاریخ پرداخت/دریافت"}
@@ -87,7 +96,7 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
           name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].paymentDescription`}
           control={control}
           defaultValue=""
-          rules={{ required: paymentIndex === 0 ? "توضیحات را وارد کنید." : undefined }}
+          rules={{ required: reportIndex === 0 ? "توضیحات الزامی است." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}

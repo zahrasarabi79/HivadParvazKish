@@ -46,22 +46,24 @@ export const DrawerDesktop = styled(MuiDrawer, { shouldForwardProp: (prop) => pr
 // table style
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "#434255",
     color: theme.palette.common.white,
-    borderBottom: "1px solid white",
+    padding: "6px 16px 6px 16px",
+    // borderBottom: "1px solid white",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
-    border: "none",
   },
-  
 }));
 
 export const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(even)": {
-    backgroundColor: "#1e1c30",
+    backgroundColor: theme.palette.background.paper,
   },
   "&:nth-of-type(odd)": {
-    backgroundColor: "#343248",
+    backgroundColor: "#2e2c42",
+    "&:last-child td, &:last-child th": {
+      border: 0,
+    },
   },
 }));

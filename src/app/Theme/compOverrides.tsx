@@ -1,4 +1,4 @@
-import { Components, keyframes, useTheme } from "@mui/material";
+import { Components, keyframes } from "@mui/material";
 
 const wave = keyframes`
   from {
@@ -237,7 +237,6 @@ const components: Components = {
       },
     },
   },
-  
 
   // ... other components ...
 
@@ -261,16 +260,15 @@ const components: Components = {
       root: {
         animation: `${wave} 0.3s linear alternate`,
       },
-      
     },
   },
-  // MuiTable: {
-  //   styleOverrides: {
-  //     root: {
-  //       animation: `${wave} 0.3s linear alternate`,
-  //     },
-  //   },
-  // },
+  MuiTable: {
+    styleOverrides: {
+      root: {
+        animation: `${wave} 0.3s linear alternate`,
+      },
+    },
+  },
 };
 
 export default components;

@@ -21,7 +21,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
           name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentsbank`}
           control={control}
           defaultValue=""
-          rules={{ required: paymentIndex === 0 ? " بانک/شرکاء/صندوق را وارد کنید." : undefined }}
+          rules={{ required: reportIndex === 0 ? " بانک/شرکاء/صندوق الزامی است." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}
@@ -44,17 +44,24 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
           name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPayments`}
           control={control}
           defaultValue=""
-          rules={{ required: paymentIndex === 0 ? "مبلغ برگشت از خرید یا فروش  را وارد کنید." : undefined }}
+          rules={{ required: reportIndex === 0 ? "مبلغ برگشت از خرید یا فروش  الزامی است." : undefined }}
           render={({ field }) => (
             <NumericFormat
               value={field.value}
+              onValueChange={(v) => {
+                field.onChange(v.value);
+              }}
               customInput={TextField}
               thousandSeparator
               required
               fullWidth
-              label={"قیمت کل"}
-              error={!!errors.reports?.[reportIndex]?.totalCost}
-              helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
+              label={"مبلغ برگشت از خرید‌/فروش (ریال)"}
+              error={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments}
+              helperText={
+                errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments
+                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments as FieldError).message
+                  : " "
+              }
             />
           )}
         />
@@ -65,10 +72,11 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
             name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].dateReturnPayment`}
             control={control}
             defaultValue=""
-            rules={{ required: paymentIndex === 0 ? "تاریخ برگشت از خرید یا فروش را وارد کنید." : undefined }}
+            rules={{ required: reportIndex === 0 ? "تاریخ برگشت از خرید یا فروش الزامی است." : undefined }}
             render={({ field }) => (
               <DatePicker
                 {...field}
+                format="yyyy-MM-dd"
                 sx={{ width: "100%" }}
                 value={field.value}
                 label={"تاریخ برگشت از خرید/فروش"}
@@ -90,7 +98,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
           name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentDescription`}
           control={control}
           defaultValue=""
-          rules={{ required: paymentIndex === 0 ? "توضیحات را وارد کنید." : undefined }}
+          rules={{ required: reportIndex === 0 ? "توضیحات الزامی است." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}

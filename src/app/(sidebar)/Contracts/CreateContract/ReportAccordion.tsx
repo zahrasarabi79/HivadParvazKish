@@ -1,4 +1,16 @@
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, IconButton, Stack, TextField, Typography, useTheme } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Divider,
+  Grid,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import Icon from "@/app/Components/Icon";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -84,8 +96,8 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
           expandIcon={<ExpandCircleDownOutlinedIcon />}
         >
           <Typography>{Describtion || "شرح و مشخصات"}</Typography>
-          {isExpended && (
-            <Stack direction={"row"} gap={1}>
+          {isExpended && reportIndex !== 0 && (
+            <Stack direction="row" gap={1}>
               <IconButton onClick={() => removeReports(reportIndex)}>
                 <DeleteIcon />
               </IconButton>
@@ -104,7 +116,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
               <Controller
                 name={`reports.${reportIndex}.reportDescription`}
                 control={control}
-                rules={{ required: reportIndex === 0 ? "شرح مشخصات را وارد کنید." : undefined }}
+                rules={{ required: reportIndex === 0 ? "شرح مشخصات الزامی است." : undefined }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
@@ -127,7 +139,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 name={`reports.${reportIndex}.presenter`}
                 control={control}
                 defaultValue=""
-                rules={{ required: reportIndex === 0 ? " مشخصات مجری را وارد کنید." : undefined }}
+                rules={{ required: reportIndex === 0 ? " مشخصات مجری الزامی است." : undefined }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
@@ -147,20 +159,22 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 control={control}
                 defaultValue=""
                 rules={{
-                  required: reportIndex === 0 ? "قیمت کل را وارد کنید." : undefined,
+                  required: reportIndex === 0 ? "قیمت کل الزامی است." : undefined,
                 }}
                 render={({ field }) => (
                   //*we use Numeric Format librarry for seprated number
                   //* we can not use js function like Number.prototype.toLocaleString()
                   <NumericFormat
                     value={field.value}
+                    onValueChange={(v) => {
+                      field.onChange(v.value);
+                    }}
                     customInput={TextField}
                     thousandSeparator
                     disabled={IsReturnPathName}
                     required
                     fullWidth
-                    
-                    label={"قیمت کل"}
+                    label={"قیمت کل (ریال)"}
                     error={!!errors.reports?.[reportIndex]?.totalCost}
                     helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
                   />
@@ -217,7 +231,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1" sx={{ p: 1 }}>
-                برگشت
+                برگشت ها
               </Typography>
               <Divider />
             </Grid>
@@ -240,9 +254,12 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <IconButton>
-              <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
-            </IconButton>
+            <Button>
+              <Stack justifyContent={"center"} alignItems={"center"}>
+                <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
+                <Typography variant="body1">افزودن برگشت وجه</Typography>
+              </Stack>
+            </Button>
           </Grid>
           <SnackBar
             horizontal={"center"}
