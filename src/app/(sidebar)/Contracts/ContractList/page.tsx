@@ -1,8 +1,14 @@
 "use client";
 import axiosInstance from "@/AxiosInstance/AxiosInstance";
+import { AxiosError } from "axios";
 import { IContractApiResponse } from "@/Interface/Interfaces";
 import { StyledTableCell, StyledTableRow } from "@/Utils/style/stylecomponent";
 import Icon from "@/app/Components/Icon";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import KeepMountedModal from "./ShowModal";
+import { formatDate } from "@/app/Components/format date";
 import {
   Card,
   CardHeader,
@@ -19,65 +25,62 @@ import {
   IconButton,
   Typography,
   useTheme,
+  Tooltip,
   useMediaQuery,
+  CircularProgress,
+  Grid,
 } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
-import { AxiosError } from "axios";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-
-import React, { useEffect, useState } from "react";
-import KeepMountedModal from "./ShowModal";
-import { formatDate } from "@/app/Components/format date";
-import { Contrast } from "@mui/icons-material";
+import PaginationComponent from "@/app/Components/Pagination";
 
 const ListOfReport = () => {
-  const [listOfContracts, setListOfContracts] = useState<IContractApiResponse[]>([]);
-  const [modalData, setModalData] = useState<IContractApiResponse>();
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 5;
   const router = useRouter();
+  const theme = useTheme();
+  const searchParams = useSearchParams();
+  const pageParams: string | null = searchParams.get("page");
+  const peginationPage: number = parseInt(pageParams!) || 1;
+  const [page, setPage] = useState(peginationPage);
+  const [listOfContracts, setListOfContracts] = useState<IContractApiResponse[]>([]);
+  const [TotalPaginationPage, setTotalPaginationPage] = useState(0);
+  const mdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const [loading, setLoading] = useState(true);
+  const paginationFetchData = { page: page || 1, limitPerPage: 10 };
+  const emptyRows = page > 0 ? Math.max(0, paginationFetchData.limitPerPage - listOfContracts.length) : 0;
+  // Modal
+  const [modalData, setModalData] = useState<IContractApiResponse>();
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
     setOpenModal(true);
   };
-  const paginationFetchData = { page, limitPerPage: 10 };
   const handleCloseModal = () => setOpenModal(false);
-  const getListOfReports = async () => {
-    try {
-      console.log(paginationFetchData);
-
-      const { data } = await axiosInstance.post("/listOfReports", paginationFetchData);
-      router.push(`/Contracts/ContractList?page=${page || "1"}`);
-      const { Contracts } = data;
-      setListOfContracts(Contracts);
-    } catch (error: AxiosError | any) {
-      console.log("problem");
-    }
-  };
-
-  useEffect(() => {
-    getListOfReports();
-  }, []);
-
   const handleViewContract = (contract: any) => {
     setModalData(contract);
     handleOpenModal();
   };
-  const theme = useTheme();
+
+  // get data
+  const getListOfReports = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axiosInstance.post("/listOfReports", paginationFetchData);
+      const { Contracts, totalCount } = data;
+      setTotalPaginationPage(totalCount);
+      setListOfContracts(Contracts);
+    } catch (error: AxiosError | any) {
+      console.error("API request error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getListOfReports();
+  }, [page]);
   const handleChangePage = (event: React.ChangeEvent<unknown> | null, newPage: number) => {
     setPage(newPage);
-    getListOfReports();
+    router.push(`/Contracts/ContractList?page=${newPage || "1"}`);
   };
-  const emptyRows = page > 0 ? Math.max(0, (0 + page) * rowsPerPage - listOfContracts.length) : 0;
-  const startIndex = (page - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const xlUp = useMediaQuery(theme.breakpoints.up("xl"));
-  const lgUp = useMediaQuery(theme.breakpoints.up("lg"));
-  const mdUp = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
-    <Card>
+    <Card sx={{ minHeight:600}}>
       <CardHeader
         title={"لیست قرارداد ها"}
         action={
@@ -87,7 +90,13 @@ const ListOfReport = () => {
         }
       />
       <Divider variant="middle" />
-      {listOfContracts.length > 0 ? (
+      {loading ? (
+        <Grid container>
+          <Grid item xs={12} sx={{ margin: 10 }} display={"flex"} justifyContent={"center"} alignContent={"center"}>
+            <CircularProgress />
+          </Grid>
+        </Grid>
+      ) : listOfContracts.length > 0 ? (
         <CardContent>
           <TableContainer dir="rtl" sx={{ boxShadow: "none" }} component={Paper}>
             <Table>
@@ -109,7 +118,7 @@ const ListOfReport = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(rowsPerPage > 0 ? listOfContracts.slice(startIndex, endIndex) : listOfContracts).map((contract, index) => (
+                {listOfContracts.map((contract, index) => (
                   <StyledTableRow key={contract.id}>
                     <StyledTableCell component="th" scope="row" align="left">
                       {index + 1}
@@ -155,19 +164,7 @@ const ListOfReport = () => {
                 )}
               </TableBody>
             </Table>
-            <Pagination
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                "& .MuiPaginationItem-icon ": { bgcolor: "rgb(255, 255, 255) !important", borderRadius: "50%", color: "black" },
-                "& .MuiButtonBase-root.MuiPaginationItem-root.Mui-selected": { bgcolor: "#Dbead9", color: "black" },
-              }}
-              count={Math.ceil(listOfContracts.length / rowsPerPage)} // Calculate the total number of pages
-              page={page}
-              onChange={handleChangePage}
-            />
+            <PaginationComponent page={page} TotalPaginationPage={TotalPaginationPage} rowsPerPage={paginationFetchData.limitPerPage} handleChangePage={handleChangePage} />
           </TableContainer>
         </CardContent>
       ) : (
@@ -176,9 +173,9 @@ const ListOfReport = () => {
           <Image src={"/icon/Vector.svg"} width={400} height={400} alt="Vector" />
         </CardContent>
       )}
+
       <KeepMountedModal open={openModal} handleClose={handleCloseModal} handleOpen={handleOpenModal} data={modalData as IContractApiResponse} />
     </Card>
   );
 };
-
 export default ListOfReport;

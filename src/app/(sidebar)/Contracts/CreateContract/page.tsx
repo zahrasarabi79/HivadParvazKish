@@ -35,6 +35,9 @@ import axiosInstance from "@/AxiosInstance/AxiosInstance";
 import SnackBar from "@/app/Components/SnackBar";
 import { usePathname, useRouter } from "next/navigation";
 import { AxiosError } from "axios";
+import TextFildControler from "@/app/Components/textFildControler";
+import SelectTextFildControler from "@/app/Components/SelectTextFildControler";
+import DatePickerControler from "@/app/Components/DatePickerControler";
 
 export interface ICreateContractProps {
   Contract: IContractApiResponse | undefined;
@@ -83,36 +86,52 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     name: "reports",
   });
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
+  const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
+  const [isOpenSnackBarDeleteAccardion, setIsOpenSnackBarDeleteAccardion] = useState(false);
+
   const [isExpended, setIsExpended] = useState<number | null>(null);
   const typeOfReport = ["خرید", "فروش"];
   const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
+  const handleCloseSnackBarUpdate = () => setIsOpenSnackBarUpdate((is) => !is);
+  const handleCloseSnackBarDeleteAccardion = () => setIsOpenSnackBarDeleteAccardion((is) => !is);
+  const [formDataChanged, setFormDataChanged] = useState(false);
+
   const handleIsExpended: (id: number | null) => void = (id) => {
     setIsExpended((isExpended) => (isExpended === id ? null : id));
   };
   const onSubmit = (data: IContract) => {
     if (Contract) {
-      console.log(data);
       updateDataContract(data, Contract.id);
     } else {
       console.log(data);
       saveContract(data);
     }
-    setTimeout(() => {
-      router.push("/Contracts/ContractList");
-    }, 1500);
   };
   const saveContract = async (contract: IContract) => {
     try {
       const { data } = await axiosInstance.post("/AddReports", contract);
       handleCloseSnackBar();
+      setTimeout(() => {
+        router.push("/Contracts/ContractList");
+      }, 2000);
     } catch (error) {
       console.log("problem:", error);
     }
   };
   const updateDataContract = async (contract: IContract, id: number) => {
     try {
-      const { data } = await axiosInstance.post("/updateReports", { ...contract, id });
-      console.log(data);
+      if (contract.reports.length === 0) {
+        handleCloseSnackBarDeleteAccardion();
+      }
+      if (!formDataChanged) {
+        console.log("did not change");
+      } else {
+        const { data } = await axiosInstance.post("/updateReports", { ...contract, id });
+        handleCloseSnackBarUpdate();
+        setTimeout(() => {
+          router.push("/Contracts/ContractList");
+        }, 2000);
+      }
     } catch (error: AxiosError | any) {
       console.log("problem");
     }
@@ -161,96 +180,56 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
         <CardContent>
           <Grid container spacing={3} rowSpacing={1} alignItems={"center"}>
             <Grid item xs={12} sm={4}>
-              <Controller
-                name="numContract"
+              <TextFildControler
+                inputName="numContract"
                 control={control}
-                defaultValue={""}
-                rules={{ required: "شماره قرارداد الزامی است." }}
-                render={({ field }) => (
-                  <TextFildCustom
-                    {...field}
-                    name="numContract"
-                    required
-                    fullWidth
-                    disabled={IsReturnPathName}
-                    label="شماره قرارداد"
-                    error={!!errors.numContract}
-                    helperText={errors.numContract ? (errors.numContract as FieldError).message : " "}
-                  />
-                )}
+                errors={errors}
+                IsReturnPathName={IsReturnPathName}
+                setFormDataChanged={setFormDataChanged}
+                label={"شماره قراداد"}
+                requiredRule={"شماره قراردادالزامی است."}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <LocalizationProvider dateAdapter={AdapterDateFnsJalali}>
-                <Controller
-                  name="dateContract"
+                <DatePickerControler
+                  inputName="dateContract"
                   control={control}
-                  rules={{ required: "تاریخ قراردادالزامی است." }}
-                  render={({ field }) => (
-                    <DatePicker
-                      {...field}
-                      format="yyyy-MM-dd"
-                      formatDensity="dense"
-                      disabled={IsReturnPathName}
-                      sx={{ width: "100%" }}
-                      label="تاریخ قرارداد"
-                      value={field.value} // when we fetch data an set default value it is correct to set value to show data as default value
-                      slotProps={{
-                        textField: {
-                          error: !!errors.dateContract,
-                          helperText: errors.dateContract ? "تاریخ قرار داد الزامی است" : " ",
-                        },
-                      }}
-                    />
-                  )}
+                  errors={errors}
+                  IsReturnPathName={IsReturnPathName}
+                  setFormDataChanged={setFormDataChanged}
+                  label="تاریخ قرارداد"
+                  requiredRule={"تاریخ قراردادالزامی است."}
                 />
               </LocalizationProvider>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Controller
-                name="typeContract"
+              <SelectTextFildControler
+                inputName="typeContract"
                 control={control}
-                defaultValue="خرید"
-                rules={{ required: "نوع قرارداد الزامی است." }}
-                render={({ field }) => (
-                  <TextFildCustom
-                    {...field}
-                    disabled={IsReturnPathName}
-                    name="typeContract"
-                    required
-                    select
-                    fullWidth
-                    label={"نوع قرارداد"}
-                    helperText={errors.typeContract ? (errors.typeContract as FieldError).message : " "}
-                  >
-                    {typeOfReport.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextFildCustom>
-                )}
-              />
+                errors={errors}
+                IsReturnPathName={IsReturnPathName}
+                setFormDataChanged={setFormDataChanged}
+                label="نوع قرارداد"
+                requiredRule={"نوع قراردادالزامی است."}
+
+              >
+                {typeOfReport.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </SelectTextFildControler>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Controller
-                name="customer"
+              <TextFildControler
+                inputName="customer"
                 control={control}
-                defaultValue={""}
-                rules={{ required: "طرف قرارداد الزامی است." }}
-                render={({ field }) => (
-                  <TextFildCustom
-                    {...field}
-                    disabled={IsReturnPathName}
-                    name="customer"
-                    required
-                    fullWidth
-                    label="طرف قرارداد"
-                    placeholder=""
-                    error={!!errors.customer}
-                    helperText={errors.customer ? (errors.customer as FieldError).message : " "}
-                  />
-                )}
+                errors={errors}
+                IsReturnPathName={IsReturnPathName}
+                setFormDataChanged={setFormDataChanged}
+                label="طرف قرارداد"
+                requiredRule={"طرف قراداد الزامی است."}
               />
             </Grid>
           </Grid>
@@ -266,6 +245,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
               errors={errors}
               reportIndex={index}
               appendReport={append}
+              setFormDataChanged={setFormDataChanged}
             />
           ))}
           <Grid
@@ -314,6 +294,20 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
             message={"قرارداد با موفقیت ثبت شد."}
             isOpen={isOpenSnackBar}
             handleClose={handleCloseSnackBar}
+          />
+          <SnackBar
+            horizontal={"center"}
+            vertical={"top"}
+            message={"حداقل یک شرح و مشخصات ایجاد کنید."}
+            isOpen={isOpenSnackBarDeleteAccardion}
+            handleClose={handleCloseSnackBarDeleteAccardion}
+          />
+          <SnackBar
+            horizontal={"center"}
+            vertical={"top"}
+            message={"قرار داد با موفقیت ویرایش شد."}
+            isOpen={isOpenSnackBarUpdate}
+            handleClose={handleCloseSnackBarUpdate}
           />
         </CardActions>
       </form>

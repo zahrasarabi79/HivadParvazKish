@@ -9,7 +9,15 @@ export interface ISnackBarProps {
 
 const SnackBar: React.FC<ISnackBarProps> = ({ vertical, horizontal, message, handleClose, isOpen }) => {
   return (
-    <Snackbar dir="rtl" anchorOrigin={{ vertical, horizontal }} open={isOpen} onClose={handleClose} message={message} key={vertical + horizontal} />
+    <Snackbar
+      dir="rtl"
+      autoHideDuration={2500}
+      anchorOrigin={{ vertical, horizontal }}
+      open={isOpen}
+      onClose={handleClose}
+      message={message}
+      key={vertical + horizontal}
+    />
   );
 };
 

@@ -4,25 +4,9 @@ import React from "react";
 
 const Dashboard = () => {
   return (
-    <Card>
-      <CardHeader
-        title={"داشبورد"}
-        
-      />
-      <Divider variant="middle" />
-      <CardContent
-        sx={{
-          height: "600px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="h6">در حال حاضر درخواستی وجود ندارد</Typography>
-        <Image src={"icon/Vector.svg"} width={400} height={400} alt="Vector" />
-      </CardContent>
-    </Card>
+    <div style={{ display: "flex", justifyContent: "center", alignContent: "center", margin: 100 }}>
+      <Typography variant="h6">این صفحه در حال آماده سازی است.</Typography>
+    </div>
   );
 };
 

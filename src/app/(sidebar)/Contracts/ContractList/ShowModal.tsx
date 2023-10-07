@@ -5,14 +5,9 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Container, Divider, Grid, Stack, Theme, createStyles, useTheme } from "@mui/material";
 import ModalText from "@/app/Components/ModalText";
-import {
-  IContract,
-  IContractApiResponse,
-  IReportPaymentApiResponse,
-  IReportReturnPaymentApiResponse,
-  IReportsApiResponse,
-} from "@/Interface/Interfaces";
+import { IContract, IContractApiResponse, IReportPaymentApiResponse, IReportReturnPaymentApiResponse, IReportsApiResponse } from "@/Interface/Interfaces";
 import { formatDate } from "@/app/Components/format date";
+import { SeparateNumber } from "@/app/Components/SeparateNumber";
 
 const style = {
   position: "absolute" as "absolute",
@@ -60,18 +55,12 @@ export interface IKeepMountedModalProps {
 }
 
 const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose, data }) => {
- 
+
 
   return (
     <React.Fragment>
       <Container>
-        <Modal
-          keepMounted
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="keep-mounted-modal-title"
-          aria-describedby="keep-mounted-modal-description"
-        >
+        <Modal   keepMounted open={open} onClose={handleClose} >
           <Box sx={style} justifyContent={"center"} alignContent={"center"}>
             <Grid sx={{ pb: "32px", px: "8px" }} spacing={4} container>
               <Grid item xs={12}>
@@ -94,7 +83,7 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                   <Grid sx={{ padding: 1, m: 2 }} item xs={12}>
                     <Grid sx={{ border: "1px solid rgba(107,107,107,1)", borderRadius: 1, padding: 2 }} container justifyContent={"space-between"}>
                       <ModalText xs={12} name="شرح و مشخصات" value={report?.reportDescription} />
-                      <ModalText xs={6} name="قیمت کل" value={report?.totalCost} />
+                      <ModalText xs={6} name="قیمت کل" value={SeparateNumber(parseInt(report?.totalCost) || 0)} />
                       <ModalText xs={6} name="مجری" value={report?.presenter} />
                       <Grid item xs={12} sx={{ my: 2, mx: 1 }}>
                         <Typography variant="h6">پرداخت ها</Typography>
@@ -103,7 +92,7 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                         <React.Fragment key={reportPayment.id}>
                           <Grid sx={{ borderLeft: "2px solid white", ml: 2, mb: 3, mt: 0 }} container justifyContent={"space-between"}>
                             <ModalText xs={12} name="تاریخ پرداخت/دریافت" value={formatDate(reportPayment.datepayment || "")} />
-                            <ModalText xs={6} name="مبلغ پرداختی/دریافتی" value={reportPayment.payments} />
+                            <ModalText xs={6} name="مبلغ پرداختی/دریافتی" value={SeparateNumber(parseInt(reportPayment.payments) || 0)} />
                             <ModalText xs={6} name="بانک /شرکاء/صندوق" value={reportPayment.bank} />
                             <ModalText xs={12} name="توضیحات" value={reportPayment.paymentDescription} />
                           </Grid>
@@ -117,7 +106,7 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                         <React.Fragment key={reportReturnPayment.id}>
                           <Grid sx={{ borderLeft: "2px solid white", ml: 2, mb: 3, mt: 0 }} container justifyContent={"space-between"}>
                             <ModalText xs={12} name="تاریخ برگشت از خرید" value={formatDate(reportReturnPayment.dateReturnPayment || "")} />
-                            <ModalText xs={6} name="مبلغ برگشت از خرید" value={reportReturnPayment.returnPayments} />
+                            <ModalText xs={6} name="مبلغ برگشت از خرید" value={SeparateNumber(parseInt(reportReturnPayment.returnPayments) || 0)} />
                             <ModalText xs={6} name="بانک /شرکاء/صندوق" value={reportReturnPayment.returnPaymentsbank} />
                             <ModalText xs={12} name="توضیحات" value={reportReturnPayment.returnPaymentDescription} />
                           </Grid>

@@ -24,6 +24,8 @@ import { useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
 
 import SnackBar from "@/app/Components/SnackBar";
+import { usePathname } from "next/navigation";
+import TextFildControler from "@/app/Components/textFildControler";
 
 const ReportAccordion: React.FC<IReportAccordionProps> = ({
   IsReturnPathName,
@@ -33,8 +35,11 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
   control,
   errors,
   reportIndex,
+  setFormDataChanged,
 }) => {
   const theme = useTheme();
+  const pathName = usePathname();
+  console.log(pathName);
 
   const { fields: reportsPaymentFields, append: appendReportsPayment } = useFieldArray<IContract>({
     control,
@@ -48,12 +53,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
   const handleCloseSnackBarDelete = () => setIsOpenSnackBarDelete(true);
 
   const removeReports = (indexToRemove: number) => {
-    if (indexToRemove !== 0) {
-      removeReport(indexToRemove);
-    }
-    if (indexToRemove === 0) {
-      handleCloseSnackBarDelete();
-    }
+    removeReport(indexToRemove);
   };
 
   const Describtion = useWatch({ control, name: `reports.${reportIndex}.reportDescription` });
@@ -96,7 +96,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
           expandIcon={<ExpandCircleDownOutlinedIcon />}
         >
           <Typography>{Describtion || "شرح و مشخصات"}</Typography>
-          {isExpended && reportIndex !== 0 && (
+          {isExpended && (
             <Stack direction="row" gap={1}>
               <IconButton onClick={() => removeReports(reportIndex)}>
                 <DeleteIcon />
@@ -113,7 +113,8 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
         >
           <Grid container spacing={3} alignItems={"center"} sx={{ my: 1 }}>
             <Grid item xs={12} sm={4}>
-              <Controller
+
+          <Controller
                 name={`reports.${reportIndex}.reportDescription`}
                 control={control}
                 rules={{ required: reportIndex === 0 ? "شرح مشخصات الزامی است." : undefined }}
@@ -121,6 +122,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                   <TextFildCustom
                     {...field}
                     disabled={IsReturnPathName}
+                    onBlur={() => setFormDataChanged(true)}
                     required
                     fullWidth
                     label={"شرح مشخصات"}
@@ -132,7 +134,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                     }
                   />
                 )}
-              />
+              /> 
             </Grid>
             <Grid item xs={12} sm={4}>
               <Controller
@@ -143,6 +145,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
+                    onBlur={() => setFormDataChanged(true)}
                     disabled={IsReturnPathName}
                     required
                     fullWidth
@@ -169,6 +172,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                     onValueChange={(v) => {
                       field.onChange(v.value);
                     }}
+                    onBlur={() => setFormDataChanged(true)}
                     customInput={TextField}
                     thousandSeparator
                     disabled={IsReturnPathName}
@@ -206,6 +210,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 reportIndex={reportIndex}
                 paymentIndex={index}
                 IsReturnPathName={IsReturnPathName}
+                setFormDataChanged={setFormDataChanged}
               />
             ))}
             <Grid
@@ -236,7 +241,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
               <Divider />
             </Grid>
             {reportsReturnPaymentFields.map((reportReturnPayment, index) => (
-              <ReportReturnPayment key={uuidv4()} control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} />
+              <ReportReturnPayment key={uuidv4()} control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} setFormDataChanged={setFormDataChanged} />
             ))}
           </Grid>
           <Grid

@@ -11,9 +11,10 @@ export interface IReportReturnPaymentProps {
   errors: FieldErrors<IContract>;
   reportIndex: number;
   paymentIndex: number;
+  setFormDataChanged: (arg: boolean) => void;
 }
 
-const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, errors, reportIndex, paymentIndex }) => {
+const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, errors, reportIndex, paymentIndex, setFormDataChanged }) => {
   return (
     <>
       <Grid item xs={12} sm={4}>
@@ -25,6 +26,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
           render={({ field }) => (
             <TextFildCustom
               {...field}
+              onBlur={() => setFormDataChanged(true)}
               name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentsbank`}
               required
               fullWidth
@@ -51,6 +53,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
               onValueChange={(v) => {
                 field.onChange(v.value);
               }}
+              onBlur={() => setFormDataChanged(true)}
               customInput={TextField}
               thousandSeparator
               required
@@ -80,6 +83,10 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
                 sx={{ width: "100%" }}
                 value={field.value}
                 label={"تاریخ برگشت از خرید/فروش"}
+                onChange={(date) => {
+                  field.onChange(date); // Update the field value
+                  setFormDataChanged(true); // Set dateChanged to true when the date changes
+                }}
                 slotProps={{
                   textField: {
                     error: !!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment,
@@ -102,6 +109,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
           render={({ field }) => (
             <TextFildCustom
               {...field}
+              onBlur={() => setFormDataChanged(true)}
               name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentDescription`}
               fullWidth
               label={"توضیحات"}

@@ -119,6 +119,7 @@ export interface ISidebarItemComponent {
 }
 
 export interface IReportAccordionProps {
+  setFormDataChanged: (arg: boolean) => void;
   isExpended: boolean;
   handleIsExpended: () => void;
   removeReport: UseFieldArrayRemove;
@@ -134,4 +135,5 @@ export interface IReportPaymentComponent {
   reportIndex: number;
   paymentIndex: number;
   IsReturnPathName: boolean;
+  setFormDataChanged: (arg: boolean) => void;
 }

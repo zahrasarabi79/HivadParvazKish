@@ -24,7 +24,7 @@ export default function Page() {
           maxWidth: "439px",
           minHeight: "518px",
           borderRadius: "24px",
-          border: "1px solid white",
+         
         }}
       >
         <CardContent>

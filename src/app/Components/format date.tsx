@@ -7,7 +7,6 @@ export function formatDate(dateString: Date) {
     const inputDateTime = dateString;
     const parsedDate = jalaliMoment(inputDateTime, "YYYY-MM-DD HH:mm:ss");
     const formattedDate = parsedDate.format("jYYYY-jMM-jDD");
-    console.log(formattedDate);
     return formattedDate;
   }
 }

@@ -7,7 +7,7 @@ import React from "react";
 import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
-const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, control, errors, reportIndex, paymentIndex }) => {
+const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, control, errors, reportIndex, paymentIndex, setFormDataChanged }) => {
   return (
     <>
       <Grid item xs={12} sm={4}>
@@ -19,6 +19,8 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
           render={({ field }) => (
             <TextFildCustom
               {...field}
+
+              onBlur={() => setFormDataChanged(true)}
               disabled={IsReturnPathName}
               name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].bank`}
               required
@@ -47,6 +49,7 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
               onValueChange={(v) => {
                 field.onChange(v.value);
               }}
+              onBlur={() => setFormDataChanged(true)}
               customInput={TextField}
               thousandSeparator
               disabled={IsReturnPathName}
@@ -78,6 +81,10 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
                 sx={{ width: "100%" }}
                 label={"تاریخ پرداخت/دریافت"}
                 value={field.value}
+                onChange={(date) => {
+                  field.onChange(date); // Update the field value
+                  setFormDataChanged(true); // Set dateChanged to true when the date changes
+                }}
                 slotProps={{
                   textField: {
                     error: !!errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.datepayment,
@@ -100,6 +107,7 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
           render={({ field }) => (
             <TextFildCustom
               {...field}
+              onBlur={() => setFormDataChanged(true)}
               disabled={IsReturnPathName}
               name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].paymentDescription`}
               fullWidth
