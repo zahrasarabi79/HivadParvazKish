@@ -80,7 +80,7 @@ const ListOfReport = () => {
   };
 
   return (
-    <Card sx={{ minHeight:600}}>
+    <Card sx={{ minHeight: "80vh" }}>
       <CardHeader
         title={"لیست قرارداد ها"}
         action={

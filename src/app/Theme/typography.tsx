@@ -53,7 +53,7 @@ const typography: TypographyOptions = {
     },
   },
   h6: {
-    fontSize: "20px",
+    fontSize: "24px",
     fontWeight: 400,
     lineHeight: "32px",
     letterSpacing: "0em",

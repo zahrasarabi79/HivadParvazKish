@@ -1,5 +1,5 @@
 "use client";
-import { AppBar, Avatar, Fade, IconButton, Menu, MenuItem, Stack, Toolbar, Typography, styled, useTheme } from "@mui/material";
+import { AppBar, Avatar, Fade, IconButton, Menu, MenuItem, Stack, Toolbar, Typography, styled, useMediaQuery, useTheme } from "@mui/material";
 import Image from "next/image";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -19,6 +19,7 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
   const [anchorElProfile, setAnchorElProfile] = useState<null | HTMLElement>(null);
   const [anchorElNotification, setAnchorElNotification] = useState<null | HTMLElement>(null);
   const router = useRouter();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
   const Logout = () => {
     localStorage.clear();
@@ -33,7 +34,7 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
         boxShadow: "none",
         ...(open && {
           marginLeft: drawerWidth.desktop,
-          width: `calc(100% - ${drawerWidth.desktop}px)`,
+          width: isDesktop ? `calc(100% - ${drawerWidth.desktop}px)` : "100%",
           transition: theme.transitions.create(["width", "margin"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,

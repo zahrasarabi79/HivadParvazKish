@@ -12,15 +12,7 @@ export interface ITextFildControler {
   label: string;
   requiredRule: string;
 }
-const DatePickerControler: React.FC<ITextFildControler> = ({
-  control,
-  setFormDataChanged,
-  IsReturnPathName,
-  errors,
-  inputName,
-  label,
-  requiredRule,
-}) => {
+const DatePickerControler: React.FC<ITextFildControler> = ({ control, setFormDataChanged, IsReturnPathName, errors, inputName, label, requiredRule }) => {
   return (
     <Controller
       name={inputName}

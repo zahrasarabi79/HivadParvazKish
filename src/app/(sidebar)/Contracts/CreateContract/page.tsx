@@ -88,17 +88,40 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
   const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
   const [isOpenSnackBarDeleteAccardion, setIsOpenSnackBarDeleteAccardion] = useState(false);
-
   const [isExpended, setIsExpended] = useState<number | null>(null);
   const typeOfReport = ["خرید", "فروش"];
   const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
   const handleCloseSnackBarUpdate = () => setIsOpenSnackBarUpdate((is) => !is);
   const handleCloseSnackBarDeleteAccardion = () => setIsOpenSnackBarDeleteAccardion((is) => !is);
   const [formDataChanged, setFormDataChanged] = useState(false);
-
-  const handleIsExpended: (id: number | null) => void = (id) => {
-    setIsExpended((isExpended) => (isExpended === id ? null : id));
+  const handleIsExpended: (index: number | null) => void = (index) => {
+    setIsExpended((isExpended) => (isExpended === index ? null : index));
   };
+  const handleOnClickAddAccordion = () => {
+    append({
+      reportDescription: "",
+      totalCost: "",
+      presenter: "",
+      reportsPayment: [
+        {
+          bank: "",
+          payments: "",
+          datepayment: null,
+          paymentDescription: "",
+        },
+      ],
+      reportsReturnPayment: [
+        {
+          returnPaymentsbank: "",
+          returnPayments: "",
+          dateReturnPayment: null,
+          returnPaymentDescription: "",
+        },
+      ],
+    });
+    setIsExpended(fields.length);
+  };
+
   const onSubmit = (data: IContract) => {
     if (Contract) {
       updateDataContract(data, Contract.id);
@@ -109,11 +132,15 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   };
   const saveContract = async (contract: IContract) => {
     try {
-      const { data } = await axiosInstance.post("/AddReports", contract);
-      handleCloseSnackBar();
-      setTimeout(() => {
-        router.push("/Contracts/ContractList");
-      }, 2000);
+      if (contract.reports.length === 0) {
+        handleCloseSnackBarDeleteAccardion();
+      } else {
+        const { data } = await axiosInstance.post("/AddReports", contract);
+        handleCloseSnackBar();
+        setTimeout(() => {
+          router.push("/Contracts/ContractList");
+        }, 2000);
+      }
     } catch (error) {
       console.log("problem:", error);
     }
@@ -171,14 +198,15 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       console.log("add data");
     }
   }, [Contract]);
+  const cardTitle = Contract ? (IsReturnPathName ? "ویرایش برگشت‌ها" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
 
   return (
     <Card>
-      <CardHeader title={"ایجاد قرارداد"} />
+      <CardHeader title={cardTitle} />
       <Divider variant="middle" />
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
         <CardContent>
-          <Grid container spacing={3} rowSpacing={1} alignItems={"center"}>
+          <Grid container spacing={1}  alignItems={"center"}>
             <Grid item xs={12} sm={4}>
               <TextFildControler
                 inputName="numContract"
@@ -187,7 +215,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 IsReturnPathName={IsReturnPathName}
                 setFormDataChanged={setFormDataChanged}
                 label={"شماره قراداد"}
-                requiredRule={"شماره قراردادالزامی است."}
+                requiredRule={"این فیلد الزامی است."}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -199,7 +227,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                   IsReturnPathName={IsReturnPathName}
                   setFormDataChanged={setFormDataChanged}
                   label="تاریخ قرارداد"
-                  requiredRule={"تاریخ قراردادالزامی است."}
+                  requiredRule={"این فیلد الزامی است."}
                 />
               </LocalizationProvider>
             </Grid>
@@ -211,8 +239,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 IsReturnPathName={IsReturnPathName}
                 setFormDataChanged={setFormDataChanged}
                 label="نوع قرارداد"
-                requiredRule={"نوع قراردادالزامی است."}
-
+                requiredRule={"این فیلد الزامی است."}
               >
                 {typeOfReport.map((option) => (
                   <MenuItem key={option} value={option}>
@@ -229,7 +256,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 IsReturnPathName={IsReturnPathName}
                 setFormDataChanged={setFormDataChanged}
                 label="طرف قرارداد"
-                requiredRule={"طرف قراداد الزامی است."}
+                requiredRule={"این فیلد الزامی است."}
               />
             </Grid>
           </Grid>
@@ -248,34 +275,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
               setFormDataChanged={setFormDataChanged}
             />
           ))}
-          <Grid
-            item
-            xs={12}
-            onClick={() =>
-              append({
-                reportDescription: "",
-                totalCost: "",
-                presenter: "",
-                reportsPayment: [
-                  {
-                    bank: "",
-                    payments: "",
-                    datepayment: null,
-                    paymentDescription: "",
-                  },
-                ],
-                reportsReturnPayment: [
-                  {
-                    returnPaymentsbank: "",
-                    returnPayments: "",
-                    dateReturnPayment: null,
-                    returnPaymentDescription: "",
-                  },
-                ],
-              })
-            }
-            sx={{ pt: 5, display: "flex", justifyContent: "center", alignItems: "center" }}
-          >
+          <Grid item xs={12} onClick={handleOnClickAddAccordion} sx={{ pt: 5, display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Stack justifyContent={"center"} alignItems={"center"}>
               <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
               <Typography variant="body1" color={theme.palette.primary.main}>
@@ -294,6 +294,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
             message={"قرارداد با موفقیت ثبت شد."}
             isOpen={isOpenSnackBar}
             handleClose={handleCloseSnackBar}
+            color="rgb(11, 150, 30)"
           />
           <SnackBar
             horizontal={"center"}
@@ -301,13 +302,15 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
             message={"حداقل یک شرح و مشخصات ایجاد کنید."}
             isOpen={isOpenSnackBarDeleteAccardion}
             handleClose={handleCloseSnackBarDeleteAccardion}
+            color={theme.palette.warning.main}
           />
           <SnackBar
             horizontal={"center"}
             vertical={"top"}
-            message={"قرار داد با موفقیت ویرایش شد."}
+            message={"قرارداد با موفقیت ویرایش شد."}
             isOpen={isOpenSnackBarUpdate}
             handleClose={handleCloseSnackBarUpdate}
+            color="rgb(11, 150, 30)"
           />
         </CardActions>
       </form>

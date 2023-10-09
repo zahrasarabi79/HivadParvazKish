@@ -258,6 +258,7 @@ const components: Components = {
   MuiCard: {
     styleOverrides: {
       root: {
+        borderRadius: "16px",
         animation: `${wave} 0.3s linear alternate`,
       },
     },

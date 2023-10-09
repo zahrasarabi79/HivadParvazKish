@@ -10,7 +10,7 @@ export interface IconComponentProps {
   style?: React.CSSProperties;
 }
 
-const Icon: FC<IconComponentProps> = ({ pathName, color = "#fff", size = "24px", focused, style }) => {
+const Icon: FC<IconComponentProps> = ({ pathName, color = "white", size = "24px", focused, style }) => {
   const theme = useTheme();
   return (
     <>

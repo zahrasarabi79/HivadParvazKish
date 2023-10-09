@@ -113,7 +113,7 @@ export interface ISelectListItem {
 }
 export interface ISidebarItemComponent {
   open: boolean;
-  handleSelectedListItem: (index: number) => void;
+  handleSelectedListItem: (index: number, itemRoute: string) => void;
   selectListItem: ISelectListItem[];
   [index: number]: boolean;
 }

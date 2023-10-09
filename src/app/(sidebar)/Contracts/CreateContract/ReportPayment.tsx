@@ -15,7 +15,7 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
           name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].bank`}
           control={control}
           defaultValue=""
-          rules={{ required: reportIndex === 0 ? " بانک/شرکاء/صندوق الزامی است." : undefined }}
+          rules={{ required: reportIndex === 0 ? "  این فیلد الزامی است." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}
@@ -41,7 +41,7 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
           name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].payments`}
           control={control}
           defaultValue=""
-          rules={{ required: reportIndex === 0 ? "مبلغ پرداختی/دریافتی الزامی است." : undefined }}
+          rules={{ required: reportIndex === 0 ? " این فیلد الزامی است." : undefined }}
           render={({ field }) => (
             <NumericFormat
               //*value & onValueChange must be writen otherwise react hook form didnot get updated valu of input
@@ -72,15 +72,16 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
             name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].datepayment`}
             control={control}
             defaultValue=""
-            rules={{ required: reportIndex === 0 ? "تاریخ پرداخت/دریافت الزامی است." : undefined }}
+            rules={{ required: reportIndex === 0 ? " این فیلد الزامی است." : undefined }}
             render={({ field }) => (
               <DatePicker
                 {...field}
                 format="yyyy-MM-dd"
                 disabled={IsReturnPathName}
-                sx={{ width: "100%" }}
+                sx={{ width: "100%"}}
                 label={"تاریخ پرداخت/دریافت"}
                 value={field.value}
+                
                 onChange={(date) => {
                   field.onChange(date); // Update the field value
                   setFormDataChanged(true); // Set dateChanged to true when the date changes
@@ -103,7 +104,7 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
           name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].paymentDescription`}
           control={control}
           defaultValue=""
-          rules={{ required: reportIndex === 0 ? "توضیحات الزامی است." : undefined }}
+          // rules={{ required: reportIndex === 0 ? "این فیلد الزامی است." : undefined }}
           render={({ field }) => (
             <TextFildCustom
               {...field}

@@ -1,6 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { Card, InputAdornment, IconButton, CardContent, Container, Grid, Typography, Button } from "@mui/material";
+import { Card, InputAdornment, IconButton, CardContent, Container, Grid, Typography, Button, useTheme } from "@mui/material";
 import Image from "next/image";
 import { TextFildCustom } from "../Components/TextFiledCustom";
 import { useEffect, useState } from "react";
@@ -13,18 +13,13 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
   return (
-    <Container
-      component="main"
-      maxWidth="sm"
-      sx={{ justifyContent: "center", alignItems: "center", minHeight: "100vh", display: "flex", flexDirection: "column" }}
-    >
+    <Container component="main" maxWidth="sm" sx={{ justifyContent: "center", alignItems: "center", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Card
         sx={{
           py: 2,
           maxWidth: "439px",
           minHeight: "518px",
           borderRadius: "24px",
-         
         }}
       >
         <CardContent>
@@ -53,9 +48,13 @@ function LoginForm() {
     handleSubmit,
     formState: { errors },
     control,
+    watch,
     setError,
   } = useForm<IUser>({ defaultValues: { username: "", password: "" } });
 
+  const WatchFilds = Object.values(watch()).every((value) => value);
+  console.log(WatchFilds);
+  const theme = useTheme();
   const handleClickShowPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowPassword((show) => !show);
@@ -121,7 +120,13 @@ function LoginForm() {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button type="submit" fullWidth variant="contained" sx={{ height: "45px", bgcolor: "rgba(195, 209, 221, 0.08)", boxShadow: "none" }}>
+            <Button
+              type="submit"
+              disabled={!WatchFilds}
+              fullWidth
+              variant="contained"
+              sx={{ height: "45px", bgcolor: WatchFilds ? theme.palette.primary.main : "default", boxShadow: "none" }}
+            >
               ورود
             </Button>
           </Grid>

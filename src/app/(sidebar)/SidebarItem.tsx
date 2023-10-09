@@ -7,7 +7,7 @@ import React, { useState } from "react";
 export const HivadSidebarItems: SidebarItem[] = [
   {
     title: "داشبورد",
-    route: "dashboard",
+    route: "/dashboard",
     icon: "dashboard.svg",
   },
   {
@@ -30,26 +30,26 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
 
   return HivadSidebarItems.map((item: SidebarItem, index: number) => (
     <React.Fragment key={item.title}>
-      <ListItem sx={{ px: 2, py: 0, justifyContent: "space-between" }}>
+      <ListItem sx={{ paddingX: 1, paddingY: 0 }}>
         <ListItemButton
           sx={{
+            direction: "initial",
             transition: ".1s all east-in",
-            justifyContent: open ? "initial" : "center",
-            borderRadius: 1,
-            color: selectListItem[index].focusindex ? theme.palette.primary.main : "white",
+            justifyContent: open ? "space-between" : "center",
+            alignItems: "center",
+            borderRadius: "25px",
 
+            color: selectListItem[index].focusindex ? theme.palette.primary.main : "white",
             "&:hover ": {
-              bgcolor: "rgba(255, 255, 255, 0.05)",
+              bgcolor: "rgba(255, 255, 255, 0.08)",
             },
             "&:focus": {
               "&:hover": {
-                bgcolor: "rgba(43, 154, 255,0.07)",
+                bgcolor: "rgba(43, 154, 255, 0.24)",
               },
             },
           }}
-          // onFocus={() => setFocused(index)}
-          // onBlur={() => setFocused(null)}
-          onClick={() => handleSelectedListItem(index)}
+          onClick={() => handleSelectedListItem(index, item.route || "")}
         >
           {item.children ? (
             <Icon
@@ -67,13 +67,12 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
 
           <ListItemText
             sx={{
-              mx: 1,
               display: smDown ? (open ? "block" : "none") : "block",
             }}
             primary={item.title}
           />
-          <ListItemIcon sx={{ minWidth: 0 }}>
-            <Icon pathName={item.icon} focused={selectListItem[index].focusindex} />
+          <ListItemIcon sx={{ justifyContent: "center" }}>
+            <Icon pathName={item.icon} focused={selectListItem[index].focusindex} style={{ marginRight: open ? "24px" : "0px" }} />
           </ListItemIcon>
         </ListItemButton>
       </ListItem>
@@ -84,28 +83,28 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
               <ListItemButton
                 onClick={() => router.push(childerItem.route || "")}
                 sx={{
-                  borderRadius: 1,
+                  borderRadius: "25px",
+                  mx: 1,
                   transition: ".1s all",
                   "&:hover": {
-                    bgcolor: "rgba(255, 255, 255, 0.05)",
+                    bgcolor: "rgba(255, 255, 255, 0.08)",
                   },
                   "&:focus": {
                     color: theme.palette.primary.main,
-                    mx: 1,
                     "&:hover": {
-                      bgcolor: "rgba(43, 154, 255,0.07)",
+                      bgcolor: "rgba(43, 154, 255, 0.24)",
                     },
                   },
                 }}
               >
-                <ListItemText sx={{ m: 0 }} inset primary={childerItem.title} />
+                <ListItemText inset primary={childerItem.title} />
               </ListItemButton>
               {childerItem.children &&
-                childerItem.children.map((childerItemchildren: SidebarItemChildrenOfChildren , childIndex: number) => (
+                childerItem.children.map((childerItemchildren: SidebarItemChildrenOfChildren, childIndex: number) => (
                   <Collapse key={childIndex}>
                     <List component="div" disablePadding>
                       <ListItemButton onClick={() => router.push(childerItemchildren.route || "")}>
-                        <ListItemText sx={{ m: 0 }} inset primary={childerItemchildren.title} />
+                        <ListItemText inset primary={childerItemchildren.title} />
                       </ListItemButton>
                     </List>
                   </Collapse>

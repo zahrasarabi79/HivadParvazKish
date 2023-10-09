@@ -1,16 +1,4 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Button,
-  Divider,
-  Grid,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid, IconButton, Stack, TextField, Typography, useTheme } from "@mui/material";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import Icon from "@/app/Components/Icon";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -26,21 +14,11 @@ import { NumericFormat } from "react-number-format";
 import SnackBar from "@/app/Components/SnackBar";
 import { usePathname } from "next/navigation";
 import TextFildControler from "@/app/Components/textFildControler";
+import Image from "next/image";
 
-const ReportAccordion: React.FC<IReportAccordionProps> = ({
-  IsReturnPathName,
-  isExpended,
-  handleIsExpended,
-  removeReport,
-  control,
-  errors,
-  reportIndex,
-  setFormDataChanged,
-}) => {
+const ReportAccordion: React.FC<IReportAccordionProps> = ({ IsReturnPathName, isExpended, handleIsExpended, removeReport, control, errors, reportIndex, setFormDataChanged }) => {
   const theme = useTheme();
   const pathName = usePathname();
-  console.log(pathName);
-
   const { fields: reportsPaymentFields, append: appendReportsPayment } = useFieldArray<IContract>({
     control,
     name: `reports.${reportIndex}.reportsPayment`,
@@ -90,16 +68,17 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
             },
             "& .MuiAccordionSummary-content": {
               justifyContent: "space-between",
+              alignItems: "center",
               "&.Mui-expanded": { marginY: 2, mx: 1 },
             },
           }}
           expandIcon={<ExpandCircleDownOutlinedIcon />}
         >
           <Typography>{Describtion || "شرح و مشخصات"}</Typography>
-          {isExpended && (
+          {isExpended && !IsReturnPathName && (
             <Stack direction="row" gap={1}>
               <IconButton onClick={() => removeReports(reportIndex)}>
-                <DeleteIcon />
+                <Icon pathName="../icon/Trash.svg" focused={false} />
               </IconButton>
             </Stack>
           )}
@@ -111,13 +90,12 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
             borderBottomRightRadius: "1rem",
           }}
         >
-          <Grid container spacing={3} alignItems={"center"} sx={{ my: 1 }}>
+          <Grid container spacing={1} rowSpacing={3} alignItems={"center"} sx={{ mt:0.5}}>
             <Grid item xs={12} sm={4}>
-
-          <Controller
+              <Controller
                 name={`reports.${reportIndex}.reportDescription`}
                 control={control}
-                rules={{ required: reportIndex === 0 ? "شرح مشخصات الزامی است." : undefined }}
+                rules={{ required: reportIndex === 0 ? "این فیلدالزامی است." : undefined }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
@@ -127,21 +105,17 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                     fullWidth
                     label={"شرح مشخصات"}
                     error={!!errors.reports?.[reportIndex]?.reportDescription}
-                    helperText={
-                      errors.reports?.[reportIndex]?.reportDescription
-                        ? (errors.reports?.[reportIndex]?.reportDescription as FieldError).message
-                        : " "
-                    }
+                    helperText={errors.reports?.[reportIndex]?.reportDescription ? (errors.reports?.[reportIndex]?.reportDescription as FieldError).message : " "}
                   />
                 )}
-              /> 
+              />
             </Grid>
             <Grid item xs={12} sm={4}>
               <Controller
                 name={`reports.${reportIndex}.presenter`}
                 control={control}
                 defaultValue=""
-                rules={{ required: reportIndex === 0 ? " مشخصات مجری الزامی است." : undefined }}
+                rules={{ required: reportIndex === 0 ? " این فیلد الزامی است." : undefined }}
                 render={({ field }) => (
                   <TextFildCustom
                     {...field}
@@ -162,7 +136,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 control={control}
                 defaultValue=""
                 rules={{
-                  required: reportIndex === 0 ? "قیمت کل الزامی است." : undefined,
+                  required: reportIndex === 0 ? " این فیلد الزامی است." : undefined,
                 }}
                 render={({ field }) => (
                   //*we use Numeric Format librarry for seprated number
@@ -272,6 +246,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
             message={"اجازه حذف این آیتم را ندارید. "}
             handleClose={handleCloseSnackBarDelete}
             isOpen={isOpenSnackBarDelete}
+            color={theme.palette.warning.main}
           />
         </AccordionDetails>
       </Accordion>

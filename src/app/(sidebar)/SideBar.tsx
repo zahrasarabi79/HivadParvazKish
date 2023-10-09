@@ -1,29 +1,23 @@
 "use client";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import Toolbar from "@mui/material/Toolbar";
-import Navbar from "./Navbar";
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { Box, Drawer, List, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
 import SidebarItem, { HivadSidebarItems } from "./SidebarItem";
-import Typography from "@mui/material/Typography";
-import { useMediaQuery, useTheme } from "@mui/material";
-import { DrawerDesktop } from "@/Utils/style/stylecomponent";
 import { IDrawerWidth, ISelectListItem } from "@/Interface/Interfaces";
+import { DrawerDesktop } from "@/Utils/style/stylecomponent";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Image from "next/image";
+import Navbar from "./Navbar";
+import DrawerItem from "../Components/DrawerItem";
 
 export const drawerWidth: IDrawerWidth = { desktop: 240, mobile: 60 };
-
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.up("sm"));
+  const router = useRouter();
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(
-    HivadSidebarItems.map(() => ({ focusindex: false, openChildrenItem: false }))
-  );
+  const [open, setOpen] = useState(true);
+  const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(HivadSidebarItems.map(() => ({ focusindex: false, openChildrenItem: false })));
 
   const handleDrawerOpen = () => {
     setMobileOpen(!mobileOpen);
@@ -40,8 +34,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       }))
     );
   };
-
-  const handleSelectedListItem = (index: number) => {
+  const handleSelectedListItem = (index: number, itemRoute: string) => {
     if (open) {
       setSelectListItem((prevItems: ISelectListItem[]) => {
         const updatedItems = prevItems.map((item, i) => ({
@@ -54,62 +47,25 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     } else {
       setOpen(!open);
     }
+    itemRoute ? router.push(itemRoute) : "";
   };
-
-  const drawer = (
-    <>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: 25 }}>
-        <Image
-          src="/image/pouyagaranLogo.svg"
-          priority={true}
-          width={40}
-          height={40}
-          alt="pouyagaranLogo"
-          onClick={handleCloseDrawer}
-          style={{ marginBottom: "42px" }}
-        />
-
-        <Typography
-          variant="body1"
-          sx={{
-            display: smDown ? (open ? "block" : "none") : "block",
-          }}
-        >
-          مدیریت ارتباط با مشتریان
-        </Typography>
-      </div>
-      <div>
-        <List sx={{ gap: 2 }}>
-          <SidebarItem open={open} handleSelectedListItem={handleSelectedListItem} selectListItem={selectListItem} />
-        </List>
-      </div>
-    </>
-  );
 
   return (
     <Box dir="rtl" sx={{ display: "flex" }}>
-      <Box
-        dir="ltr"
-        component="nav"
-        sx={{
-          flexShrink: { sm: 1 },
-        }}
-      >
+      <Box dir="ltr" component="nav" sx={{ flexShrink: { sm: 1 } }}>
         <Navbar isDesktopSidebarOpen={open} onDrawerOpen={handleDrawerOpen} />
         {/* mobile drawe */}
         <Drawer
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
+          ModalProps={{ keepMounted: true }}
           sx={{
             display: { xs: "block", sm: "none" },
             "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth.desktop },
           }}
         >
-          {drawer}
+          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleDrawerToggle} />
         </Drawer>
         <DrawerDesktop
           variant="permanent"
@@ -119,13 +75,10 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             display: { xs: "none", sm: "block" },
           }}
         >
-          {drawer}
+          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleCloseDrawer} />
         </DrawerDesktop>
       </Box>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, width: open ? `calc(100% - ${drawerWidth.desktop}px)` : `calc(100% - ${drawerWidth.mobile}px)` }}
-      >
+      <Box component="main" sx={{ flexGrow: 1, p: 3, width: open ? `calc(100% - ${drawerWidth.desktop}px)` : `calc(100% - ${drawerWidth.mobile}px)` }}>
         <Toolbar />
         {children}
       </Box>

@@ -20,7 +20,6 @@ const TextFildControler: React.FC<ITextFildControler> = ({
   label,
   requiredRule,
 }) => {
-  console.log(!!errors.inputName);
 
   return (
     <Controller
@@ -38,7 +37,7 @@ const TextFildControler: React.FC<ITextFildControler> = ({
           disabled={IsReturnPathName}
           label={label}
           error={!!errors[inputName]}
-          helperText={errors[inputName] ? (errors[inputName] as FieldError).message : " "}
+          helperText={errors[inputName] ? (errors[inputName] as FieldError).message :" "}
         />
       )}
     />
