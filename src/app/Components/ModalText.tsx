@@ -10,10 +10,10 @@ const ModalText: React.FC<IModalText> = ({ xs, name, value }) => {
   return (
     <Grid item xs={xs}>
       <Stack direction={"row-reverse"} sx={{ borderBottom: "1px solid #6B6B6B", justifyContent: "left", py: 1, px: 1, marginX: 1, marginY: 1 }}>
-        <Typography variant="h6" sx={{ color: theme.palette.divider, opacity: "85%" }}>
+        <Typography variant="body1" sx={{ color: theme.palette.divider, opacity: "85%" }}>
           :{name}
         </Typography>
-        <Typography variant="h6" sx={{ ml: 1 }}>
+        <Typography variant="body1" sx={{ ml: 1 }}>
           {value}
         </Typography>
       </Stack>

@@ -19,7 +19,6 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
           render={({ field }) => (
             <TextFildCustom
               {...field}
-
               onBlur={() => setFormDataChanged(true)}
               disabled={IsReturnPathName}
               name={`reports.${reportIndex}.reportsPayment[${paymentIndex}].bank`}
@@ -62,6 +61,7 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
                   ? (errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.payments as FieldError).message
                   : " "
               }
+              inputProps={{ maxLength: 40 }}
             />
           )}
         />
@@ -78,10 +78,9 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
                 {...field}
                 format="yyyy-MM-dd"
                 disabled={IsReturnPathName}
-                sx={{ width: "100%"}}
-                label={"تاریخ پرداخت/دریافت"}
+                sx={{ width: "100%" }}
+                label={"تاریخ پرداخت/دریافت *"}
                 value={field.value}
-                
                 onChange={(date) => {
                   field.onChange(date); // Update the field value
                   setFormDataChanged(true); // Set dateChanged to true when the date changes
@@ -119,6 +118,8 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, co
                   ? (errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.paymentDescription as FieldError).message
                   : " "
               }
+              inputProps={{ maxLength: 40 }}
+
             />
           )}
         />

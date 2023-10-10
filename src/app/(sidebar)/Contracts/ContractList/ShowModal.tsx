@@ -55,16 +55,14 @@ export interface IKeepMountedModalProps {
 }
 
 const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose, data }) => {
-
-
   return (
     <React.Fragment>
       <Container>
-        <Modal   keepMounted open={open} onClose={handleClose} >
+        <Modal keepMounted open={open} onClose={handleClose} dir="ltr">
           <Box sx={style} justifyContent={"center"} alignContent={"center"}>
             <Grid sx={{ pb: "32px", px: "8px" }} spacing={4} container>
               <Grid item xs={12}>
-                <Typography variant="h6">گزارش خرید </Typography>
+                <Typography variant="body1">گزارش خرید </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={4} justifyContent={"space-between"}>
@@ -86,7 +84,7 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                       <ModalText xs={6} name="قیمت کل" value={SeparateNumber(parseInt(report?.totalCost) || 0)} />
                       <ModalText xs={6} name="مجری" value={report?.presenter} />
                       <Grid item xs={12} sx={{ my: 2, mx: 1 }}>
-                        <Typography variant="h6">پرداخت ها</Typography>
+                        <Typography variant="body1">پرداخت ها</Typography>
                       </Grid>
                       {report.reportsPayment.map((reportPayment: IReportPaymentApiResponse) => (
                         <React.Fragment key={reportPayment.id}>
@@ -100,7 +98,7 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                       ))}
 
                       <Grid item xs={12} sx={{ my: 2, mx: 1 }}>
-                        <Typography variant="h6">بازگشت ها</Typography>
+                        <Typography variant="body1">بازگشت ها</Typography>
                       </Grid>
                       {report?.reportsReturnPayment.map((reportReturnPayment: IReportReturnPaymentApiResponse) => (
                         <React.Fragment key={reportReturnPayment.id}>

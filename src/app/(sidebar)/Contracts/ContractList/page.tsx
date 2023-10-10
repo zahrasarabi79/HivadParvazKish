@@ -1,7 +1,7 @@
 "use client";
 import axiosInstance from "@/AxiosInstance/AxiosInstance";
 import { AxiosError } from "axios";
-import { IContractApiResponse } from "@/Interface/Interfaces";
+import { IContract, IContractApiResponse } from "@/Interface/Interfaces";
 import { StyledTableCell, StyledTableRow } from "@/Utils/style/stylecomponent";
 import Icon from "@/app/Components/Icon";
 import Image from "next/image";
@@ -29,6 +29,8 @@ import {
   useMediaQuery,
   CircularProgress,
   Grid,
+  CardActions,
+  Stack,
 } from "@mui/material";
 import PaginationComponent from "@/app/Components/Pagination";
 
@@ -80,7 +82,7 @@ const ListOfReport = () => {
   };
 
   return (
-    <Card sx={{ minHeight: "80vh" }}>
+    <Card>
       <CardHeader
         title={"لیست قرارداد ها"}
         action={
@@ -97,7 +99,7 @@ const ListOfReport = () => {
           </Grid>
         </Grid>
       ) : listOfContracts.length > 0 ? (
-        <CardContent>
+        <CardContent sx={{ display: "flex", justifyContent: "space-between", flexDirection: "column", alignItems: "center", minHeight: "72vh" }}>
           <TableContainer dir="rtl" sx={{ boxShadow: "none" }} component={Paper}>
             <Table>
               <TableHead>
@@ -130,7 +132,7 @@ const ListOfReport = () => {
                       {formatDate(contract?.dateContract) || ""}
                     </StyledTableCell>
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
-                      <Tooltip title="بازگشت وجه" placement="bottom-start">
+                      <Tooltip title="ویرایش بازگشت وجه" placement="bottom-start">
                         <IconButton onClick={() => router.push(`/Contracts/ReturnPayments/${contract.id}`)}>
                           <Icon pathName="paymentReturn.svg" color={theme.palette.primary.main} />
                         </IconButton>
@@ -156,7 +158,8 @@ const ListOfReport = () => {
                 {emptyRows > 0 && (
                   <StyledTableRow
                     style={{
-                      height: 55 * emptyRows,
+                      height: 50 * emptyRows,
+                      backgroundColor: "transparent",
                     }}
                   >
                     <StyledTableCell colSpan={6} />
@@ -164,11 +167,13 @@ const ListOfReport = () => {
                 )}
               </TableBody>
             </Table>
-            <PaginationComponent page={page} TotalPaginationPage={TotalPaginationPage} rowsPerPage={paginationFetchData.limitPerPage} handleChangePage={handleChangePage} />
           </TableContainer>
+          <CardActions>
+            <PaginationComponent page={page} TotalPaginationPage={TotalPaginationPage} rowsPerPage={paginationFetchData.limitPerPage} handleChangePage={handleChangePage} />
+          </CardActions>
         </CardContent>
       ) : (
-        <CardContent sx={{ height: "600px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+        <CardContent sx={{ minHeight: "72vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
           <Typography variant="h6">در حال حاضر قراردادی وجود ندارد.</Typography>
           <Image src={"/icon/Vector.svg"} width={400} height={400} alt="Vector" />
         </CardContent>

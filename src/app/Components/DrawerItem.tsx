@@ -31,14 +31,14 @@ const DrawerItem: React.FC<IDrawerItemComponenet> = ({ open, handleSelectedListI
 
       <Stack
         sx={{
-          transition: "transform .4s ease-in-out",
+          transition: "  transform .4s ease-in-out",
           transform: open ? "rotate(0deg)" : "rotate(180deg)",
-          position: "absolute",
+          position: "fixed",
           bottom: 0,
-          right: 0,
+          
         }}
       >
-        <IconButton sx={{ padding: "8px" }} onClick={handleCloseDrawer}>
+        <IconButton sx={{ padding: "8px", margin: 2 }} onClick={handleCloseDrawer}>
           <Icon pathName={"../icon/ArrowIcon.svg"} focused={false} color="white" />
         </IconButton>
       </Stack>

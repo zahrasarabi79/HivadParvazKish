@@ -88,9 +88,11 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
   const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
   const [isOpenSnackBarDeleteAccardion, setIsOpenSnackBarDeleteAccardion] = useState(false);
+  const [isOpenSnackBarFillInput, setIsOpenSnackBarFillInput] = useState(false);
   const [isExpended, setIsExpended] = useState<number | null>(null);
   const typeOfReport = ["خرید", "فروش"];
   const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
+  const handleCloseSnackBarFillInput = () => setIsOpenSnackBarFillInput((is) => !is);
   const handleCloseSnackBarUpdate = () => setIsOpenSnackBarUpdate((is) => !is);
   const handleCloseSnackBarDeleteAccardion = () => setIsOpenSnackBarDeleteAccardion((is) => !is);
   const [formDataChanged, setFormDataChanged] = useState(false);
@@ -152,6 +154,9 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       }
       if (!formDataChanged) {
         console.log("did not change");
+        setTimeout(() => {
+          router.push("/Contracts/ContractList");
+        }, 2000);
       } else {
         const { data } = await axiosInstance.post("/updateReports", { ...contract, id });
         handleCloseSnackBarUpdate();
@@ -198,7 +203,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       console.log("add data");
     }
   }, [Contract]);
-  const cardTitle = Contract ? (IsReturnPathName ? "ویرایش برگشت‌ها" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
+  const cardTitle = Contract ? (IsReturnPathName ? "ویرایش بازگشت وجه" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
 
   return (
     <Card>
@@ -206,7 +211,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       <Divider variant="middle" />
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
         <CardContent>
-          <Grid container spacing={1}  alignItems={"center"}>
+          <Grid container spacing={1} alignItems={"center"}>
             <Grid item xs={12} sm={4}>
               <TextFildControler
                 inputName="numContract"
@@ -226,7 +231,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                   errors={errors}
                   IsReturnPathName={IsReturnPathName}
                   setFormDataChanged={setFormDataChanged}
-                  label="تاریخ قرارداد"
+                  label="تاریخ قرارداد *"
                   requiredRule={"این فیلد الزامی است."}
                 />
               </LocalizationProvider>
@@ -276,12 +281,14 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
             />
           ))}
           <Grid item xs={12} onClick={handleOnClickAddAccordion} sx={{ pt: 5, display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <Stack justifyContent={"center"} alignItems={"center"}>
-              <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
-              <Typography variant="body1" color={theme.palette.primary.main}>
-                افزودن شرح و مشخصات
-              </Typography>
-            </Stack>
+            {!IsReturnPathName && (
+              <Stack justifyContent={"center"} alignItems={"center"}>
+                <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
+                <Typography variant="body1" color={theme.palette.primary.main}>
+                  افزودن شرح و مشخصات
+                </Typography>
+              </Stack>
+            )}
           </Grid>
         </CardContent>
         <CardActions dir="ltr">
@@ -312,12 +319,16 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
             handleClose={handleCloseSnackBarUpdate}
             color="rgb(11, 150, 30)"
           />
+          <SnackBar
+            horizontal={"center"}
+            vertical={"top"}
+            message={"فیلد هارا کامل پر کنید."}
+            isOpen={isOpenSnackBarFillInput}
+            handleClose={handleCloseSnackBarFillInput}
+            color={theme.palette.warning.main}
+          />
         </CardActions>
       </form>
-      {/* <CardContent sx={{ height: "600px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-        <Typography variant="h6">در حال حاضر درخواستی وجود ندارد</Typography>
-        <Image src={"/icon/Vector.svg"} width={400} height={400} alt="Vector" />
-      </CardContent> */}
     </Card>
   );
 };

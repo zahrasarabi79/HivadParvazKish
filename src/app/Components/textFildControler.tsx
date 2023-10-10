@@ -11,16 +11,7 @@ export interface ITextFildControler {
   label: string;
   requiredRule?: string | undefined;
 }
-const TextFildControler: React.FC<ITextFildControler> = ({
-  control,
-  setFormDataChanged,
-  IsReturnPathName,
-  errors,
-  inputName,
-  label,
-  requiredRule,
-}) => {
-
+const TextFildControler: React.FC<ITextFildControler> = ({ control, setFormDataChanged, IsReturnPathName, errors, inputName, label, requiredRule }) => {
   return (
     <Controller
       name={inputName}
@@ -37,7 +28,8 @@ const TextFildControler: React.FC<ITextFildControler> = ({
           disabled={IsReturnPathName}
           label={label}
           error={!!errors[inputName]}
-          helperText={errors[inputName] ? (errors[inputName] as FieldError).message :" "}
+          helperText={errors[inputName] ? (errors[inputName] as FieldError).message : " "}
+          inputProps={{ maxLength: 40 }}
         />
       )}
     />

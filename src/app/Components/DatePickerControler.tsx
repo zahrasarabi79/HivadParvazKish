@@ -17,13 +17,24 @@ const DatePickerControler: React.FC<ITextFildControler> = ({ control, setFormDat
     <Controller
       name={inputName}
       control={control}
-      rules={{ required: requiredRule }}
+      rules={{
+        required: requiredRule,
+        validate: (value) => {
+          if (value < new Date(1971, 1, 1) || value < new Date(2121, 1, 1)) {
+            return true;
+          } else {
+            return "تاریخ معتبر نمی باشد.";
+          }
+        },
+      }}
       render={({ field }) => (
         <DatePicker
           {...field}
           format="yyyy-MM-dd"
           formatDensity="dense"
           disabled={IsReturnPathName}
+          minDate={new Date("1971-01-01")}
+          maxDate={new Date("2121-01-01")}
           sx={{ width: "100%" }}
           label={label}
           value={field.value} // when we fetch data an set default value it is correct to set value to show data as default value

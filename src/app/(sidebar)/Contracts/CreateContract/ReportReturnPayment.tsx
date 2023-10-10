@@ -36,6 +36,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
                   ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank as FieldError).message
                   : " "
               }
+              inputProps={{ maxLength: 40 }}
             />
           )}
         />
@@ -63,6 +64,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
                   ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments as FieldError).message
                   : " "
               }
+              inputProps={{ maxLength: 40 }}
             />
           )}
         />
@@ -117,6 +119,7 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
                   ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription as FieldError).message
                   : " "
               }
+              inputProps={{ maxLength: 40 }}
             />
           )}
         />

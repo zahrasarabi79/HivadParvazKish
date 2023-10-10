@@ -33,6 +33,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ IsReturnPathName, is
   const removeReports = (indexToRemove: number) => {
     removeReport(indexToRemove);
   };
+  console.log(errors);
 
   const Describtion = useWatch({ control, name: `reports.${reportIndex}.reportDescription` });
   //* we can not use watch and instead of it ,we use "useWatch"
@@ -90,7 +91,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ IsReturnPathName, is
             borderBottomRightRadius: "1rem",
           }}
         >
-          <Grid container spacing={1} rowSpacing={3} alignItems={"center"} sx={{ mt:0.5}}>
+          <Grid container spacing={1} rowSpacing={3} alignItems={"center"} sx={{ mt: 0.5 }}>
             <Grid item xs={12} sm={4}>
               <Controller
                 name={`reports.${reportIndex}.reportDescription`}
@@ -126,6 +127,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ IsReturnPathName, is
                     label={"مجری"}
                     error={!!errors.reports?.[reportIndex]?.presenter}
                     helperText={errors.reports?.[reportIndex]?.presenter ? (errors.reports?.[reportIndex]?.presenter as FieldError).message : " "}
+                    inputProps={{ maxLength: 40 }}
                   />
                 )}
               />
@@ -155,6 +157,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ IsReturnPathName, is
                     label={"قیمت کل (ریال)"}
                     error={!!errors.reports?.[reportIndex]?.totalCost}
                     helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
+                    inputProps={{ maxLength: 40 }}
                   />
                   // <TextFildCustom
                   //   {...field}

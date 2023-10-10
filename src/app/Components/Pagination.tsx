@@ -11,8 +11,8 @@ const PaginationComponent: React.FC<PaginationComponent> = ({ TotalPaginationPag
   return (
     <Pagination
       sx={{
-        p: 2,
         display: "flex",
+        alignItems: "center",
         flexDirection: "row",
         justifyContent: "center",
         "& .MuiPaginationItem-icon ": { bgcolor: "rgb(255, 255, 255) !important", borderRadius: "50%", color: "black" },

@@ -73,6 +73,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           open={open}
           sx={{
             display: { xs: "none", sm: "block" },
+            position: 'relative' 
           }}
         >
           <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleCloseDrawer} />
