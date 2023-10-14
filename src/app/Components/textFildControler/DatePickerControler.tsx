@@ -1,18 +1,44 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
 import { TextFildCustom } from "./TextFiledCustom";
 import { IContract } from "@/Interface/Interfaces";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, DateValidationError } from "@mui/x-date-pickers";
 export interface ITextFildControler {
   control: Control<any>;
   setFormDataChanged: (arg: boolean) => void;
-  IsReturnPathName: boolean;
-  errors: FieldErrors<any>;
+  IsReturnPathName?: boolean;
+  inputErrors: boolean;
   inputName: string;
   label: string;
-  requiredRule: string;
+  requiredRule?: string;
+  helperText: string | undefined;
 }
-const DatePickerControler: React.FC<ITextFildControler> = ({ control, setFormDataChanged, IsReturnPathName, errors, inputName, label, requiredRule }) => {
+
+const DatePickerControler: React.FC<ITextFildControler> = ({
+  control,
+  setFormDataChanged,
+  inputErrors,
+  helperText,
+  inputName,
+  label,
+  requiredRule = "این فیلد الزامی است.",
+  IsReturnPathName = false,
+}) => {
+  const [DatePickerError, setDatePickerError] = useState<DateValidationError | null>(null);
+  const datePickerErrorMessage = useMemo(() => {
+    switch (DatePickerError) {
+      
+      case "minDate": {
+        return "تاریخ واردشده معتبر نمی باشد";
+      }
+      case "maxDate": {
+        return "تاریخ واردشده معتبر نمی باشد";
+      }
+      default: {
+        return " ";
+      }
+    }
+  }, [DatePickerError]);
   return (
     <Controller
       name={inputName}
@@ -20,10 +46,10 @@ const DatePickerControler: React.FC<ITextFildControler> = ({ control, setFormDat
       rules={{
         required: requiredRule,
         validate: (value) => {
-          if (value < new Date(1971, 1, 1) || value < new Date(2121, 1, 1)) {
-            return true;
+          if (DatePickerError) {
+            return false;
           } else {
-            return "تاریخ معتبر نمی باشد.";
+            return true;
           }
         },
       }}
@@ -31,6 +57,9 @@ const DatePickerControler: React.FC<ITextFildControler> = ({ control, setFormDat
         <DatePicker
           {...field}
           format="yyyy-MM-dd"
+          onError={(newError) => {
+            setDatePickerError(newError);
+          }}
           formatDensity="dense"
           disabled={IsReturnPathName}
           minDate={new Date("1971-01-01")}
@@ -44,8 +73,8 @@ const DatePickerControler: React.FC<ITextFildControler> = ({ control, setFormDat
           }}
           slotProps={{
             textField: {
-              error: !!errors[inputName],
-              helperText: errors[inputName] ? (errors[inputName] as FieldError).message : " ",
+              error: inputErrors,
+              helperText: datePickerErrorMessage || helperText,
             },
           }}
         />

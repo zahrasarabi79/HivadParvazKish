@@ -55,6 +55,7 @@ export interface IKeepMountedModalProps {
 }
 
 const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose, data }) => {
+  const TypeReportName = data?.typeContract === "فروش" ? "دریافتی" : "پرداختی";
   return (
     <React.Fragment>
       <Container>
@@ -62,7 +63,7 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
           <Box sx={style} justifyContent={"center"} alignContent={"center"}>
             <Grid sx={{ pb: "32px", px: "8px" }} spacing={4} container>
               <Grid item xs={12}>
-                <Typography variant="body1">گزارش خرید </Typography>
+                <Typography variant="body1">گزارش {data?.typeContract}</Typography>
               </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={4} justifyContent={"space-between"}>
@@ -81,7 +82,7 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                   <Grid sx={{ padding: 1, m: 2 }} item xs={12}>
                     <Grid sx={{ border: "1px solid rgba(107,107,107,1)", borderRadius: 1, padding: 2 }} container justifyContent={"space-between"}>
                       <ModalText xs={12} name="شرح و مشخصات" value={report?.reportDescription} />
-                      <ModalText xs={6} name="قیمت کل" value={SeparateNumber(parseInt(report?.totalCost) || 0)} />
+                      <ModalText xs={6} name="قیمت کل" value={report?.totalCost === "" ? "" : SeparateNumber(parseInt(report?.totalCost))} />
                       <ModalText xs={6} name="مجری" value={report?.presenter} />
                       <Grid item xs={12} sx={{ my: 2, mx: 1 }}>
                         <Typography variant="body1">پرداخت ها</Typography>
@@ -89,8 +90,8 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                       {report.reportsPayment.map((reportPayment: IReportPaymentApiResponse) => (
                         <React.Fragment key={reportPayment.id}>
                           <Grid sx={{ borderLeft: "2px solid white", ml: 2, mb: 3, mt: 0 }} container justifyContent={"space-between"}>
-                            <ModalText xs={12} name="تاریخ پرداخت/دریافت" value={formatDate(reportPayment.datepayment || "")} />
-                            <ModalText xs={6} name="مبلغ پرداختی/دریافتی" value={SeparateNumber(parseInt(reportPayment.payments) || 0)} />
+                            <ModalText xs={12} name={`تاریخ ${TypeReportName}`} value={formatDate(reportPayment.datepayment || "")} />
+                            <ModalText xs={6} name={`مبلغ ${TypeReportName}`} value={reportPayment.payments === "" ? "" : SeparateNumber(parseInt(reportPayment.payments))} />
                             <ModalText xs={6} name="بانک /شرکاء/صندوق" value={reportPayment.bank} />
                             <ModalText xs={12} name="توضیحات" value={reportPayment.paymentDescription} />
                           </Grid>
@@ -103,8 +104,12 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                       {report?.reportsReturnPayment.map((reportReturnPayment: IReportReturnPaymentApiResponse) => (
                         <React.Fragment key={reportReturnPayment.id}>
                           <Grid sx={{ borderLeft: "2px solid white", ml: 2, mb: 3, mt: 0 }} container justifyContent={"space-between"}>
-                            <ModalText xs={12} name="تاریخ برگشت از خرید" value={formatDate(reportReturnPayment.dateReturnPayment || "")} />
-                            <ModalText xs={6} name="مبلغ برگشت از خرید" value={SeparateNumber(parseInt(reportReturnPayment.returnPayments) || 0)} />
+                            <ModalText xs={12} name={`تاریخ بازگشت از ${data.typeContract}`} value={formatDate(reportReturnPayment.dateReturnPayment || "")} />
+                            <ModalText
+                              xs={6}
+                              name={`مبلغ بازگشت از ${data.typeContract}`}
+                              value={reportReturnPayment.returnPayments === "" ? "" : SeparateNumber(parseInt(reportReturnPayment.returnPayments))}
+                            />
                             <ModalText xs={6} name="بانک /شرکاء/صندوق" value={reportReturnPayment.returnPaymentsbank} />
                             <ModalText xs={12} name="توضیحات" value={reportReturnPayment.returnPaymentDescription} />
                           </Grid>

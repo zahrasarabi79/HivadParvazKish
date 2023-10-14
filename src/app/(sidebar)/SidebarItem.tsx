@@ -39,7 +39,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
             alignItems: "center",
             borderRadius: "25px",
 
-            color: selectListItem[index].focusindex ? theme.palette.primary.main : "white",
+            color: !item.children && selectListItem[index].focusindex ? theme.palette.primary.main : "white",
             "&:hover ": {
               bgcolor: "rgba(255, 255, 255, 0.08)",
             },
@@ -59,7 +59,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
                 transform: selectListItem[index].focusindex ? "rotate(-90deg)" : "rotate(0deg)",
                 transition: ".2s all",
               }}
-              focused={selectListItem[index].focusindex}
+              focused={!item.children && selectListItem[index].focusindex}
             />
           ) : (
             ""
@@ -72,7 +72,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
             primary={item.title}
           />
           <ListItemIcon sx={{ justifyContent: "center" }}>
-            <Icon pathName={item.icon} focused={selectListItem[index].focusindex} style={{ marginRight: open ? "24px" : "0px" }} />
+            <Icon pathName={item.icon} focused={!open && selectListItem[index].focusindex} style={{ marginRight: open ? "24px" : "0px" }} />
           </ListItemIcon>
         </ListItemButton>
       </ListItem>

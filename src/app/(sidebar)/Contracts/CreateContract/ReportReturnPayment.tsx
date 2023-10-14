@@ -1,11 +1,12 @@
 import { IContract } from "@/Interface/Interfaces";
-import { TextFildCustom } from "@/app/Components/TextFiledCustom";
-import { Grid, TextField } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import DatePickerControler from "@/app/Components/textFildControler/DatePickerControler";
+import NumericFormatControler from "@/app/Components/textFildControler/NumericFormatControler";
+import TextFildControler from "@/app/Components/textFildControler/textFildControler";
+import { Grid } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import React from "react";
-import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
-import { NumericFormat } from "react-number-format";
+import { Control, FieldError, FieldErrors } from "react-hook-form";
 export interface IReportReturnPaymentProps {
   control: Control<any>;
   errors: FieldErrors<IContract>;
@@ -18,110 +19,68 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, err
   return (
     <>
       <Grid item xs={12} sm={4}>
-        <Controller
-          name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentsbank`}
+        <TextFildControler
+          inputName={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentsbank`}
           control={control}
-          defaultValue=""
-          // rules={{ required: reportIndex === 0 ? " بانک/شرکاء/صندوق الزامی است." : undefined }}
-          render={({ field }) => (
-            <TextFildCustom
-              {...field}
-              onBlur={() => setFormDataChanged(true)}
-              name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentsbank`}
-              fullWidth
-              label={"بانک/شرکاء/صندوق"}
-              error={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank}
-              helperText={
-                errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank
-                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank as FieldError).message
-                  : " "
-              }
-              inputProps={{ maxLength: 40 }}
-            />
-          )}
+          requiredRule=""
+          required={false}
+          setFormDataChanged={setFormDataChanged}
+          label="بانک/شرکاء/صندوق"
+          inputError={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank}
+          helperText={
+            errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank
+              ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank as FieldError).message
+              : " "
+          }
         />
       </Grid>
       <Grid item xs={12} sm={4}>
-        <Controller
-          name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPayments`}
+        <NumericFormatControler
+          inputName={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPayments`}
           control={control}
-          defaultValue=""
-          // rules={{ required: reportIndex === 0 ? "مبلغ برگشت از خرید یا فروش  الزامی است." : undefined }}
-          render={({ field }) => (
-            <NumericFormat
-              value={field.value}
-              onValueChange={(v) => {
-                field.onChange(v.value);
-              }}
-              onBlur={() => setFormDataChanged(true)}
-              customInput={TextField}
-              thousandSeparator
-              fullWidth
-              label={"مبلغ برگشت از خرید‌/فروش (ریال)"}
-              error={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments}
-              helperText={
-                errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments
-                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments as FieldError).message
-                  : " "
-              }
-              inputProps={{ maxLength: 40 }}
-            />
-          )}
+          requiredRule=""
+          required={false}
+          setFormDataChanged={setFormDataChanged}
+          label={"مبلغ برگشت از خرید‌/فروش (ریال) "}
+          inputError={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments}
+          helperText={
+            errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments
+              ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments as FieldError).message
+              : " "
+          }
         />
       </Grid>
       <Grid item xs={12} sm={4}>
         <LocalizationProvider dateAdapter={AdapterDateFnsJalali}>
-          <Controller
-            name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].dateReturnPayment`}
+          <DatePickerControler
+            inputName={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].dateReturnPayment`}
             control={control}
-            defaultValue=""
-            // rules={{ required: reportIndex === 0 ? "تاریخ برگشت از خرید یا فروش الزامی است." : undefined }}
-            render={({ field }) => (
-              <DatePicker
-                {...field}
-                format="yyyy-MM-dd"
-                sx={{ width: "100%" }}
-                value={field.value}
-                label={"تاریخ برگشت از خرید/فروش"}
-                onChange={(date) => {
-                  field.onChange(date); // Update the field value
-                  setFormDataChanged(true); // Set dateChanged to true when the date changes
-                }}
-                slotProps={{
-                  textField: {
-                    error: !!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment,
-                    helperText: errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment
-                      ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment as FieldError).message
-                      : " ",
-                  },
-                }}
-              />
-            )}
+            inputErrors={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment}
+            setFormDataChanged={setFormDataChanged}
+            label={"تاریخ برگشت از خرید/فروش"}
+            requiredRule={""}
+            helperText={
+              errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment
+                ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment as FieldError).message
+                : " "
+            }
           />
         </LocalizationProvider>
       </Grid>
       <Grid item xs={12}>
-        <Controller
-          name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentDescription`}
+        <TextFildControler
+          inputName={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentDescription`}
           control={control}
-          defaultValue=""
-          // rules={{ required: reportIndex === 0 ? "توضیحات الزامی است." : undefined }}
-          render={({ field }) => (
-            <TextFildCustom
-              {...field}
-              onBlur={() => setFormDataChanged(true)}
-              name={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentDescription`}
-              fullWidth
-              label={"توضیحات"}
-              error={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription}
-              helperText={
-                errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription
-                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription as FieldError).message
-                  : " "
-              }
-              inputProps={{ maxLength: 40 }}
-            />
-          )}
+          requiredRule=""
+          required={false}
+          setFormDataChanged={setFormDataChanged}
+          label={"توضیحات"}
+          inputError={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription}
+          helperText={
+            errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription
+              ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription as FieldError).message
+              : " "
+          }
         />
       </Grid>
     </>

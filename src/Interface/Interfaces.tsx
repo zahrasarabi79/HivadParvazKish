@@ -119,6 +119,7 @@ export interface ISidebarItemComponent {
 }
 
 export interface IReportAccordionProps {
+  submitCount: number;
   setFormDataChanged: (arg: boolean) => void;
   isExpended: boolean;
   handleIsExpended: () => void;

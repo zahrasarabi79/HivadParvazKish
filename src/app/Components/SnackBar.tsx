@@ -1,4 +1,4 @@
-import { Snackbar, useTheme } from "@mui/material";
+import { Snackbar } from "@mui/material";
 export interface ISnackBarProps {
   vertical: "bottom" | "top";
   horizontal: "center" | "left" | "right";
@@ -9,7 +9,6 @@ export interface ISnackBarProps {
 }
 
 const SnackBar: React.FC<ISnackBarProps> = ({ vertical, horizontal, message, handleClose, isOpen, color }) => {
-  const theme = useTheme();
   return (
     <Snackbar
       dir="rtl"

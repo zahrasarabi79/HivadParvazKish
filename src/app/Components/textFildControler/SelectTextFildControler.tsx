@@ -6,34 +6,36 @@ export interface ITextFildControler {
   control: Control<any>;
   setFormDataChanged: (arg: boolean) => void;
   IsReturnPathName: boolean;
-  errors: FieldErrors<any>;
+  inputError: boolean;
   inputName: string;
   label: string;
-  requiredRule?: string | undefined;
+  children: React.ReactNode;
+  helperText: string | undefined;
 }
-const TextFildControler: React.FC<ITextFildControler> = ({ control, setFormDataChanged, IsReturnPathName, errors, inputName, label, requiredRule }) => {
+const SelectTextFildControler: React.FC<ITextFildControler> = ({ control, setFormDataChanged, IsReturnPathName, inputError, helperText, inputName, label, children }) => {
   return (
     <Controller
-      name={inputName}
+      name={`${inputName}`}
       control={control}
       defaultValue={""}
-      rules={{ required: requiredRule }}
-      // rules={{ required: `${label} الزامی است.` }}
+      rules={{ required: "این فیلد الزامی است." }}
       render={({ field }) => (
         <TextFildCustom
           {...field}
           onBlur={() => setFormDataChanged(true)} // Set formDataChanged to true when the input loses focus
           required
           fullWidth
+          select
           disabled={IsReturnPathName}
           label={label}
-          error={!!errors[inputName]}
-          helperText={errors[inputName] ? (errors[inputName] as FieldError).message : " "}
-          inputProps={{ maxLength: 40 }}
-        />
+          error={inputError}
+          helperText={helperText}
+        >
+          {children}
+        </TextFildCustom>
       )}
     />
   );
 };
 
-export default TextFildControler;
+export default SelectTextFildControler;

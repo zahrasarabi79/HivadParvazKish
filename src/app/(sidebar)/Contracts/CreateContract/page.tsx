@@ -1,43 +1,20 @@
 "use client";
-import { TextFildCustom } from "@/app/Components/TextFiledCustom";
-import {
-  Accordion,
-  AccordionActions,
-  AccordionDetails,
-  AccordionSummary,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  FormHelperText,
-  Grid,
-  IconButton,
-  MenuItem,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, MenuItem, Stack, Typography, useTheme } from "@mui/material";
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
-import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Icon from "@/app/Components/Icon";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { IContract, IContractApiResponse, IReports, IReportsApiResponse } from "@/Interface/Interfaces";
-import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form";
+import { IContract, IContractApiResponse, IReportsApiResponse } from "@/Interface/Interfaces";
+import { useForm, FieldError, useFieldArray } from "react-hook-form";
 import ReportAccordion from "./ReportAccordion";
 import { v4 as uuidv4 } from "uuid";
 import axiosInstance from "@/AxiosInstance/AxiosInstance";
 import SnackBar from "@/app/Components/SnackBar";
 import { usePathname, useRouter } from "next/navigation";
 import { AxiosError } from "axios";
-import TextFildControler from "@/app/Components/textFildControler";
-import SelectTextFildControler from "@/app/Components/SelectTextFildControler";
-import DatePickerControler from "@/app/Components/DatePickerControler";
+import TextFildControler from "@/app/Components/textFildControler/textFildControler";
+import SelectTextFildControler from "@/app/Components/textFildControler/SelectTextFildControler";
+import DatePickerControler from "@/app/Components/textFildControler/DatePickerControler";
 
 export interface ICreateContractProps {
   Contract: IContractApiResponse | undefined;
@@ -79,20 +56,22 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     control,
     reset,
     handleSubmit,
-    formState: { errors },
+    formState: { submitCount, errors },
   } = useForm<IContract>(defaultvalue);
   const { fields, append, remove } = useFieldArray<IContract>({
     control,
     name: "reports",
   });
+
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
   const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
+  const [isOpenSnackBarServer, setIsOpenSnackBarServer] = useState(false);
   const [isOpenSnackBarDeleteAccardion, setIsOpenSnackBarDeleteAccardion] = useState(false);
-  const [isOpenSnackBarFillInput, setIsOpenSnackBarFillInput] = useState(false);
+
   const [isExpended, setIsExpended] = useState<number | null>(null);
   const typeOfReport = ["خرید", "فروش"];
   const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
-  const handleCloseSnackBarFillInput = () => setIsOpenSnackBarFillInput((is) => !is);
+  const handleCloseSnackBarServer = () => setIsOpenSnackBarServer((is) => !is);
   const handleCloseSnackBarUpdate = () => setIsOpenSnackBarUpdate((is) => !is);
   const handleCloseSnackBarDeleteAccardion = () => setIsOpenSnackBarDeleteAccardion((is) => !is);
   const [formDataChanged, setFormDataChanged] = useState(false);
@@ -123,7 +102,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     });
     setIsExpended(fields.length);
   };
-
   const onSubmit = (data: IContract) => {
     if (Contract) {
       updateDataContract(data, Contract.id);
@@ -133,39 +111,37 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     }
   };
   const saveContract = async (contract: IContract) => {
+    console.log(contract);
+
     try {
       if (contract.reports.length === 0) {
         handleCloseSnackBarDeleteAccardion();
       } else {
-        const { data } = await axiosInstance.post("/AddReports", contract);
+        await axiosInstance.post("/AddReports", contract);
         handleCloseSnackBar();
         setTimeout(() => {
           router.push("/Contracts/ContractList");
         }, 2000);
       }
     } catch (error) {
-      console.log("problem:", error);
+      handleCloseSnackBarServer();
     }
   };
   const updateDataContract = async (contract: IContract, id: number) => {
     try {
       if (contract.reports.length === 0) {
         handleCloseSnackBarDeleteAccardion();
-      }
-      if (!formDataChanged) {
-        console.log("did not change");
-        setTimeout(() => {
-          router.push("/Contracts/ContractList");
-        }, 2000);
       } else {
         const { data } = await axiosInstance.post("/updateReports", { ...contract, id });
+
         handleCloseSnackBarUpdate();
         setTimeout(() => {
-          router.push("/Contracts/ContractList");
+          // router.push("/Contracts/ContractList");
+          router.back();
         }, 2000);
       }
     } catch (error: AxiosError | any) {
-      console.log("problem");
+      handleCloseSnackBarServer();
     }
   };
   useEffect(() => {
@@ -203,7 +179,9 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       console.log("add data");
     }
   }, [Contract]);
+
   const cardTitle = Contract ? (IsReturnPathName ? "ویرایش بازگشت وجه" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
+  console.log(isExpended);
 
   return (
     <Card>
@@ -216,11 +194,11 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
               <TextFildControler
                 inputName="numContract"
                 control={control}
-                errors={errors}
                 IsReturnPathName={IsReturnPathName}
                 setFormDataChanged={setFormDataChanged}
-                label={"شماره قراداد"}
-                requiredRule={"این فیلد الزامی است."}
+                label={"شماره قرارداد"}
+                inputError={!!errors.numContract}
+                helperText={errors.numContract ? (errors.numContract as FieldError).message : " "}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -228,11 +206,12 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 <DatePickerControler
                   inputName="dateContract"
                   control={control}
-                  errors={errors}
+                  inputErrors={!!errors.dateContract}
                   IsReturnPathName={IsReturnPathName}
                   setFormDataChanged={setFormDataChanged}
                   label="تاریخ قرارداد *"
                   requiredRule={"این فیلد الزامی است."}
+                  helperText={errors.dateContract ? (errors.dateContract as FieldError).message : " "}
                 />
               </LocalizationProvider>
             </Grid>
@@ -240,11 +219,11 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
               <SelectTextFildControler
                 inputName="typeContract"
                 control={control}
-                errors={errors}
                 IsReturnPathName={IsReturnPathName}
                 setFormDataChanged={setFormDataChanged}
                 label="نوع قرارداد"
-                requiredRule={"این فیلد الزامی است."}
+                inputError={!!errors.typeContract}
+                helperText={errors.typeContract ? (errors.typeContract as FieldError).message : " "}
               >
                 {typeOfReport.map((option) => (
                   <MenuItem key={option} value={option}>
@@ -257,11 +236,11 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
               <TextFildControler
                 inputName="customer"
                 control={control}
-                errors={errors}
                 IsReturnPathName={IsReturnPathName}
                 setFormDataChanged={setFormDataChanged}
                 label="طرف قرارداد"
-                requiredRule={"این فیلد الزامی است."}
+                inputError={!!errors.customer}
+                helperText={errors.customer ? (errors.customer as FieldError).message : " "}
               />
             </Grid>
           </Grid>
@@ -269,6 +248,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
           {fields.map((report, index: number) => (
             <ReportAccordion
               key={uuidv4()}
+              submitCount={submitCount}
               IsReturnPathName={IsReturnPathName}
               isExpended={isExpended === index}
               handleIsExpended={() => handleIsExpended(index)}
@@ -322,10 +302,10 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
           <SnackBar
             horizontal={"center"}
             vertical={"top"}
-            message={"فیلد هارا کامل پر کنید."}
-            isOpen={isOpenSnackBarFillInput}
-            handleClose={handleCloseSnackBarFillInput}
-            color={theme.palette.warning.main}
+            message={"سرور پاسخگو نیست."}
+            isOpen={isOpenSnackBarServer}
+            handleClose={handleCloseSnackBarServer}
+            color={theme.palette.error.main}
           />
         </CardActions>
       </form>
