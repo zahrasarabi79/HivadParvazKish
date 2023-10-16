@@ -11,9 +11,6 @@ import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
 const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, control, errors, reportIndex, paymentIndex, setFormDataChanged }) => {
-  console.log(reportIndex);
-  console.log(reportIndex === 0 ? "این فیلد الزامی است." : "");
-
   return (
     <>
       <Grid item xs={12} sm={4}>

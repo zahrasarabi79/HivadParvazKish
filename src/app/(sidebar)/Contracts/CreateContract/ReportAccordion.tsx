@@ -49,7 +49,6 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
   const Describtion = useWatch({ control, name: `reports.${reportIndex}.reportDescription` });
   //* we can not use watch and instead of it ,we use "useWatch"
   //* const Describtion2 = watch(`reports.${reportIndex}.reportDescription`);
-  console.log(isExpended);
 
   return (
     <>

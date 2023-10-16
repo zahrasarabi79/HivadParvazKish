@@ -116,6 +116,8 @@ export interface ISidebarItemComponent {
   handleSelectedListItem: (index: number, itemRoute: string) => void;
   selectListItem: ISelectListItem[];
   [index: number]: boolean;
+  // setSelectListItem: React.Dispatch<React.SetStateAction<ISelectListItem[]>>;
+  setSelectListItem: any;
 }
 
 export interface IReportAccordionProps {

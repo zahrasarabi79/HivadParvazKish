@@ -27,7 +27,6 @@ const DatePickerControler: React.FC<ITextFildControler> = ({
   const [DatePickerError, setDatePickerError] = useState<DateValidationError | null>(null);
   const datePickerErrorMessage = useMemo(() => {
     switch (DatePickerError) {
-      
       case "minDate": {
         return "تاریخ واردشده معتبر نمی باشد";
       }
@@ -73,7 +72,7 @@ const DatePickerControler: React.FC<ITextFildControler> = ({
           }}
           slotProps={{
             textField: {
-              error: inputErrors,
+              error: datePickerErrorMessage !== " " || inputErrors,
               helperText: datePickerErrorMessage || helperText,
             },
           }}

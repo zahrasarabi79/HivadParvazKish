@@ -181,7 +181,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   }, [Contract]);
 
   const cardTitle = Contract ? (IsReturnPathName ? "ویرایش بازگشت وجه" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
-  console.log(isExpended);
 
   return (
     <Card>

@@ -4,15 +4,18 @@ import React from "react";
 import SidebarItem from "../(sidebar)/SidebarItem";
 import { ISelectListItem } from "@/Interface/Interfaces";
 import Icon from "./Icon";
+import { useParams } from "next/navigation";
 export interface IDrawerItemComponenet {
   open: boolean;
   handleSelectedListItem: (index: number, itemRoute: string) => void;
   selectListItem: ISelectListItem[];
   handleCloseDrawer: () => void;
+  setSelectListItem: React.Dispatch<React.SetStateAction<ISelectListItem[]>>;
 }
-const DrawerItem: React.FC<IDrawerItemComponenet> = ({ open, handleSelectedListItem, selectListItem, handleCloseDrawer }) => {
+const DrawerItem: React.FC<IDrawerItemComponenet> = ({ open, handleSelectedListItem, setSelectListItem, selectListItem, handleCloseDrawer }) => {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.up("sm"));
+  const currentRoute = useParams();
 
   return (
     <>
@@ -25,8 +28,8 @@ const DrawerItem: React.FC<IDrawerItemComponenet> = ({ open, handleSelectedListI
         )}
       </Stack>
 
-      <List sx={{ paddingY: 0 }}>
-        <SidebarItem open={open} handleSelectedListItem={handleSelectedListItem} selectListItem={selectListItem} />
+      <List>
+        <SidebarItem open={open} handleSelectedListItem={handleSelectedListItem} selectListItem={selectListItem} setSelectListItem={setSelectListItem}/>
       </List>
 
       <Stack
@@ -35,7 +38,6 @@ const DrawerItem: React.FC<IDrawerItemComponenet> = ({ open, handleSelectedListI
           transform: open ? "rotate(0deg)" : "rotate(180deg)",
           position: "fixed",
           bottom: 0,
-          
         }}
       >
         <IconButton sx={{ padding: "8px", margin: 2 }} onClick={handleCloseDrawer}>

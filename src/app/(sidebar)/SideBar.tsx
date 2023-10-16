@@ -3,7 +3,7 @@ import { Box, Drawer, List, Toolbar, Typography, useMediaQuery, useTheme } from 
 import SidebarItem, { HivadSidebarItems } from "./SidebarItem";
 import { IDrawerWidth, ISelectListItem } from "@/Interface/Interfaces";
 import { DrawerDesktop } from "@/Utils/style/stylecomponent";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import Navbar from "./Navbar";
@@ -14,6 +14,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.up("sm"));
   const router = useRouter();
+  const currentPath = usePathname();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(true);
@@ -34,7 +35,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       }))
     );
   };
-  const handleSelectedListItem = (index: number, itemRoute: string) => {
+  const handleSelectedListItem = (index: number, itemRoute: string = "") => {
     if (open) {
       setSelectListItem((prevItems: ISelectListItem[]) => {
         const updatedItems = prevItems.map((item, i) => ({
@@ -65,7 +66,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth.desktop },
           }}
         >
-          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleDrawerToggle} />
+          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleDrawerToggle} setSelectListItem={setSelectListItem} />
         </Drawer>
         <DrawerDesktop
           variant="permanent"
@@ -73,10 +74,10 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           open={open}
           sx={{
             display: { xs: "none", sm: "block" },
-            position: 'relative' 
+            position: "relative",
           }}
         >
-          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleCloseDrawer} />
+          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleCloseDrawer} setSelectListItem={setSelectListItem} />
         </DrawerDesktop>
       </Box>
       <Box component="main" sx={{ flexGrow: 1, p: 3, width: open ? `calc(100% - ${drawerWidth.desktop}px)` : `calc(100% - ${drawerWidth.mobile}px)` }}>
