@@ -27,8 +27,6 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
   const smDown = useMediaQuery(theme.breakpoints.up("sm"));
   const router = useRouter();
   const currentPath = usePathname();
-  const [selectedChildIndex, setSelectedChildIndex] = useState<any>(null);
-  const [isAnyParentMatched, setIsAnyParentMatched] = useState(false);
 
   const isActive = (item: SidebarItem | SidebarItemChildren): boolean => {
     if (item.route) {
@@ -50,15 +48,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
 
   const childrenCollapsItemButton = (childerItem: SidebarItemChildren, index) => {
     router.push(childerItem.route || "");
-    const isParentMatched = currentPath === childerItem.route;
-    if (isParentMatched) {
-      setIsAnyParentMatched(true);
-    }
   };
-  useEffect(() => {
-    console.log(currentPath);
-    console.log(selectedChildIndex?.route);
-  }, [selectedChildIndex]);
 
   return HivadSidebarItems.map((item: SidebarItem, index: number) => {
     const isAnyChildMatched = open ? item.children?.some((childerItem) => currentPath === childerItem.route) : false;

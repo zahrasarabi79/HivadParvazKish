@@ -64,9 +64,16 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           sx={{
             display: { xs: "block", sm: "none" },
             "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth.desktop },
+            direction: "initial",
           }}
         >
-          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleDrawerToggle} setSelectListItem={setSelectListItem} />
+          <DrawerItem
+            open={open}
+            selectListItem={selectListItem}
+            handleSelectedListItem={handleSelectedListItem}
+            handleCloseDrawer={handleDrawerToggle}
+            setSelectListItem={setSelectListItem}
+          />
         </Drawer>
         <DrawerDesktop
           variant="permanent"
@@ -77,7 +84,13 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             position: "relative",
           }}
         >
-          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleCloseDrawer} setSelectListItem={setSelectListItem} />
+          <DrawerItem
+            open={open}
+            selectListItem={selectListItem}
+            handleSelectedListItem={handleSelectedListItem}
+            handleCloseDrawer={handleCloseDrawer}
+            setSelectListItem={setSelectListItem}
+          />
         </DrawerDesktop>
       </Box>
       <Box component="main" sx={{ flexGrow: 1, p: 3, width: open ? `calc(100% - ${drawerWidth.desktop}px)` : `calc(100% - ${drawerWidth.mobile}px)` }}>

@@ -67,14 +67,14 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
   const [isOpenSnackBarServer, setIsOpenSnackBarServer] = useState(false);
   const [isOpenSnackBarDeleteAccardion, setIsOpenSnackBarDeleteAccardion] = useState(false);
-
-  const [isExpended, setIsExpended] = useState<number | null>(null);
+  const [isExpended, setIsExpended] = useState<number | null>(0);
+  const [formDataChanged, setFormDataChanged] = useState(false);
   const typeOfReport = ["خرید", "فروش"];
+  
   const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
   const handleCloseSnackBarServer = () => setIsOpenSnackBarServer((is) => !is);
   const handleCloseSnackBarUpdate = () => setIsOpenSnackBarUpdate((is) => !is);
   const handleCloseSnackBarDeleteAccardion = () => setIsOpenSnackBarDeleteAccardion((is) => !is);
-  const [formDataChanged, setFormDataChanged] = useState(false);
   const handleIsExpended: (index: number | null) => void = (index) => {
     setIsExpended((isExpended) => (isExpended === index ? null : index));
   };

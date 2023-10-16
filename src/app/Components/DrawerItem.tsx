@@ -29,18 +29,22 @@ const DrawerItem: React.FC<IDrawerItemComponenet> = ({ open, handleSelectedListI
       </Stack>
 
       <List>
-        <SidebarItem open={open} handleSelectedListItem={handleSelectedListItem} selectListItem={selectListItem} setSelectListItem={setSelectListItem}/>
+        <SidebarItem open={open} handleSelectedListItem={handleSelectedListItem} selectListItem={selectListItem} setSelectListItem={setSelectListItem} />
       </List>
 
       <Stack
         sx={{
-          transition: "  transform .4s ease-in-out",
-          transform: open ? "rotate(0deg)" : "rotate(180deg)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          transition: "  transform .3s ease-in-out",
+          transform: smDown ? (open ? "rotate(0deg)" : "rotate(180deg)") : "rotate(0deg)",
           position: "fixed",
           bottom: 0,
         }}
       >
-        <IconButton sx={{ padding: "8px", margin: 2 }} onClick={handleCloseDrawer}>
+        <IconButton sx={{ padding: "4px", margin: 2 }} onClick={handleCloseDrawer}>
           <Icon pathName={"../icon/ArrowIcon.svg"} focused={false} color="white" />
         </IconButton>
       </Stack>
