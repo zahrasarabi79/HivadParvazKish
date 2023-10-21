@@ -58,19 +58,23 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     handleSubmit,
     formState: { submitCount, errors },
   } = useForm<IContract>(defaultvalue);
+
   const { fields, append, remove } = useFieldArray<IContract>({
     control,
     name: "reports",
   });
 
+  console.log("field array", fields);
+
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
   const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
   const [isOpenSnackBarServer, setIsOpenSnackBarServer] = useState(false);
   const [isOpenSnackBarDeleteAccardion, setIsOpenSnackBarDeleteAccardion] = useState(false);
+  const [isOpenSnackBarReturnPayment, setIsOpenSnackBarReturnPayment] = useState(false);
   const [isExpended, setIsExpended] = useState<number | null>(0);
   const [formDataChanged, setFormDataChanged] = useState(false);
   const typeOfReport = ["خرید", "فروش"];
-  
+  const handleCloseReturnPayment = () => setIsOpenSnackBarReturnPayment((is) => !is);
   const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
   const handleCloseSnackBarServer = () => setIsOpenSnackBarServer((is) => !is);
   const handleCloseSnackBarUpdate = () => setIsOpenSnackBarUpdate((is) => !is);
@@ -112,10 +116,17 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   };
   const saveContract = async (contract: IContract) => {
     console.log(contract);
+    const isReportsPayment = contract.reports.map((report) => {
+      return report.reportsPayment.length === 0;
+    });
+    console.log(isReportsPayment);
 
     try {
       if (contract.reports.length === 0) {
         handleCloseSnackBarDeleteAccardion();
+      }
+      if (!isReportsPayment) {
+        handleCloseReturnPayment();
       } else {
         await axiosInstance.post("/AddReports", contract);
         handleCloseSnackBar();
@@ -128,9 +139,16 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     }
   };
   const updateDataContract = async (contract: IContract, id: number) => {
+    const isReportsPayment = contract.reports.map((report) => {
+      return report.reportsPayment.length === 0;
+    });
+
     try {
       if (contract.reports.length === 0) {
         handleCloseSnackBarDeleteAccardion();
+      }
+      if (!isReportsPayment) {
+        handleCloseReturnPayment();
       } else {
         const { data } = await axiosInstance.post("/updateReports", { ...contract, id });
 
@@ -194,7 +212,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 inputName="numContract"
                 control={control}
                 IsReturnPathName={IsReturnPathName}
-                setFormDataChanged={setFormDataChanged}
                 label={"شماره قرارداد"}
                 inputError={!!errors.numContract}
                 helperText={errors.numContract ? (errors.numContract as FieldError).message : " "}
@@ -207,7 +224,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                   control={control}
                   inputErrors={!!errors.dateContract}
                   IsReturnPathName={IsReturnPathName}
-                  setFormDataChanged={setFormDataChanged}
                   label="تاریخ قرارداد *"
                   requiredRule={"این فیلد الزامی است."}
                   helperText={errors.dateContract ? (errors.dateContract as FieldError).message : " "}
@@ -219,7 +235,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 inputName="typeContract"
                 control={control}
                 IsReturnPathName={IsReturnPathName}
-                setFormDataChanged={setFormDataChanged}
                 label="نوع قرارداد"
                 inputError={!!errors.typeContract}
                 helperText={errors.typeContract ? (errors.typeContract as FieldError).message : " "}
@@ -236,7 +251,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                 inputName="customer"
                 control={control}
                 IsReturnPathName={IsReturnPathName}
-                setFormDataChanged={setFormDataChanged}
                 label="طرف قرارداد"
                 inputError={!!errors.customer}
                 helperText={errors.customer ? (errors.customer as FieldError).message : " "}
@@ -246,7 +260,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
 
           {fields.map((report, index: number) => (
             <ReportAccordion
-              key={uuidv4()}
+              key={report.id}
               submitCount={submitCount}
               IsReturnPathName={IsReturnPathName}
               isExpended={isExpended === index}
@@ -256,7 +270,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
               errors={errors}
               reportIndex={index}
               appendReport={append}
-              setFormDataChanged={setFormDataChanged}
             />
           ))}
           <Grid item xs={12} onClick={handleOnClickAddAccordion} sx={{ pt: 5, display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -274,14 +287,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
           <Button type="submit" variant="contained" color="primary">
             ثبت
           </Button>
-          <SnackBar
-            horizontal={"center"}
-            vertical={"top"}
-            message={"قرارداد با موفقیت ثبت شد."}
-            isOpen={isOpenSnackBar}
-            handleClose={handleCloseSnackBar}
-            color="rgb(11, 150, 30)"
-          />
+          <SnackBar horizontal={"center"} vertical={"top"} message={"قرارداد با موفقیت ثبت شد."} isOpen={isOpenSnackBar} handleClose={handleCloseSnackBar} color="rgb(11, 150, 30)" />
           <SnackBar
             horizontal={"center"}
             vertical={"top"}
@@ -290,22 +296,16 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
             handleClose={handleCloseSnackBarDeleteAccardion}
             color={theme.palette.warning.main}
           />
+          <SnackBar horizontal={"center"} vertical={"top"} message={"قرارداد با موفقیت ویرایش شد."} isOpen={isOpenSnackBarUpdate} handleClose={handleCloseSnackBarUpdate} color="rgb(11, 150, 30)" />
           <SnackBar
             horizontal={"center"}
             vertical={"top"}
-            message={"قرارداد با موفقیت ویرایش شد."}
-            isOpen={isOpenSnackBarUpdate}
-            handleClose={handleCloseSnackBarUpdate}
-            color="rgb(11, 150, 30)"
+            message={"حداقل یک پرداخت وارد کنید."}
+            isOpen={isOpenSnackBarReturnPayment}
+            handleClose={handleCloseReturnPayment}
+            color={theme.palette.warning.main}
           />
-          <SnackBar
-            horizontal={"center"}
-            vertical={"top"}
-            message={"سرور پاسخگو نیست."}
-            isOpen={isOpenSnackBarServer}
-            handleClose={handleCloseSnackBarServer}
-            color={theme.palette.error.main}
-          />
+          <SnackBar horizontal={"center"} vertical={"top"} message={"سرور پاسخگو نیست."} isOpen={isOpenSnackBarServer} handleClose={handleCloseSnackBarServer} color={theme.palette.error.main} />
         </CardActions>
       </form>
     </Card>

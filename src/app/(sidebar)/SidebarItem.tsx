@@ -5,24 +5,24 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
 export const HivadSidebarItems: SidebarItem[] = [
-  {
-    title: "داشبورد",
-    route: "/dashboard",
-    icon: "dashboard.svg",
-  },
+  // {
+  //   title: "داشبورد",
+  //   route: "/dashboard",
+  //   icon: "dashboard.svg",
+  // },
   {
     title: "قرارداد های هیواد",
     icon: "plainicon.svg",
     children: [
-      { title: "ایجاد قراردادها", route: "/Contracts/CreateContract" },
       {
         title: "لیست قراردادها",
         route: "/Contracts/ContractList",
       },
+      { title: "ایجاد قراردادها", route: "/Contracts/CreateContract" },
     ],
   },
 ];
-const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedListItem, selectListItem, setSelectListItem }) => {
+const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedListItem, selectListItem, handleCloseDrawer }) => {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.up("sm"));
   const router = useRouter();
@@ -33,21 +33,14 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
       return currentPath?.includes(item.route) ?? false;
     }
     if ("children" in item) {
-      return item.children?.some((child) => isActive(child)) as boolean;
+      return item.children?.some((child, index) => isActive(child)) as boolean;
     }
     return false;
   };
-  const handleOpenItems = () => {
-    setSelectListItem((prevItems: ISelectListItem[]) =>
-      prevItems.map((item) => ({
-        ...item,
-        openChildrenItem: open,
-      }))
-    );
-  };
 
-  const childrenCollapsItemButton = (childerItem: SidebarItemChildren, index) => {
+  const childrenCollapsItemButton = (childerItem: SidebarItemChildren) => {
     router.push(childerItem.route || "");
+    handleCloseDrawer();
   };
 
   return HivadSidebarItems.map((item: SidebarItem, index: number) => {
@@ -123,7 +116,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
               <Collapse key={parentIndex} in={isAnyChildMatched || selectListItem[index].openChildrenItem}>
                 <List component="div" disablePadding>
                   <ListItemButton
-                    onClick={() => childrenCollapsItemButton(childerItem, parentIndex)}
+                    onClick={() => childrenCollapsItemButton(childerItem)}
                     sx={{
                       borderRadius: "25px",
                       mx: 1,

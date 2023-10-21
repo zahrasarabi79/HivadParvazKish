@@ -4,7 +4,6 @@ import { NumericFormat } from "react-number-format";
 
 export interface INumericFormatControlerProps {
   control: Control<any>;
-  setFormDataChanged: (arg: boolean) => void;
   IsReturnPathName?: boolean;
   inputError: boolean;
   inputName: string;
@@ -16,7 +15,7 @@ export interface INumericFormatControlerProps {
 const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
   requiredRule = "این فیلد الزامی است.",
   control,
-  setFormDataChanged,
+
   IsReturnPathName = false,
   inputError,
   helperText,
@@ -24,6 +23,12 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
   inputName,
   label,
 }) => {
+  const conv2EnNum = (s: string | null) => {
+    return s?.replace(/[۰-۹]/g, (d: string) => {
+      return "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString();
+    });
+  };
+
   return (
     <Controller
       name={inputName}
@@ -34,10 +39,14 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
       render={({ field }) => (
         <NumericFormat
           value={field.value}
-          onValueChange={(v) => {
-            field.onChange(v.value);
+          onInput={(val: React.ChangeEvent<HTMLInputElement>) => {
+            field.onChange(conv2EnNum(val.target.value));
           }}
-          onBlur={() => setFormDataChanged(true)}
+          onChange={(e) => e.stopPropagation()}
+          // onValueChange={(e) => {
+          //   e.stopPropagation();
+          // }}
+
           customInput={TextField}
           thousandSeparator
           disabled={IsReturnPathName}

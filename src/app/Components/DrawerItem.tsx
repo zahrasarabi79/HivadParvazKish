@@ -21,6 +21,7 @@ const DrawerItem: React.FC<IDrawerItemComponenet> = ({ open, handleSelectedListI
     <>
       <Stack style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 25, justifyContent: "space-between" }}>
         <Image src="/image/pouyagaranLogo.svg" priority={true} width={40} height={40} alt="pouyagaranLogo" style={{ marginBottom: smDown ? (open ? "42px" : "22px") : "42px" }} />
+
         {((smDown && open) || (!smDown && open)) && (
           <Typography variant="body2" sx={{ mb: 3 }}>
             مدیریت ارتباط با مشتریان
@@ -29,7 +30,7 @@ const DrawerItem: React.FC<IDrawerItemComponenet> = ({ open, handleSelectedListI
       </Stack>
 
       <List>
-        <SidebarItem open={open} handleSelectedListItem={handleSelectedListItem} selectListItem={selectListItem} setSelectListItem={setSelectListItem} />
+        <SidebarItem open={open} handleSelectedListItem={handleSelectedListItem} selectListItem={selectListItem} handleCloseDrawer={handleCloseDrawer} />
       </List>
 
       <Stack

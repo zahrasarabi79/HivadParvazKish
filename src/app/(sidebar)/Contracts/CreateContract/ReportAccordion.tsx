@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid, IconButton, Stack, Typography, useTheme } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid, IconButton, Stack, TextField, Typography, useTheme } from "@mui/material";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import Icon from "@/app/Components/Icon";
 import { FieldError, useFieldArray, useWatch } from "react-hook-form";
@@ -6,32 +6,30 @@ import { IContract, IReportAccordionProps } from "@/Interface/Interfaces";
 import ReportPayment from "./ReportPayment";
 import { v4 as uuidv4 } from "uuid";
 import ReportReturnPayment from "./ReportReturnPayment";
-import { useEffect, useState } from "react";
-import SnackBar from "@/app/Components/SnackBar";
-import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import TextFildControler from "@/app/Components/textFildControler/textFildControler";
 import NumericFormatControler from "@/app/Components/textFildControler/NumericFormatControler";
 
-const ReportAccordion: React.FC<IReportAccordionProps> = ({
-  submitCount,
-  IsReturnPathName,
-  isExpended,
-  handleIsExpended,
-  removeReport,
-  control,
-  errors,
-  reportIndex,
-  setFormDataChanged,
-}) => {
+const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsReturnPathName, isExpended, handleIsExpended, removeReport, control, errors, reportIndex }) => {
   const theme = useTheme();
-  const { fields: reportsPaymentFields, append: appendReportsPayment } = useFieldArray<IContract>({
+  const {
+    fields: reportsPaymentFields,
+    append: appendReportsPayment,
+    remove: removeReportsPayment,
+  } = useFieldArray<IContract>({
     control,
     name: `reports.${reportIndex}.reportsPayment`,
   });
-  const { fields: reportsReturnPaymentFields, append: appendReportsReturnPayment } = useFieldArray<IContract>({
+
+  const {
+    fields: reportsReturnPaymentFields,
+    append: appendReportsReturnPayment,
+    remove: removeReportsReturnPayment,
+  } = useFieldArray<IContract>({
     control,
     name: `reports.${reportIndex}.reportsReturnPayment`,
   });
+
   const [accordionError, setaccordionError] = useState<number[]>([]);
   const [isOpenSnackBarDelete, setIsOpenSnackBarDelete] = useState(false);
   const handleCloseSnackBarDelete = () => setIsOpenSnackBarDelete(true);
@@ -47,6 +45,8 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
   }, [errors, submitCount]);
 
   const Describtion = useWatch({ control, name: `reports.${reportIndex}.reportDescription` });
+  const totalcost = useWatch({ control, name: `reports.${reportIndex}.totalCost` });
+
   //* we can not use watch and instead of it ,we use "useWatch"
   //* const Describtion2 = watch(`reports.${reportIndex}.reportDescription`);
 
@@ -70,10 +70,10 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
             boxShadow: "none",
             borderRadius: "0.5rem",
             justifyContent: "inherit",
-            border: accordionError.includes(reportIndex) ? "2px solid red" : "none",
+            // border: accordionError.includes(reportIndex) ? "2px solid red" : "none",
             "&.Mui-expanded": {
               bgcolor: "#4B495c",
-              borderBottom: accordionError.includes(reportIndex) ? "2px solid red" : "2px solid  #FF661F",
+              // borderBottom: accordionError.includes(reportIndex) ? "2px solid red" : "2px solid  #FF661F",
               borderTopLeftRadius: "1rem",
               borderTopRightRadius: "1rem",
               borderBottomLeftRadius: "0",
@@ -107,14 +107,15 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
           <Grid container spacing={1} rowSpacing={3} alignItems={"center"} sx={{ mt: 0.5 }}>
             <Grid item xs={12} sm={4}>
               <TextFildControler
+
                 inputName={`reports.${reportIndex}.reportDescription`}
                 control={control}
                 IsReturnPathName={IsReturnPathName}
-                setFormDataChanged={setFormDataChanged}
                 label="شرح و مشخصات"
                 inputError={!!errors.reports?.[reportIndex]?.reportDescription}
                 helperText={errors.reports?.[reportIndex]?.reportDescription ? (errors.reports?.[reportIndex]?.reportDescription as FieldError).message : " "}
               />
+
               {/* <Controller
                 name={`reports.${reportIndex}.reportDescription`}
                 control={control}
@@ -138,7 +139,6 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 inputName={`reports.${reportIndex}.presenter`}
                 control={control}
                 IsReturnPathName={IsReturnPathName}
-                setFormDataChanged={setFormDataChanged}
                 label="مجری"
                 inputError={!!errors.reports?.[reportIndex]?.presenter}
                 helperText={errors.reports?.[reportIndex]?.presenter ? (errors.reports?.[reportIndex]?.presenter as FieldError).message : " "}
@@ -149,7 +149,6 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 inputName={`reports.${reportIndex}.totalCost`}
                 control={control}
                 IsReturnPathName={IsReturnPathName}
-                setFormDataChanged={setFormDataChanged}
                 label={"قیمت کل (ریال)"}
                 inputError={!!errors.reports?.[reportIndex]?.totalCost}
                 helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
@@ -170,7 +169,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
                 reportIndex={reportIndex}
                 paymentIndex={index}
                 IsReturnPathName={IsReturnPathName}
-                setFormDataChanged={setFormDataChanged}
+                remove={removeReportsPayment}
               />
             ))}
             <Grid
@@ -189,9 +188,12 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
               alignItems={"center"}
             >
               {!IsReturnPathName && (
-                <IconButton>
-                  <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
-                </IconButton>
+                <Button>
+                  <Stack justifyContent={"center"} alignItems={"center"}>
+                    <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
+                    <Typography variant="body1">افزودن پرداخت ها</Typography>
+                  </Stack>
+                </Button>
               )}
             </Grid>
             <Grid item xs={12}>
@@ -200,21 +202,29 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
               </Typography>
               <Divider />
             </Grid>
+
             {reportsReturnPaymentFields.map((reportReturnPayment, index) => (
-              <ReportReturnPayment key={uuidv4()} control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} setFormDataChanged={setFormDataChanged} />
+              <ReportReturnPayment
+                key={uuidv4()}
+                control={control}
+                errors={errors}
+                reportIndex={reportIndex}
+                paymentIndex={index}
+                remove={removeReportsReturnPayment}
+              />
             ))}
           </Grid>
           <Grid
             item
             xs={12}
-            onClick={() =>
+            onClick={() => {
               appendReportsReturnPayment({
                 returnPaymentsbank: "",
                 returnPayments: "",
                 dateReturnPayment: null,
                 returnPaymentDescription: "",
-              })
-            }
+              });
+            }}
             display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}
@@ -226,17 +236,8 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({
               </Stack>
             </Button>
           </Grid>
-          <SnackBar
-            horizontal={"center"}
-            vertical={"top"}
-            message={"اجازه حذف این آیتم را ندارید. "}
-            handleClose={handleCloseSnackBarDelete}
-            isOpen={isOpenSnackBarDelete}
-            color={theme.palette.warning.main}
-          />
         </AccordionDetails>
       </Accordion>
-     
     </>
   );
 };

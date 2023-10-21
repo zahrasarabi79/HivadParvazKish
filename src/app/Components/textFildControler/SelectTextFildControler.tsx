@@ -4,7 +4,7 @@ import { TextFildCustom } from "./TextFiledCustom";
 import { IContract } from "@/Interface/Interfaces";
 export interface ITextFildControler {
   control: Control<any>;
-  setFormDataChanged: (arg: boolean) => void;
+
   IsReturnPathName: boolean;
   inputError: boolean;
   inputName: string;
@@ -12,7 +12,7 @@ export interface ITextFildControler {
   children: React.ReactNode;
   helperText: string | undefined;
 }
-const SelectTextFildControler: React.FC<ITextFildControler> = ({ control, setFormDataChanged, IsReturnPathName, inputError, helperText, inputName, label, children }) => {
+const SelectTextFildControler: React.FC<ITextFildControler> = ({ control, IsReturnPathName, inputError, helperText, inputName, label, children }) => {
   return (
     <Controller
       name={`${inputName}`}
@@ -20,17 +20,7 @@ const SelectTextFildControler: React.FC<ITextFildControler> = ({ control, setFor
       defaultValue={""}
       rules={{ required: "این فیلد الزامی است." }}
       render={({ field }) => (
-        <TextFildCustom
-          {...field}
-          onBlur={() => setFormDataChanged(true)} // Set formDataChanged to true when the input loses focus
-          required
-          fullWidth
-          select
-          disabled={IsReturnPathName}
-          label={label}
-          error={inputError}
-          helperText={helperText}
-        >
+        <TextFildCustom {...field} required fullWidth select disabled={IsReturnPathName} label={label} error={inputError} helperText={helperText}>
           {children}
         </TextFildCustom>
       )}

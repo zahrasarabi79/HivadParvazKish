@@ -1,14 +1,13 @@
 "use client";
 import { AppBar, Avatar, Fade, IconButton, Menu, MenuItem, Stack, Toolbar, Typography, styled, useMediaQuery, useTheme } from "@mui/material";
 import Image from "next/image";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SmsFailedIcon from "@mui/icons-material/SmsFailed";
 import { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import { drawerWidth } from "./SideBar";
-// import { AppBar } from "../../../Utils/style/stylecomponent";
-
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 export interface NavbarProps {
   isDesktopSidebarOpen: boolean;
   onDrawerOpen: () => void;
@@ -26,6 +25,9 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
     if (!localStorage.getItem("myToken")) {
       router.push("/login");
     }
+  };
+  const Profile = () => {
+    router.push("/Profile");
   };
 
   return (
@@ -46,8 +48,8 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
     >
       <Toolbar variant="dense" sx={{ bgcolor: theme.palette.background.paper, justifyContent: "space-between" }}>
         <Stack>
-          <IconButton onClick={onDrawerOpen} sx={{ display: { sm: "none", xs: "block" } }}>
-            <Image src="/image/pouyagaranLogo.svg" priority={true} width={30} height={30} alt="pouyagaranLogo" />
+          <IconButton onClick={onDrawerOpen} sx={{ display: { sm: "none", xs: "flex" } }}>
+            <MenuIcon />
           </IconButton>
         </Stack>
         <Stack direction={"row"}>
@@ -71,12 +73,16 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
               <Avatar sx={{ width: 30, height: 30, bgcolor: theme.palette.primary.light }} alt={"zahra sarabi"} />
               <Typography variant="body1">{"زهرا سرابی"}</Typography>
             </MenuItem>
-            <MenuItem onClick={Logout} sx={{ gap: 1 }}>
+            <MenuItem onClick={Profile} sx={{ gap: 1, m: 1, transition: ".1s all", borderRadius: 1 }}>
+              <ModeEditIcon sx={{ width: 22, height: 22 }} />
+              <Typography variant="body2">ویرایش رمز عبور</Typography>
+            </MenuItem>
+            <MenuItem onClick={Logout} sx={{ mx: 1, gap: 1, transition: ".1s all", borderRadius: 1 }}>
               <LogoutIcon sx={{ width: 22, height: 22 }} />
               <Typography variant="body2">خروج</Typography>
             </MenuItem>
           </Menu>
-          {/* notification */}
+          {/* notification
           <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => setAnchorElNotification(e.currentTarget)}>
             <Image src="/icon/notification.svg" width={20} height={20} alt="notification" />
           </IconButton>
@@ -96,7 +102,7 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
               <SmsFailedIcon sx={{ color: theme.palette.error.light }} />
               <Typography variant="body1">{"در حال حاضر پیامی ندارید!!!"}</Typography>
             </MenuItem>
-          </Menu>
+          </Menu> */}
         </Stack>
       </Toolbar>
     </AppBar>

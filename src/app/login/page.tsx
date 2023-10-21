@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
   return (
-    <Container component="main" maxWidth="sm" sx={{ justifyContent: "center", alignItems: "center", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <Container component="main" sx={{ justifyContent: "center", alignItems: "center", minHeight: "100vh", display: "flex", flexDirection: "column", maxWidth: "sm" }}>
       <Card
         sx={{
           py: 2,
@@ -51,9 +51,7 @@ function LoginForm() {
     watch,
     setError,
   } = useForm<IUser>({ defaultValues: { username: "", password: "" } });
-
   const WatchFilds = Object.values(watch()).every((value) => value);
-  console.log(WatchFilds);
   const theme = useTheme();
   const handleClickShowPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -72,17 +70,10 @@ function LoginForm() {
   };
   const getToken = async (response: Token) => {
     localStorage.setItem("myToken", response.token);
-    router.push("/dashboard");
+    router.push("/Contracts/ContractList");
   };
 
-  useEffect(() => {
-    if (localStorage.getItem("myToken")) {
-      router.push("/dashboard");
-    } else {
-      localStorage.removeItem("myToken");
-    }
-  }, []);
-
+  
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -120,19 +111,12 @@ function LoginForm() {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button
-              type="submit"
-              disabled={!WatchFilds}
-              fullWidth
-              variant="contained"
-              sx={{ height: "45px", bgcolor: WatchFilds ? theme.palette.primary.main : "default", boxShadow: "none" }}
-            >
+            <Button type="submit" disabled={!WatchFilds} fullWidth variant="contained" sx={{ height: "45px", bgcolor: WatchFilds ? theme.palette.primary.main : "default", boxShadow: "none" }}>
               ورود
             </Button>
           </Grid>
         </Grid>
       </form>
-      <DevTool control={control} />
     </>
   );
 }

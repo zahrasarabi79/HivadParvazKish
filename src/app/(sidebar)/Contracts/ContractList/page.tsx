@@ -1,14 +1,4 @@
 "use client";
-import axiosInstance from "@/AxiosInstance/AxiosInstance";
-import { AxiosError } from "axios";
-import { IContract, IContractApiResponse } from "@/Interface/Interfaces";
-import { StyledTableCell, StyledTableRow } from "@/Utils/style/stylecomponent";
-import Icon from "@/app/Components/Icon";
-import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import KeepMountedModal from "./ShowModal";
-import { formatDate } from "@/app/Components/format date";
 import {
   Card,
   CardHeader,
@@ -21,7 +11,6 @@ import {
   TableRow,
   TableBody,
   Paper,
-  Pagination,
   IconButton,
   Typography,
   useTheme,
@@ -30,8 +19,17 @@ import {
   CircularProgress,
   Grid,
   CardActions,
-  Stack,
 } from "@mui/material";
+import { StyledTableCell, StyledTableRow } from "@/Utils/style/stylecomponent";
+import axiosInstance from "@/AxiosInstance/AxiosInstance";
+import { AxiosError } from "axios";
+import Image from "next/image";
+import { IContractApiResponse } from "@/Interface/Interfaces";
+import Icon from "@/app/Components/Icon";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import KeepMountedModal from "./ShowModal";
+import { formatDate } from "@/app/Components/format date";
 import PaginationComponent from "@/app/Components/Pagination";
 
 const ListOfReport = () => {
@@ -94,7 +92,7 @@ const ListOfReport = () => {
       <Divider variant="middle" />
       {loading ? (
         <Grid container>
-          <Grid item xs={12} sx={{ margin: 10 }} display={"flex"} justifyContent={"center"} alignContent={"center"}>
+          <Grid item xs={12} sx={{ margin: 10, display: "flex", justifyContent: "center", alignContent: "center" }}>
             <CircularProgress />
           </Grid>
         </Grid>
@@ -175,7 +173,7 @@ const ListOfReport = () => {
       ) : (
         <CardContent sx={{ minHeight: "72vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
           <Typography variant="h6">در حال حاضر قراردادی وجود ندارد.</Typography>
-          <Image src={"/icon/Vector.svg"} width={400} height={400} alt="Vector" />
+          <Image src={"/icon/Vector.svg"} width={mdUp ? 400 : 300} height={mdUp ? 400 : 300} alt="Vector" />
         </CardContent>
       )}
 

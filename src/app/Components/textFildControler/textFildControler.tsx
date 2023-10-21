@@ -4,7 +4,6 @@ import { TextFildCustom } from "./TextFiledCustom";
 import { IContract } from "@/Interface/Interfaces";
 export interface ITextFildControler {
   control: Control<any>;
-  setFormDataChanged: (arg: boolean) => void;
   IsReturnPathName?: boolean;
   inputError: boolean;
   inputName: string;
@@ -12,18 +11,9 @@ export interface ITextFildControler {
   label: string;
   required?: boolean;
   requiredRule?: string;
+  key?: any;
 }
-const TextFildControler: React.FC<ITextFildControler> = ({
-  requiredRule = "این فیلد الزامی است.",
-  required = true,
-  helperText,
-  control,
-  setFormDataChanged,
-  IsReturnPathName = false,
-  inputError,
-  inputName,
-  label,
-}) => {
+const TextFildControler: React.FC<ITextFildControler> = ({ requiredRule = "این فیلد الزامی است.", required = true, helperText, control, IsReturnPathName = false, inputError, inputName, label }) => {
   return (
     <Controller
       name={inputName}
@@ -31,17 +21,7 @@ const TextFildControler: React.FC<ITextFildControler> = ({
       defaultValue={""}
       rules={{ required: requiredRule }}
       render={({ field }) => (
-        <TextFildCustom
-          {...field}
-          onBlur={() => setFormDataChanged(true)} // Set formDataChanged to true when the input loses focus
-          required={required}
-          fullWidth
-          disabled={IsReturnPathName}
-          label={label}
-          error={inputError}
-          helperText={helperText}
-          inputProps={{ maxLength: 40 }}
-        />
+        <TextFildCustom {...field} required={required} fullWidth disabled={IsReturnPathName} label={label} error={inputError} helperText={helperText} inputProps={{ maxLength: 40 }} />
       )}
     />
   );

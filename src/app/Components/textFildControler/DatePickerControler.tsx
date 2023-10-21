@@ -5,7 +5,6 @@ import { IContract } from "@/Interface/Interfaces";
 import { DatePicker, DateValidationError } from "@mui/x-date-pickers";
 export interface ITextFildControler {
   control: Control<any>;
-  setFormDataChanged: (arg: boolean) => void;
   IsReturnPathName?: boolean;
   inputErrors: boolean;
   inputName: string;
@@ -16,7 +15,6 @@ export interface ITextFildControler {
 
 const DatePickerControler: React.FC<ITextFildControler> = ({
   control,
-  setFormDataChanged,
   inputErrors,
   helperText,
   inputName,
@@ -65,10 +63,9 @@ const DatePickerControler: React.FC<ITextFildControler> = ({
           maxDate={new Date("2121-01-01")}
           sx={{ width: "100%" }}
           label={label}
-          value={field.value} // when we fetch data an set default value it is correct to set value to show data as default value
+          value={field.value||null} // when we fetch data an set default value it is correct to set value to show data as default value
           onChange={(date) => {
             field.onChange(date); // Update the field value
-            setFormDataChanged(true); // Set dateChanged to true when the date changes
           }}
           slotProps={{
             textField: {

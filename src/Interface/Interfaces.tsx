@@ -1,4 +1,5 @@
 import { Control, FieldErrors, UseFieldArrayAppend, UseFieldArrayRemove } from "react-hook-form";
+import { Dispatch, SetStateAction } from "react";
 import { StringLiteralType } from "typescript";
 
 // api response
@@ -83,8 +84,9 @@ export interface axiosResponse {
   data: object[] | string;
 }
 export interface IUser {
-  username: string;
-  password: string;
+  oldPassword: string;
+  newPassword: string;
+  repeatPassword: string;
 }
 
 export interface SidebarItem {
@@ -117,12 +119,11 @@ export interface ISidebarItemComponent {
   selectListItem: ISelectListItem[];
   [index: number]: boolean;
   // setSelectListItem: React.Dispatch<React.SetStateAction<ISelectListItem[]>>;
-  setSelectListItem: any;
+  handleCloseDrawer: () => void;
 }
 
 export interface IReportAccordionProps {
   submitCount: number;
-  setFormDataChanged: (arg: boolean) => void;
   isExpended: boolean;
   handleIsExpended: () => void;
   removeReport: UseFieldArrayRemove;
@@ -137,6 +138,6 @@ export interface IReportPaymentComponent {
   errors: FieldErrors<IContract>;
   reportIndex: number;
   paymentIndex: number;
+  remove: UseFieldArrayRemove;
   IsReturnPathName: boolean;
-  setFormDataChanged: (arg: boolean) => void;
 }
