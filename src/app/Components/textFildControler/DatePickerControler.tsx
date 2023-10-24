@@ -13,16 +13,9 @@ export interface ITextFildControler {
   helperText: string | undefined;
 }
 
-const DatePickerControler: React.FC<ITextFildControler> = ({
-  control,
-  inputErrors,
-  helperText,
-  inputName,
-  label,
-  requiredRule = "این فیلد الزامی است.",
-  IsReturnPathName = false,
-}) => {
+const DatePickerControler: React.FC<ITextFildControler> = ({ control, inputErrors, helperText, inputName, label, requiredRule = "این فیلد الزامی است.", IsReturnPathName = false }) => {
   const [DatePickerError, setDatePickerError] = useState<DateValidationError | null>(null);
+
   const datePickerErrorMessage = useMemo(() => {
     switch (DatePickerError) {
       case "minDate": {
@@ -31,6 +24,7 @@ const DatePickerControler: React.FC<ITextFildControler> = ({
       case "maxDate": {
         return "تاریخ واردشده معتبر نمی باشد";
       }
+
       default: {
         return " ";
       }
@@ -63,14 +57,14 @@ const DatePickerControler: React.FC<ITextFildControler> = ({
           maxDate={new Date("2121-01-01")}
           sx={{ width: "100%" }}
           label={label}
-          value={field.value||null} // when we fetch data an set default value it is correct to set value to show data as default value
+          value={field.value || null} // when we fetch data an set default value it is correct to set value to show data as default value
           onChange={(date) => {
             field.onChange(date); // Update the field value
           }}
           slotProps={{
             textField: {
               error: datePickerErrorMessage !== " " || inputErrors,
-              helperText: datePickerErrorMessage || helperText,
+              helperText: helperText || datePickerErrorMessage,
             },
           }}
         />

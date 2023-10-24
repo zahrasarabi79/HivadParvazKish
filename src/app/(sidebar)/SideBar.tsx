@@ -18,22 +18,37 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(true);
-  const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(HivadSidebarItems.map(() => ({ focusindex: false, openChildrenItem: false })));
+  const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(HivadSidebarItems.map(() => ({ focusindex: false, openChildrenItem: true })));
 
   const handleDrawerOpen = () => {
     setMobileOpen(!mobileOpen);
   };
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+    setSelectListItem((prevItems: ISelectListItem[]) =>
+    prevItems.map((item) => ({
+      ...item,
+      openChildrenItem: false,
+    }))
+  );
   };
   const handleCloseDrawer = () => {
     setOpen(!open);
-    setSelectListItem((prevItems: ISelectListItem[]) =>
-      prevItems.map((item) => ({
-        ...item,
-        openChildrenItem: false,
-      }))
-    );
+    if (open) {
+      setSelectListItem((prevItems: ISelectListItem[]) =>
+        prevItems.map((item) => ({
+          ...item,
+          openChildrenItem: false,
+        }))
+      );
+    } else {
+      setSelectListItem((prevItems: ISelectListItem[]) =>
+        prevItems.map((item) => ({
+          ...item,
+          openChildrenItem: true,
+        }))
+      );
+    }
   };
   const handleSelectedListItem = (index: number, itemRoute: string = "") => {
     if (open) {
@@ -67,13 +82,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             direction: "initial",
           }}
         >
-          <DrawerItem
-            open={open}
-            selectListItem={selectListItem}
-            handleSelectedListItem={handleSelectedListItem}
-            handleCloseDrawer={handleDrawerToggle}
-            setSelectListItem={setSelectListItem}
-          />
+          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleDrawerToggle} setSelectListItem={setSelectListItem} />
         </Drawer>
         <DrawerDesktop
           variant="permanent"
@@ -84,13 +93,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             position: "relative",
           }}
         >
-          <DrawerItem
-            open={open}
-            selectListItem={selectListItem}
-            handleSelectedListItem={handleSelectedListItem}
-            handleCloseDrawer={handleCloseDrawer}
-            setSelectListItem={setSelectListItem}
-          />
+          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleCloseDrawer} setSelectListItem={setSelectListItem} />
         </DrawerDesktop>
       </Box>
       <Box component="main" sx={{ flexGrow: 1, p: 3, width: open ? `calc(100% - ${drawerWidth.desktop}px)` : `calc(100% - ${drawerWidth.mobile}px)` }}>

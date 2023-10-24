@@ -83,12 +83,18 @@ export interface axiosResponse {
   isLoading: boolean;
   data: object[] | string;
 }
-export interface IUser {
+export interface IChangePassFormValues {
   oldPassword: string;
   newPassword: string;
   repeatPassword: string;
+  [index: number]: string;
 }
 
+export interface INewUser {
+  username: string;
+  password: string;
+  
+}
 export interface SidebarItem {
   title: string;
   icon: string;

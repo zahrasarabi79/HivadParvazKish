@@ -24,10 +24,9 @@ export const HivadSidebarItems: SidebarItem[] = [
 ];
 const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedListItem, selectListItem, handleCloseDrawer }) => {
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.up("sm"));
+  const smUp = useMediaQuery(theme.breakpoints.up("sm"));
   const router = useRouter();
   const currentPath = usePathname();
-
   const isActive = (item: SidebarItem | SidebarItemChildren): boolean => {
     if (item.route) {
       return currentPath?.includes(item.route) ?? false;
@@ -40,7 +39,10 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
 
   const childrenCollapsItemButton = (childerItem: SidebarItemChildren) => {
     router.push(childerItem.route || "");
-    handleCloseDrawer();
+
+    if (!smUp) {
+      handleCloseDrawer();
+    }
   };
 
   return HivadSidebarItems.map((item: SidebarItem, index: number) => {
@@ -72,7 +74,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
               <Icon
                 pathName="littleLeftArrow.svg"
                 style={{
-                  display: smDown ? (open ? "block" : "none") : "block",
+                  display: smUp ? (open ? "block" : "none") : "block",
                   transform: selectListItem[index].openChildrenItem ? "rotate(-90deg)" : "rotate(0deg)",
                   transition: ".2s all",
                 }}
@@ -83,7 +85,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
 
             <ListItemText
               sx={{
-                display: smDown ? (open ? "block" : "none") : "block",
+                display: smUp ? (open ? "block" : "none") : "block",
               }}
               primary={item.title}
             />
@@ -111,6 +113,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
           </ListItemButton>
         </ListItem>
         {item.children &&
+          selectListItem[index].openChildrenItem &&
           item.children.map((childerItem: SidebarItemChildren, parentIndex: number) => {
             return (
               <Collapse key={parentIndex} in={isAnyChildMatched || selectListItem[index].openChildrenItem}>

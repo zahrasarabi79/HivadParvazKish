@@ -107,7 +107,6 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
           <Grid container spacing={1} rowSpacing={3} alignItems={"center"} sx={{ mt: 0.5 }}>
             <Grid item xs={12} sm={4}>
               <TextFildControler
-
                 inputName={`reports.${reportIndex}.reportDescription`}
                 control={control}
                 IsReturnPathName={IsReturnPathName}
@@ -163,7 +162,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
 
             {reportsPaymentFields.map((reportPayment, index) => (
               <ReportPayment
-                key={uuidv4()}
+                key={reportPayment.id}
                 control={control}
                 errors={errors}
                 reportIndex={reportIndex}
@@ -204,14 +203,7 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
             </Grid>
 
             {reportsReturnPaymentFields.map((reportReturnPayment, index) => (
-              <ReportReturnPayment
-                key={uuidv4()}
-                control={control}
-                errors={errors}
-                reportIndex={reportIndex}
-                paymentIndex={index}
-                remove={removeReportsReturnPayment}
-              />
+              <ReportReturnPayment key={reportReturnPayment.id} control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} remove={removeReportsReturnPayment} />
             ))}
           </Grid>
           <Grid

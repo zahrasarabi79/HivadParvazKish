@@ -5,7 +5,7 @@ import Image from "next/image";
 import { TextFildCustom } from "../Components/textFildControler/TextFiledCustom";
 import { useEffect, useState } from "react";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
-import { IUser, Token } from "@/Interface/Interfaces";
+import { INewUser, Token } from "@/Interface/Interfaces";
 import { DevTool } from "@hookform/devtools";
 import axiosInstance from "@/AxiosInstance/AxiosInstance";
 import { AxiosError } from "axios";
@@ -50,18 +50,19 @@ function LoginForm() {
     control,
     watch,
     setError,
-  } = useForm<IUser>({ defaultValues: { username: "", password: "" } });
+  } = useForm<INewUser>();
   const WatchFilds = Object.values(watch()).every((value) => value);
   const theme = useTheme();
   const handleClickShowPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowPassword((show) => !show);
   };
-  const onSubmit = (user: IUser) => {
+  const onSubmit = (user: INewUser) => {
     getResponse(user);
   };
-  const getResponse = async (user: IUser) => {
+  const getResponse = async (user: INewUser) => {
     try {
+      
       const { data } = await axiosInstance.post("/login", user);
       await getToken(data);
     } catch (error: AxiosError | any) {
@@ -73,7 +74,6 @@ function LoginForm() {
     router.push("/Contracts/ContractList");
   };
 
-  
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>

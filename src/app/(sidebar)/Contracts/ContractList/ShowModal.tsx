@@ -91,40 +91,45 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                   <Grid sx={{ padding: smUp ? 1 : 0, m: smUp ? 2 : 0 }} item xs={12}>
                     <Grid sx={{ border: "1px solid rgba(107,107,107,1)", borderRadius: 1, padding: smUp ? "16px" : "16px 8px", gap: smUp ? 0 : 2 }} container justifyContent={"space-between"}>
                       <ModalText xs={12} sm={12} name="شرح و مشخصات" value={report?.reportDescription} />
-                      <ModalText xs={12} sm={6} name="قیمت کل" value={report?.totalCost === "" ? "" : SeparateNumber(parseInt(report?.totalCost))} />
+                      <ModalText xs={12} sm={6} name="قیمت کل" value={SeparateNumber(report?.totalCost)} />
                       <ModalText xs={12} sm={6} name="مجری" value={report?.presenter} />
-                      <Grid item xs={12} sx={{ my: 2, mx: 1 }}>
-                        <Typography variant="body1">پرداخت ها</Typography>
-                      </Grid>
+
+                      {!!report.reportsPayment.length && (
+                        <Grid item xs={12} sx={{ my: 2, mx: 1 }}>
+                          <Typography variant="body1">پرداخت ها</Typography>
+                        </Grid>
+                      )}
                       {report.reportsPayment.map((reportPayment: IReportPaymentApiResponse) => (
                         <React.Fragment key={reportPayment.id}>
                           <Grid sx={{ borderLeft: "2px solid white", ml: smUp ? 2 : 1, mb: 3, mt: 0 }} spacing={smUp ? 0 : 2} container justifyContent={"space-between"}>
-                            <ModalText xs={12} name={`تاریخ ${TypeReportName}`} value={formatDate(reportPayment.datepayment || "")} />
-                            <ModalText xs={12} sm={6} name={`مبلغ ${TypeReportName}`} value={reportPayment.payments === "" ? "" : SeparateNumber(parseInt(reportPayment.payments))} />
-                            <ModalText xs={12} sm={6} name="بانک /شرکاء/صندوق" value={reportPayment.bank} />
-                            <ModalText xs={12} name="توضیحات" value={reportPayment.paymentDescription} />
+                            <ModalText xs={12} name={`تاریخ ${TypeReportName}`} value={formatDate(reportPayment?.datepayment || "")} />
+                            <ModalText xs={12} sm={6} name={`مبلغ ${TypeReportName}`} value={SeparateNumber(reportPayment?.payments)} />
+                            <ModalText xs={12} sm={6} name="بانک /شرکاء/صندوق" value={reportPayment?.bank} />
+                            <ModalText xs={12} name="توضیحات" value={reportPayment?.paymentDescription} />
                           </Grid>
                         </React.Fragment>
                       ))}
 
-                      <Grid item xs={12} sx={{ my: 2, mx: 1 }}>
-                        <Typography variant="body1">بازگشت ها</Typography>
-                      </Grid>
-                      {report?.reportsReturnPayment.map((reportReturnPayment: IReportReturnPaymentApiResponse) => (
-                        <React.Fragment key={reportReturnPayment.id}>
-                          <Grid sx={{ borderLeft: "2px solid white", ml: smUp ? 2 : 1, mb: 3, mt: 0 }} spacing={smUp ? 0 : 2} container justifyContent={"space-between"}>
-                            <ModalText xs={12} name={`تاریخ بازگشت از ${data.typeContract}`} value={formatDate(reportReturnPayment.dateReturnPayment || "")} />
-                            <ModalText
-                              sm={6}
-                              xs={12}
-                              name={`مبلغ بازگشت از ${data.typeContract}`}
-                              value={reportReturnPayment.returnPayments === "" ? "" : SeparateNumber(parseInt(reportReturnPayment.returnPayments))}
-                            />
-                            <ModalText xs={12} sm={6} name="بانک /شرکاء/صندوق" value={reportReturnPayment.returnPaymentsbank} />
-                            <ModalText xs={12} name="توضیحات" value={reportReturnPayment.returnPaymentDescription} />
-                          </Grid>
-                        </React.Fragment>
-                      ))}
+                      {!!report?.reportsReturnPayment.length && (
+                        <Grid item xs={12} sx={{ my: 2, mx: 1 }}>
+                          <Typography variant="body1">بازگشت ها</Typography>
+                        </Grid>
+                      )}
+                      {report?.reportsReturnPayment.map((reportReturnPayment: IReportReturnPaymentApiResponse) => {
+                        const Test = SeparateNumber(reportReturnPayment.returnPayments);
+                        console.log(Test);
+
+                        return (
+                          <React.Fragment key={reportReturnPayment.id}>
+                            <Grid sx={{ borderLeft: "2px solid white", ml: smUp ? 2 : 1, mb: 3, mt: 0 }} spacing={smUp ? 0 : 2} container justifyContent={"space-between"}>
+                              <ModalText xs={12} name={`تاریخ بازگشت از ${data.typeContract}`} value={formatDate(reportReturnPayment?.dateReturnPayment || "")} />
+                              <ModalText sm={6} xs={12} name={`مبلغ بازگشت از ${data.typeContract}`} value={SeparateNumber(reportReturnPayment?.returnPayments)} />
+                              <ModalText xs={12} sm={6} name="بانک /شرکاء/صندوق" value={reportReturnPayment?.returnPaymentsbank} />
+                              <ModalText xs={12} name="توضیحات" value={reportReturnPayment?.returnPaymentDescription} />
+                            </Grid>
+                          </React.Fragment>
+                        );
+                      })}
                     </Grid>
                   </Grid>
                 </React.Fragment>

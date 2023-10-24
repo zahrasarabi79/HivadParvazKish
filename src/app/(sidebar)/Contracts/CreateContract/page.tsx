@@ -63,16 +63,13 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     control,
     name: "reports",
   });
-
-  console.log("field array", fields);
-
+  const [isReportsPayment, setIsReportsPayment] = useState(false);
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
   const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
   const [isOpenSnackBarServer, setIsOpenSnackBarServer] = useState(false);
   const [isOpenSnackBarDeleteAccardion, setIsOpenSnackBarDeleteAccardion] = useState(false);
   const [isOpenSnackBarReturnPayment, setIsOpenSnackBarReturnPayment] = useState(false);
   const [isExpended, setIsExpended] = useState<number | null>(0);
-  const [formDataChanged, setFormDataChanged] = useState(false);
   const typeOfReport = ["خرید", "فروش"];
   const handleCloseReturnPayment = () => setIsOpenSnackBarReturnPayment((is) => !is);
   const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
@@ -107,25 +104,30 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     setIsExpended(fields.length);
   };
   const onSubmit = (data: IContract) => {
+    const filteredReports = data.reports.map((report) => {
+      const filteredReportsPayment = report.reportsPayment.filter((payment) => !Object.values(payment).every((value) => value === null || value === ""));
+      const filteredReportsReturnPayment = report.reportsReturnPayment.filter((returnPayment) => !Object.values(returnPayment).every((value) => value === null || value === ""));
+      return {
+        ...report,
+        reportsPayment: filteredReportsPayment,
+        reportsReturnPayment: filteredReportsReturnPayment,
+      };
+    });
+    data.reports = filteredReports;
+
     if (Contract) {
       updateDataContract(data, Contract.id);
     } else {
-      console.log(data);
       saveContract(data);
     }
   };
   const saveContract = async (contract: IContract) => {
-    console.log(contract);
-    const isReportsPayment = contract.reports.map((report) => {
-      return report.reportsPayment.length === 0;
-    });
-    console.log(isReportsPayment);
-
     try {
+      const isReportsPayment: boolean = contract.reports.some((report) => report.reportsPayment?.length === 0);
+
       if (contract.reports.length === 0) {
         handleCloseSnackBarDeleteAccardion();
-      }
-      if (!isReportsPayment) {
+      } else if (isReportsPayment) {
         handleCloseReturnPayment();
       } else {
         await axiosInstance.post("/AddReports", contract);
@@ -139,22 +141,17 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     }
   };
   const updateDataContract = async (contract: IContract, id: number) => {
-    const isReportsPayment = contract.reports.map((report) => {
-      return report.reportsPayment.length === 0;
-    });
-
     try {
+      const isReportsPayment: boolean = contract.reports.some((report) => report.reportsPayment?.length === 0);
+
       if (contract.reports.length === 0) {
         handleCloseSnackBarDeleteAccardion();
-      }
-      if (!isReportsPayment) {
+      } else if (isReportsPayment) {
         handleCloseReturnPayment();
       } else {
-        const { data } = await axiosInstance.post("/updateReports", { ...contract, id });
-
+        await axiosInstance.post("/updateReports", { ...contract, id });
         handleCloseSnackBarUpdate();
         setTimeout(() => {
-          // router.push("/Contracts/ContractList");
           router.back();
         }, 2000);
       }
@@ -173,14 +170,14 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
             reportsPayment: report?.reportsPayment.map((reportPayment) => ({
               bank: reportPayment?.bank,
               payments: reportPayment?.payments,
-              datepayment: new Date(reportPayment?.datepayment),
+              datepayment: reportPayment?.datepayment !== null ? new Date(reportPayment.datepayment) : null,
               paymentDescription: reportPayment?.paymentDescription,
             })),
             reportsReturnPayment: report?.reportsReturnPayment.map((reportReturnPayment) => ({
               returnPaymentsbank: reportReturnPayment?.returnPaymentsbank,
               returnPayments: reportReturnPayment?.returnPayments,
               returnPaymentDescription: reportReturnPayment?.returnPaymentDescription,
-              dateReturnPayment: new Date(reportReturnPayment?.dateReturnPayment),
+              dateReturnPayment: reportReturnPayment?.dateReturnPayment !== null ? new Date(reportReturnPayment?.dateReturnPayment) : null,
             })),
           }));
         }
@@ -204,7 +201,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     <Card>
       <CardHeader title={cardTitle} />
       <Divider variant="middle" />
-      <form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <CardContent>
           <Grid container spacing={1} alignItems={"center"}>
             <Grid item xs={12} sm={4}>
@@ -225,7 +222,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
                   inputErrors={!!errors.dateContract}
                   IsReturnPathName={IsReturnPathName}
                   label="تاریخ قرارداد *"
-                  requiredRule={"این فیلد الزامی است."}
                   helperText={errors.dateContract ? (errors.dateContract as FieldError).message : " "}
                 />
               </LocalizationProvider>

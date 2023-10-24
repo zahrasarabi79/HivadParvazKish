@@ -13,7 +13,6 @@ const page = () => {
   const getContract = async () => {
     try {
       const { data } = await axiosInstance.post("/showReports", { id });
-      console.log(data.Contracts[0]);
       const updated = {
         numContract: "",
         dateContract: "",
@@ -44,7 +43,6 @@ const page = () => {
         ],
       };
       setDataUpdated(data.Contracts[0]);
-      console.log(data.Contracts[0]);
     } catch (error: AxiosError | any) {
       console.log("problem:", error);
     }

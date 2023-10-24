@@ -46,7 +46,7 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
           // onValueChange={(e) => {
           //   e.stopPropagation();
           // }}
-
+          autoComplete="off"
           customInput={TextField}
           thousandSeparator
           disabled={IsReturnPathName}
