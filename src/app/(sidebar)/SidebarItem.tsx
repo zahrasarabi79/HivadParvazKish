@@ -5,11 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
 export const HivadSidebarItems: SidebarItem[] = [
-  // {
-  //   title: "داشبورد",
-  //   route: "/dashboard",
-  //   icon: "dashboard.svg",
-  // },
+  
   {
     title: "قرارداد های هیواد",
     icon: "plainicon.svg",
@@ -20,6 +16,11 @@ export const HivadSidebarItems: SidebarItem[] = [
       },
       { title: "ایجاد قراردادها", route: "/Contracts/CreateContract" },
     ],
+  },
+  {
+    title: "تاریخچه تغییرات",
+    route: "/systemlog",
+    icon: "dashboard.svg",
   },
 ];
 const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedListItem, selectListItem, handleCloseDrawer }) => {

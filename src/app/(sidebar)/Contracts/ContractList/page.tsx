@@ -121,7 +121,7 @@ const ListOfReport = () => {
                 {listOfContracts.map((contract, index) => (
                   <StyledTableRow key={contract.id}>
                     <StyledTableCell component="th" scope="row" align="left">
-                      {index + 1}
+                      {index + 1 + (page > 1 ? paginationFetchData.limitPerPage * (page - 1) : 0)}
                     </StyledTableCell>
                     <StyledTableCell sortDirection={"desc"} align="left">
                       {contract.numContract}
