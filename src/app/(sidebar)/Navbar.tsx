@@ -8,6 +8,7 @@ import { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import { drawerWidth } from "./SideBar";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import axiosInstance from "@/AxiosInstance/AxiosInstance";
 export interface NavbarProps {
   isDesktopSidebarOpen: boolean;
   onDrawerOpen: () => void;
@@ -22,9 +23,10 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
 
   const Logout = () => {
     localStorage.clear();
-    if (!localStorage.getItem("myToken")) {
-      router.push("/login");
-    }
+    //if (!localStorage.getItem("myToken")) {
+    router.push("/login");
+    axiosInstance.defaults.headers.common.Authorization = "";
+    //}
   };
   const Profile = () => {
     router.push("/Profile");

@@ -150,6 +150,8 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
         handleCloseReturnPayment();
       } else {
         await axiosInstance.post("/updateReports", { ...contract, id });
+        //console.log(localStorage.getItem("myToken"));
+
         handleCloseSnackBarUpdate();
         setTimeout(() => {
           router.back();

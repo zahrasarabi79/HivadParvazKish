@@ -60,6 +60,8 @@ const SystemLog = () => {
     setLoading(true);
     try {
       const { data } = await axiosInstance.post("/listOfSystemHistory", paginationFetchData);
+      console.log(data);
+
       const { Events, totalCount } = data;
       setTotalPaginationPage(totalCount);
       setListOfSystemLog(Events);
@@ -120,7 +122,7 @@ const SystemLog = () => {
                     <StyledTableCell style={{ whiteSpace: "nowrap", overflow: "hidden" }} sortDirection={"asc"} align="left">
                       {event?.username || ""}
                     </StyledTableCell>
-                    <StyledTableCell style={{  overflow: "hidden", textAlign: "justify" }} sortDirection={"asc"} align="left">
+                    <StyledTableCell style={{ overflow: "hidden", textAlign: "justify" }} sortDirection={"asc"} align="left">
                       {eventStory(event.eventName, event.numContract) || ""}
                     </StyledTableCell>
                   </StyledTableRow>

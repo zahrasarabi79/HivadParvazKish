@@ -62,8 +62,8 @@ function LoginForm() {
   };
   const getResponse = async (user: INewUser) => {
     try {
-      
       const { data } = await axiosInstance.post("/login", user);
+
       await getToken(data);
     } catch (error: AxiosError | any) {
       setError("password", { type: "text", message: "نام کاربری یا پسورد را مجددا وارد کنید." });
@@ -71,6 +71,7 @@ function LoginForm() {
   };
   const getToken = async (response: Token) => {
     localStorage.setItem("myToken", response.token);
+    axiosInstance.defaults.headers.common.Authorization = `Bearer ${response.token}`;
     router.push("/Contracts/ContractList");
   };
 
