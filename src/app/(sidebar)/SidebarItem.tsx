@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
 export const HivadSidebarItems: SidebarItem[] = [
-  
   {
     title: "قرارداد های هیواد",
     icon: "plainicon.svg",
@@ -38,6 +37,7 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
     return false;
   };
 
+ 
   const childrenCollapsItemButton = (childerItem: SidebarItemChildren) => {
     router.push(childerItem.route || "");
 

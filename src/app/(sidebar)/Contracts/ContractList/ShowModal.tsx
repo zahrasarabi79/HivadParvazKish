@@ -61,7 +61,7 @@ export interface IKeepMountedModalProps {
 
 const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose, data }) => {
   const theme = useTheme();
-
+  
   const smUp = useMediaQuery(theme.breakpoints.up("sm"));
 
   const TypeReportName = data?.typeContract === "فروش" ? "دریافتی" : "پرداختی";
@@ -116,9 +116,6 @@ const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose,
                         </Grid>
                       )}
                       {report?.reportsReturnPayment.map((reportReturnPayment: IReportReturnPaymentApiResponse) => {
-                        const Test = SeparateNumber(reportReturnPayment.returnPayments);
-                        console.log(Test);
-
                         return (
                           <React.Fragment key={reportReturnPayment.id}>
                             <Grid sx={{ borderLeft: "2px solid white", ml: smUp ? 2 : 1, mb: 3, mt: 0 }} spacing={smUp ? 0 : 2} container justifyContent={"space-between"}>

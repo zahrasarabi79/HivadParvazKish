@@ -70,10 +70,10 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
             boxShadow: "none",
             borderRadius: "0.5rem",
             justifyContent: "inherit",
-            // border: accordionError.includes(reportIndex) ? "2px solid red" : "none",
+            border: accordionError.includes(reportIndex) ? "2px solid red" : "none",
             "&.Mui-expanded": {
               bgcolor: "#4B495c",
-              // borderBottom: accordionError.includes(reportIndex) ? "2px solid red" : "2px solid  #FF661F",
+              borderBottom: accordionError.includes(reportIndex) ? "2px solid red" : "2px solid  #FF661F",
               borderTopLeftRadius: "1rem",
               borderTopRightRadius: "1rem",
               borderBottomLeftRadius: "0",

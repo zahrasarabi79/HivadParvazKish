@@ -1,7 +1,7 @@
 "use client";
 import { Box, Drawer, List, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
 import SidebarItem, { HivadSidebarItems } from "./SidebarItem";
-import { IDrawerWidth, ISelectListItem } from "@/Interface/Interfaces";
+import { IDrawerWidth, ISelectListItem, SidebarItemChildren } from "@/Interface/Interfaces";
 import { DrawerDesktop } from "@/Utils/style/stylecomponent";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,19 +18,20 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(true);
-  const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(HivadSidebarItems.map(() => ({ focusindex: false, openChildrenItem: true })));
-
+  const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(
+    HivadSidebarItems.map((item) => ({ focusindex: false, openChildrenItem: item.route === currentPath || item.children?.some((child) => child.route === currentPath) }))
+  );
   const handleDrawerOpen = () => {
     setMobileOpen(!mobileOpen);
   };
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
     setSelectListItem((prevItems: ISelectListItem[]) =>
-    prevItems.map((item) => ({
-      ...item,
-      openChildrenItem: false,
-    }))
-  );
+      prevItems.map((item) => ({
+        ...item,
+        openChildrenItem: false,
+      }))
+    );
   };
   const handleCloseDrawer = () => {
     setOpen(!open);

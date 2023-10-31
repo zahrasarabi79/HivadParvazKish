@@ -1,6 +1,4 @@
-export const SeparateNumber = (num: number | string) => {
-  if (typeof num === "string" ||!isNaN(num)) {
-    return " ";
-  }
+export const SeparateNumber = (num:number|string) => {
+ 
   return num.toLocaleString("ar-EG");
 };

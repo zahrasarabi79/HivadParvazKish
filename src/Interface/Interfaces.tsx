@@ -117,7 +117,7 @@ export interface IDrawerWidth {
 
 export interface ISelectListItem {
   focusindex: boolean;
-  openChildrenItem: boolean;
+  openChildrenItem: boolean | undefined;
 }
 export interface ISidebarItemComponent {
   open: boolean;

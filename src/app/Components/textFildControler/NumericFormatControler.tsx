@@ -38,14 +38,10 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
       }}
       render={({ field }) => (
         <NumericFormat
-          value={field.value}
+          {...field}
           onInput={(val: React.ChangeEvent<HTMLInputElement>) => {
             field.onChange(conv2EnNum(val.target.value));
           }}
-          onChange={(e) => e.stopPropagation()}
-          // onValueChange={(e) => {
-          //   e.stopPropagation();
-          // }}
           autoComplete="off"
           customInput={TextField}
           thousandSeparator
