@@ -20,9 +20,7 @@ const TextFildControler: React.FC<ITextFildControler> = ({ requiredRule = "ای�
       control={control}
       defaultValue={""}
       rules={{ required: requiredRule }}
-      render={({ field }) => (
-        <TextFildCustom {...field} required={required} fullWidth disabled={IsReturnPathName} label={label} error={inputError} helperText={helperText} inputProps={{ maxLength: 40 }} />
-      )}
+      render={({ field }) => <TextFildCustom {...field} required={required} fullWidth disabled={IsReturnPathName} label={label} error={inputError} helperText={helperText} />}
     />
   );
 };

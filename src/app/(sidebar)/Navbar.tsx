@@ -4,20 +4,33 @@ import Image from "next/image";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SmsFailedIcon from "@mui/icons-material/SmsFailed";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { drawerWidth } from "./SideBar";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import axiosInstance from "@/AxiosInstance/AxiosInstance";
+import { AxiosError } from "axios";
 export interface NavbarProps {
   isDesktopSidebarOpen: boolean;
   onDrawerOpen: () => void;
 }
 
 const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) => {
+  const [ProfileName, setProfileName] = useState("not Defind");
+    const getProfileName = async () => {
+      try {
+        const { data } = await axiosInstance.post("/profileinformation");
+        setProfileName(data.name)
+      } catch (error: AxiosError | any) {
+        console.error("API request error:", error);
+      }
+    };
+    useEffect(() => {
+      getProfileName();
+    }, []);
   const theme = useTheme();
   const [anchorElProfile, setAnchorElProfile] = useState<null | HTMLElement>(null);
-  const [anchorElNotification, setAnchorElNotification] = useState<null | HTMLElement>(null);
+  // const [anchorElNotification, setAnchorElNotification] = useState<null | HTMLElement>(null);
   const router = useRouter();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
@@ -29,6 +42,7 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
     //}
   };
   const Profile = () => {
+    
     router.push("/Profile");
   };
 
@@ -73,7 +87,7 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
           >
             <MenuItem divider={true} sx={{ gap: 1 }}>
               <Avatar sx={{ width: 30, height: 30, bgcolor: theme.palette.primary.light }} alt={"zahra sarabi"} />
-              <Typography variant="body1">{"زهرا سرابی"}</Typography>
+              <Typography variant="body1">{ProfileName}</Typography>
             </MenuItem>
             <MenuItem onClick={Profile} sx={{ gap: 1, m: 1, transition: ".1s all", borderRadius: 1 }}>
               <ModeEditIcon sx={{ width: 22, height: 22 }} />

@@ -20,7 +20,7 @@ export const eventStory = (event: string, numContract: string) => {
     returnPaymentDescription: "توضیحات",
   };
   if (event.includes("contract_created")) {
-    results.push(`قرارداد شماره  (${numContract}) ,ایجاد شد.`);
+    results.push(`قرارداد شماره  (${numContract}) ،ایجاد شد.`);
   }
   if (event.includes("contract_Customer_Updated")) {
     results.push(`در قرارداد (${numContract})، قسمت طرف قراداد، ویرایش  شد.`);
@@ -47,42 +47,41 @@ export const eventStory = (event: string, numContract: string) => {
     results.push(`در قرارداد شماره (${numContract}) ,گزارش جدید ایجاد شد.`);
   }
   if (event.includes("Report_deleted")) {
-    results.push(`در قرارداد شماره (${numContract}) ,گزارش حذف شد.`);
+    results.push(`در قرارداد شماره (${numContract}) ،گزارش حذف شد.`);
   }
   if (event.includes(`Report[${index?.[0]}]_ReportPaymen[${index?.[1]}]_Deleted`)) {
-    results.push(`در قرارداد شماره (${numContract}) ,'گزارش (${index && parseInt(index?.[1], 10) + 1})  گزارش پرداخت(${index && parseInt(index?.[0], 10) + 1})  حذف شد.`);
+    results.push(`در قرارداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[1], 10) + 1})  گزارش پرداخت(${index && parseInt(index?.[0], 10) + 1})  حذف شد.`);
   }
   if (event.includes(`ReportPaymen[${index?.[0]}]_Report[${index?.[1]}]_Created`)) {
-    results.push(`در قرارداد شماره (${numContract}) ,'گزارش (${index && parseInt(index?.[1], 10) + 1})  گزارش پرداخت(${index && parseInt(index?.[0], 10) + 1})  ایجاد شد.`);
+    results.push(`در قرارداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[1], 10) + 1})  گزارش پرداخت(${index && parseInt(index?.[0], 10) + 1})  ایجاد شد.`);
   }
   if (event.includes(`Report[${index?.[0]}]_ReportReturnPayment[${index?.[1]}]_Deleted`)) {
-    results.push(`در قرارداد شماره (${numContract}) ,'گزارش (${index && parseInt(index?.[0], 10) + 1})  گزارش برگشت(${index && parseInt(index?.[1], 10) + 1})  حذف شد.`);
+    results.push(`در قرارداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[0], 10) + 1})  گزارش برگشت(${index && parseInt(index?.[1], 10) + 1})  حذف شد.`);
   }
   if (event.includes(`Report[${index?.[0]}]_ReportReturnPayment[${index?.[1]}]_Created`)) {
-    results.push(`در قرارداد شماره (${numContract}) ,'گزارش (${index && parseInt(index?.[0], 10) + 1})  گزارش برگشت(${index && parseInt(index?.[1], 10) + 1})  ایجاد شد.`);
+    results.push(`در قرارداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[0], 10) + 1})  گزارش برگشت(${index && parseInt(index?.[1], 10) + 1})  ایجاد شد.`);
   }
   if (event.includes("_reportspayment")) {
     reportspaymentProperty.map((reportpaymentProperty) => {
       if (event.includes(`Report[${index?.[0]}]_reportspayment[${index?.[1]}]_updated_${reportpaymentProperty}`)) {
         results.push(
-          `ویرایش قراداد شماره (${numContract}) ,گزارش (${index && parseInt(index?.[0], 10) + 1}) ,گزارش پرداخت (${index && parseInt(index?.[1], 10) + 1}) ,در قسمت ${
+           `قراداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[0], 10) + 1}) ،گزارش پرداخت (${index && parseInt(index?.[1], 10) + 1}) ,در قسمت ${
             reportspaymentPropertyName[reportpaymentProperty]
-          }`
+          }ویرایش شد.`
         );
       }
     });
   }
   if (event.includes("_returnReportspayment")) {
     reportsReturnPaymentProperty.map((reportReturnpaymentProperty) => {
-      console.log(reportReturnpaymentProperty.indexOf );
-      
-      if ( event===(`Report[${index?.[0]}]_returnReportspayment[${index?.[1]}]_updated_${reportReturnpaymentProperty}`)) {
-        
+      console.log(reportReturnpaymentProperty.indexOf);
+
+      if (event === `Report[${index?.[0]}]_returnReportspayment[${index?.[1]}]_updated_${reportReturnpaymentProperty}`) {
         // results.push(`${event} ,${reportReturnpaymentProperty}`);
         results.push(
-          `ویرایش قراداد شماره (${numContract}) " گزارش (${index && parseInt(index?.[0], 10) + 1}) گزارش بازپراخت (${index && parseInt(index?.[1], 10) + 1}) در قسمت ${
+          ` قراداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[0], 10) + 1}) ،گزارش بازپراخت (${index && parseInt(index?.[1], 10) + 1}) در قسمت ${
             reportsReturnPaymentPropertyName[reportReturnpaymentProperty]
-          }`
+          } ویرایش شد.`
         );
       }
     });
