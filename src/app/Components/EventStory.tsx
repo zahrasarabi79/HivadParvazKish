@@ -41,7 +41,7 @@ export const eventStory = (event: string, numContract: string) => {
     results.push(`در قرارداد (${numContract})، گزارش (${index && parseInt(index?.[0], 10) + 1})، قسمت مجری ویرایش شد.`);
   }
   if (event.includes(`TotalCost_Report[${index?.[0]}]_Updated`)) {
-    results.push(`در قرارداد (${numContract})، گزارش (${index && parseInt(index?.[0], 10) + 1})، قسمت قیمت کلی ویرایش شد.`);
+    results.push(`در قرارداد (${numContract})، گزارش (${index && parseInt(index?.[0], 10) + 1})، قسمت قیمت کل ویرایش شد.`);
   }
   if (event.includes("Report_created")) {
     results.push(`در قرارداد شماره (${numContract}) ,گزارش جدید ایجاد شد.`);
@@ -65,9 +65,9 @@ export const eventStory = (event: string, numContract: string) => {
     reportspaymentProperty.map((reportpaymentProperty) => {
       if (event.includes(`Report[${index?.[0]}]_reportspayment[${index?.[1]}]_updated_${reportpaymentProperty}`)) {
         results.push(
-           `قراداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[0], 10) + 1}) ،گزارش پرداخت (${index && parseInt(index?.[1], 10) + 1}) ,در قسمت ${
+          `قراداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[0], 10) + 1}) ،گزارش پرداخت (${index && parseInt(index?.[1], 10) + 1}) ,در قسمت ${
             reportspaymentPropertyName[reportpaymentProperty]
-          }ویرایش شد.`
+          } ویرایش شد. `
         );
       }
     });
@@ -79,7 +79,7 @@ export const eventStory = (event: string, numContract: string) => {
       if (event === `Report[${index?.[0]}]_returnReportspayment[${index?.[1]}]_updated_${reportReturnpaymentProperty}`) {
         // results.push(`${event} ,${reportReturnpaymentProperty}`);
         results.push(
-          ` قراداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[0], 10) + 1}) ،گزارش بازپراخت (${index && parseInt(index?.[1], 10) + 1}) در قسمت ${
+          ` قراداد شماره (${numContract}) ،گزارش (${index && parseInt(index?.[0], 10) + 1}) ،گزارش برگشت ها (${index && parseInt(index?.[1], 10) + 1}) در قسمت ${
             reportsReturnPaymentPropertyName[reportReturnpaymentProperty]
           } ویرایش شد.`
         );

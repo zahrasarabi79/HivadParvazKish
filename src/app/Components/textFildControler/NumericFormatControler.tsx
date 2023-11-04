@@ -1,4 +1,5 @@
 import { TextField } from "@mui/material";
+import { useMemo, useState } from "react";
 import { Control, Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
@@ -13,7 +14,7 @@ export interface INumericFormatControlerProps {
   required?: boolean;
 }
 const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
-  requiredRule = "این فیلد الزامی است.",
+  requiredRule = "این فیلد الزامی است",
   control,
 
   IsReturnPathName = false,
@@ -23,6 +24,7 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
   inputName,
   label,
 }) => {
+  const regex = /[0-9۰-۹]/;
   const conv2EnNum = (s: string | null) => {
     return s?.replace(/[۰-۹]/g, (d: string) => {
       return "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString();
@@ -35,25 +37,38 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
       control={control}
       rules={{
         required: requiredRule,
+        validate: (value) => {
+          if (required && !regex.test(value)) {
+            return "این فیلد الزامی است";
+          } else {
+            return true;
+          }
+        },
       }}
-      render={({ field }) => (
-        <NumericFormat
-          {...field}
-          onInput={(val: React.ChangeEvent<HTMLInputElement>) => {
-            field.onChange(conv2EnNum(val.target.value));
-          }}
-          autoComplete="off"
-          customInput={TextField}
-          thousandSeparator
-          disabled={IsReturnPathName}
-          required={required}
-          fullWidth
-          label={label}
-          error={inputError}
-          helperText={helperText}
-          inputProps={{ maxLength: 40 }}
-        />
-      )}
+      render={({ field }) => {
+        console.log(conv2EnNum(field.value));
+
+        return (
+          <NumericFormat
+            type="tel"
+            value={field.value}
+            onInput={(val: React.ChangeEvent<HTMLInputElement>) => {
+              field.onChange(conv2EnNum(val.target.value));
+            }}
+            autoComplete="off"
+            customInput={TextField}
+            thousandSeparator
+            disabled={IsReturnPathName}
+            required={required}
+            fullWidth
+            label={label}
+            error={inputError}
+            helperText={helperText}
+            inputProps={{ maxLength: 40 }}
+            style={{ textAlign: "right" }}
+          />
+        );
+      }}
     />
   );
 };

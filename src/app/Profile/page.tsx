@@ -5,9 +5,9 @@ import ProfileForm from "./ProfileForm";
 const Profile = () => {
   return (
     <Container component="main" sx={{ justifyContent: "center", alignItems: "center", minHeight: "100vh", display: "flex", flexDirection: "column", maxWidth: "sm" }}>
-      <Card sx={{ maxWidth: "444px", marginBottom: 1 }}>
-        <CardContent >
-          <Grid container spacing={"40px"} direction="column" justifyContent="center" alignItems="center">
+      <Card sx={{ maxWidth: "445px", height: "445px" }}>
+        <CardContent sx={{ margin: "0px 0px 16px 0px" }}>
+          <Grid container direction="column" justifyContent="center" alignItems="center">
             <Grid item xs={12}>
               <ProfileForm />
             </Grid>

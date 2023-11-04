@@ -9,11 +9,13 @@ export interface ISnackBarProps {
 }
 
 const SnackBar: React.FC<ISnackBarProps> = ({ vertical, horizontal, message, handleClose, isOpen, color }) => {
+  const messageLength = message.length;
+  const width = messageLength > 5 ? messageLength * 10 : 200;
   return (
     <Snackbar
       dir="rtl"
       autoHideDuration={2500}
-      sx={{ "& .MuiPaper-root.MuiSnackbarContent-root": { backgroundColor: color, color: "white", fontSize: "14px", borderRadius: "12px" } }}
+      sx={{ "& .MuiPaper-root.MuiSnackbarContent-root": { minWidth: 0, backgroundColor: color, color: "white", fontSize: "14px", borderRadius: "12px" } }}
       anchorOrigin={{ vertical, horizontal }}
       open={isOpen}
       onClose={handleClose}

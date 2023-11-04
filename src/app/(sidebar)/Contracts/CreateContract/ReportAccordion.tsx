@@ -171,30 +171,30 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
                 remove={removeReportsPayment}
               />
             ))}
-            <Grid
-              item
-              xs={12}
-              onClick={() =>
-                appendReportsPayment({
-                  bank: "",
-                  payments: "",
-                  datepayment: null,
-                  paymentDescription: "",
-                })
-              }
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              {!IsReturnPathName && (
+            {!IsReturnPathName && (
+              <Grid
+                item
+                xs={12}
+                onClick={() =>
+                  appendReportsPayment({
+                    bank: "",
+                    payments: "",
+                    datepayment: null,
+                    paymentDescription: "",
+                  })
+                }
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
                 <Button>
                   <Stack justifyContent={"center"} alignItems={"center"}>
                     <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
                     <Typography variant="body1">افزودن پرداخت ها</Typography>
                   </Stack>
                 </Button>
-              )}
-            </Grid>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Typography variant="body1" sx={{ p: 1 }}>
                 برگشت ها

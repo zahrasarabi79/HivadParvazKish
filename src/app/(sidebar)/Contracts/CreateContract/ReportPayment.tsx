@@ -10,7 +10,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import React from "react";
 import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
-import { NumericFormat } from "react-number-format";
+import IMask from 'imask';
 
 const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, remove, control, errors, reportIndex, paymentIndex }) => {
   const theme = useTheme();
@@ -18,8 +18,12 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, re
 
   return (
     <>
-      <Grid item xs={mdDown ? 12 : 11.6}>
-        <Grid container sx={{ pr: mdDown ? 0 : 2, borderRight: !mdDown ? "1px solid rgba(190,196,209,1)" : 0, borderBottom: mdDown ? "1px solid rgba(190,196,209,1)" : 0 }} spacing={1}>
+      <Grid item xs={IsReturnPathName ? 12 : mdDown ? 12 : 11.6}>
+        <Grid
+          container
+          sx={{ pr: mdDown ? 0 : 2, borderRight: !mdDown && !IsReturnPathName ? "1px solid rgba(190,196,209,1)" : 0, borderBottom: mdDown && !IsReturnPathName ? "1px solid rgba(190,196,209,1)" : 0 }}
+          spacing={1}
+        >
           <Grid item xs={12} sm={4}>
             <TextFildControler
               inputName={`reports.${reportIndex}.reportsPayment[${paymentIndex}].bank`}
@@ -31,7 +35,7 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, re
               helperText={errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.bank ? (errors.reports?.[reportIndex]?.reportsPayment?.[paymentIndex]?.bank as FieldError).message : " "}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} >
             <NumericFormatControler
               inputName={`reports.${reportIndex}.reportsPayment[${paymentIndex}].payments`}
               control={control}
@@ -75,13 +79,18 @@ const ReportPayment: React.FC<IReportPaymentComponent> = ({ IsReturnPathName, re
               }
             />
           </Grid>
+          <Grid item xs={12}>
+         
+          </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={mdDown ? 12 : 0.4} sx={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "0px !important" }}>
-        <IconButton onClick={() => remove(paymentIndex)}>
-          <Icon pathName="../icon/Trash.svg" focused={false} />
-        </IconButton>
-      </Grid>
+      {!IsReturnPathName && (
+        <Grid item xs={mdDown ? 12 : 0.4} sx={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "0px !important" }}>
+          <IconButton onClick={() => remove(paymentIndex)}>
+            <Icon pathName="../icon/Trash.svg" focused={false} />
+          </IconButton>
+        </Grid>
+      )}
     </>
   );
 };

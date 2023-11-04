@@ -54,7 +54,7 @@ const typography: TypographyOptions = {
   },
   h6: {
     fontSize: "24px",
-    fontWeight: 400,
+    fontWeight: 500,
     lineHeight: "32px",
     letterSpacing: "0em",
     textAlign: "left",

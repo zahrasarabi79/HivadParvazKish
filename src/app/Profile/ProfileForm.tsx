@@ -89,7 +89,7 @@ const ProfileForm = () => {
             <Icon pathName={"../icon/ArrowIcon.svg"} focused={false} color="white" style={{ transform: "rotate(180deg)" }} />
           </IconButton>
         </Stack>
-        <Grid dir="rtl" container spacing={5}>
+        <Grid dir="rtl" container spacing={2}>
           <Grid item xs={12}>
             <TextFildCustom
               fullWidth

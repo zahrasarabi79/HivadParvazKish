@@ -147,7 +147,7 @@ const ListOfReport = () => {
                     <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 16px 0px 0px" } }}>
                       <Tooltip title="مشاهده" placement="bottom-start">
                         <IconButton onClick={() => handleViewContract(contract)}>
-                          <Icon pathName="user-search.svg" color={theme.palette.primary.main} />
+                          <Icon pathName="eye.svg" color={theme.palette.primary.main} />
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
