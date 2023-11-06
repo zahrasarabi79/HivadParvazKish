@@ -20,17 +20,17 @@ import {
   Grid,
   CardActions,
 } from "@mui/material";
-import { StyledTableCell, StyledTableRow } from "@/Utils/style/stylecomponent";
-import axiosInstance from "@/AxiosInstance/AxiosInstance";
+import { StyledTableCell, StyledTableRow } from "@/style/StyleComponents/TableStyle";
+import axiosInstance from "@/Services/Api/AxiosInstance";
 import { AxiosError } from "axios";
 import Image from "next/image";
 import { IContractApiResponse } from "@/Interface/Interfaces";
-import Icon from "@/app/Components/Icon";
+import Icon from "@/Components/Icon";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import KeepMountedModal from "./ShowModal";
-import { formatDate } from "@/app/Components/format date";
-import PaginationComponent from "@/app/Components/Pagination";
+import { formatDate } from "@/Components/format date";
+import PaginationComponent from "@/Components/Pagination";
 
 const ListOfReport = () => {
   const router = useRouter();

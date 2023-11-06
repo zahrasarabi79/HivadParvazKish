@@ -1,10 +1,10 @@
 import { IContract, IReportPaymentComponent } from "@/Interface/Interfaces";
-import Icon from "@/app/Components/Icon";
-import DatePickerControler from "@/app/Components/textFildControler/DatePickerControler";
-import NumericFormatControler from "@/app/Components/textFildControler/NumericFormatControler";
-import { TextFildCustom } from "@/app/Components/textFildControler/TextFiledCustom";
-import TextFildControler from "@/app/Components/textFildControler/textFildControler";
-import TextFild from "@/app/Components/textFildControler/textFildControler";
+import Icon from "@/Components/Icon";
+import DatePickerControler from "@/Components/textFildControler/DatePickerControler";
+import NumericFormatControler from "@/Components/textFildControler/NumericFormatControler";
+import { TextFildCustom } from "@/Components/textFildControler/TextFiledCustom";
+import TextFildControler from "@/Components/textFildControler/textFildControler";
+import TextFild from "@/Components/textFildControler/textFildControler";
 import { Grid, IconButton, TextField, useMediaQuery, useTheme } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";

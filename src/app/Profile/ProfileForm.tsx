@@ -1,18 +1,21 @@
-import axiosInstance from "@/AxiosInstance/AxiosInstance";
-import { IChangePassFormValues } from "@/Interface/Interfaces";
 import { Button, Grid, IconButton, InputAdornment, Stack, Typography, useTheme } from "@mui/material";
-import { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
 import { UseFormClearErrors, useForm } from "react-hook-form";
-import { TextFildCustom } from "../Components/textFildControler/TextFiledCustom";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { AxiosError } from "axios";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Icon from "../Components/Icon";
-import { DateValidationError } from "@mui/x-date-pickers";
+import axiosInstance from "@/Services/Api/AxiosInstance";
+import { IChangePassFormValues } from "@/Interface/Interfaces";
+import { TextFildCustom } from "@/Components/textFildControler/TextFiledCustom";
+import Icon from "@/Components/Icon";
+import SnackBar from "@/Components/SnackBar";
+import { useSnackbar } from "@/context/ProfileContext/SnackbarContext";
+import { useShowPassword } from "@/context/ProfileContext/ShowPassword";
 
 const ProfileForm = () => {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
+  const theme = useTheme();
+  const { state, openSnackbar, closeSnackbar } = useSnackbar();
+  // const { showState, showPassword, hidePassword } = useShowPassword();
   const {
     register,
     handleSubmit,
@@ -23,25 +26,45 @@ const ProfileForm = () => {
     setError,
   } = useForm<IChangePassFormValues>({ mode: "onChange" });
   const WatchFilds = Object.values(watch()).every((value) => value);
-  const theme = useTheme();
+
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+
   const handleClickShowPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setShowPassword((show) => !show);
+    setShowOldPassword((show) => !show);
   };
+  const handleClickShowNewPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setShowNewPassword((show) => !show);
+  };
+  const handleClickShowRepeatPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setShowRepeatPassword((show) => !show);
+  };
+
   const onSubmit = (data: IChangePassFormValues) => {
     getResponse(data);
   };
+
   const getResponse = async (user: IChangePassFormValues) => {
     try {
       const { data } = await axiosInstance.post("/updatepassword", user);
-      console.log(data.message);
-      router.push("/Contracts/ContractList");
+      openSnackbar("رمز با موفقیت تغییر کرد", "rgb(11, 150, 30)");
+      setTimeout(() => {
+        router.push("/Contracts/ContractList");
+      }, 2000);
     } catch (error: AxiosError | any) {
       if (error.response.data.error === "رمز عبور معتبر نیست") {
         setError("oldPassword", { message: error.response.data.error });
       }
+      if (error.response.status === 400) {
+        openSnackbar("نام کاربری معتبر نمی باشد", theme.palette.error.main);
+      }
     }
   };
+
   const validateNewPassword = (value: string, oldPassword: string, repeatPassword: string, setError: any, clearErrors: UseFormClearErrors<IChangePassFormValues>) => {
     if (value === oldPassword) {
       return "رمز عبور تکراری است";
@@ -78,6 +101,7 @@ const ProfileForm = () => {
 
     return true; // Valid password
   };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -85,7 +109,7 @@ const ProfileForm = () => {
           <Typography variant="h6" sx={{ margin: " 0 auto" }}>
             ویرایش رمز عبور
           </Typography>
-          <IconButton>
+          <IconButton onClick={() => router.push("/Contracts/ContractList")}>
             <Icon pathName={"../icon/ArrowIcon.svg"} focused={false} color="white" style={{ transform: "rotate(180deg)" }} />
           </IconButton>
         </Stack>
@@ -100,7 +124,7 @@ const ProfileForm = () => {
                 (errors.oldPassword && errors.oldPassword.message) ||
                 (errors.oldPassword?.type === "minLength" ? "رمز عبور نباید کمتر از 8 کاراکتر باشد" : errors.oldPassword?.type === "maxLength" ? "رمز عبور نباید بیشتر از 20 کاراکتر باشد" : " ")
               }
-              type={showPassword ? "text" : "password"}
+              type={showOldPassword ? "text" : "password"}
               {...register("oldPassword", {
                 minLength: 8,
                 maxLength: 20,
@@ -110,7 +134,7 @@ const ProfileForm = () => {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                      {showOldPassword ? <Icon pathName="Bold/eye.svg" /> : <Icon pathName="Bold/eye-slash.svg" />}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -124,13 +148,13 @@ const ProfileForm = () => {
               label={"رمز عبور جدید"}
               helperText={(!!errors.newPassword && errors.newPassword.message) || " "}
               error={!!errors.newPassword}
-              type={showPassword ? "text" : "password"}
+              type={showNewPassword ? "text" : "password"}
               {...register("newPassword", { required: "این فیلد الزامی است", validate: (value) => validateNewPassword(value, watch("oldPassword"), watch("repeatPassword"), setError, clearErrors) })}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowNewPassword} edge="end">
+                      {showNewPassword ? <Icon pathName="Bold/eye.svg" /> : <Icon pathName="Bold/eye-slash.svg" />}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -144,7 +168,7 @@ const ProfileForm = () => {
               label={"تکرار رمز عبور جدید"}
               helperText={errors.repeatPassword?.message}
               error={!!errors.repeatPassword}
-              type={showPassword ? "text" : "password"}
+              type={showRepeatPassword ? "text" : "password"}
               {...register("repeatPassword", {
                 validate: (value) => {
                   if (value !== watch("newPassword")) {
@@ -159,8 +183,8 @@ const ProfileForm = () => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowRepeatPassword} edge="end">
+                      {showRepeatPassword ? <Icon pathName="Bold/eye.svg" /> : <Icon pathName="Bold/eye-slash.svg" />}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -174,6 +198,7 @@ const ProfileForm = () => {
           </Grid>
         </Grid>
       </form>
+      {state.isOpen && <SnackBar horizontal={"center"} vertical={"top"} message={state.message} isOpen={state.isOpen} handleClose={closeSnackbar} color={state.color} />}
     </>
   );
 };

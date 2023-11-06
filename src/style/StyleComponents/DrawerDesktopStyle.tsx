@@ -1,10 +1,8 @@
+import MuiDrawer from "@mui/material/Drawer";
 import { drawerWidth } from "@/app/(sidebar)/SideBar";
 import { CSSObject } from "@emotion/react";
-import { AppBarProps, TableCell, TableRow, Theme, styled, tableCellClasses } from "@mui/material";
-import MuiAppBar from "@mui/material/AppBar";
-import MuiDrawer from "@mui/material/Drawer";
+import { Theme, styled } from "@mui/material";
 
-// desktop drawer
 export const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth.desktop,
   transition: theme.transitions.create("width", {
@@ -41,35 +39,4 @@ export const DrawerDesktop = styled(MuiDrawer, { shouldForwardProp: (prop) => pr
     ...closedMixin(theme),
     "& .MuiDrawer-paper": closedMixin(theme),
   }),
-}));
-
-// table style
-export const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#434255",
-    color: theme.palette.common.white,
-    padding: "6px 16px 6px 16px",
-    // borderBottom: "1px solid white",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-    padding: "13px 16px 13px 16px",
-  },
-}));
-
-export const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(even)": {
-    backgroundColor: theme.palette.background.paper,
-    "&:last-child td, &:last-child th": {
-      border: 0,
-      
-    },
-  },
-  "&:nth-of-type(odd)": {
-    backgroundColor: "#2e2c42",
-    "&:last-child td, &:last-child th": {
-      border: 0,
-      
-    },
-  },
 }));

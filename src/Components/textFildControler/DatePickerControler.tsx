@@ -44,31 +44,33 @@ const DatePickerControler: React.FC<ITextFildControler> = ({ control, inputError
           }
         },
       }}
-      render={({ field }) => (
-        <DatePicker
-          {...field}
-          format="yyyy-MM-dd"
-          onError={(newError) => {
-            setDatePickerError(newError);
-          }}
-          formatDensity="dense"
-          disabled={IsReturnPathName}
-          minDate={new Date("1971-01-01")}
-          maxDate={new Date("2121-01-01")}
-          sx={{ width: "100%" }}
-          label={label}
-          value={field.value || null} // when we fetch data an set default value it is correct to set value to show data as default value
-          onChange={(date) => {
-            field.onChange(date); // Update the field value
-          }}
-          slotProps={{
-            textField: {
-              error: datePickerErrorMessage !== " " || inputErrors,
-              helperText: helperText || datePickerErrorMessage,
-            },
-          }}
-        />
-      )}
+      render={({ field }) => {
+        return (
+          <DatePicker
+            {...field}
+            format="yyyy-MM-dd"
+            onError={(newError) => {
+              setDatePickerError(newError);
+            }}
+            formatDensity="dense"
+            disabled={IsReturnPathName}
+            minDate={new Date("1971-01-01")}
+            maxDate={new Date("2121-01-01")}
+            sx={{ width: "100%" }}
+            label={label}
+            value={field.value || null} // when we fetch data an set default value it is correct to set value to show data as default value
+            onChange={(date) => {
+              field.onChange(date); // Update the field value
+            }}
+            slotProps={{
+              textField: {
+                error: datePickerErrorMessage !== " " || inputErrors,
+                helperText: helperText || datePickerErrorMessage,
+              },
+            }}
+          />
+        );
+      }}
     />
   );
 };

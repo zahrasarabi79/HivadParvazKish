@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Modal, Box, Container, Typography, Button, Grid, useMediaQuery, useTheme } from "@mui/material";
-import ModalText from "@/app/Components/ModalText";
+import ModalText from "@/Components/ModalText";
 import { IContractApiResponse, IReportPaymentApiResponse, IReportReturnPaymentApiResponse, IReportsApiResponse } from "@/Interface/Interfaces";
-import { formatDate } from "@/app/Components/format date";
-import { SeparateNumber } from "@/app/Components/SeparateNumber";
+import { formatDate } from "@/Components/format date";
+import { SeparateNumber } from "@/Components/SeparateNumber";
 
 const style = {
   position: "absolute" as "absolute",
@@ -61,7 +61,7 @@ export interface IKeepMountedModalProps {
 
 const KeepMountedModal: React.FC<IKeepMountedModalProps> = ({ open, handleClose, data }) => {
   const theme = useTheme();
-  
+
   const smUp = useMediaQuery(theme.breakpoints.up("sm"));
 
   const TypeReportName = data?.typeContract === "فروش" ? "دریافتی" : "پرداختی";

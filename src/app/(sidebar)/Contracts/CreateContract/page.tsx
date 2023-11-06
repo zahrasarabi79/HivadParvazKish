@@ -3,18 +3,17 @@ import { Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, Menu
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useEffect, useState } from "react";
-import Icon from "@/app/Components/Icon";
+import Icon from "@/Components/Icon";
 import { IContract, IContractApiResponse, IReportsApiResponse } from "@/Interface/Interfaces";
 import { useForm, FieldError, useFieldArray } from "react-hook-form";
 import ReportAccordion from "./ReportAccordion";
-import { v4 as uuidv4 } from "uuid";
-import axiosInstance from "@/AxiosInstance/AxiosInstance";
-import SnackBar from "@/app/Components/SnackBar";
+import axiosInstance from "@/Services/Api/AxiosInstance";
+import SnackBar from "@/Components/SnackBar";
 import { usePathname, useRouter } from "next/navigation";
 import { AxiosError } from "axios";
-import TextFildControler from "@/app/Components/textFildControler/textFildControler";
-import SelectTextFildControler from "@/app/Components/textFildControler/SelectTextFildControler";
-import DatePickerControler from "@/app/Components/textFildControler/DatePickerControler";
+import TextFildControler from "@/Components/textFildControler/textFildControler";
+import SelectTextFildControler from "@/Components/textFildControler/SelectTextFildControler";
+import DatePickerControler from "@/Components/textFildControler/DatePickerControler";
 
 export interface ICreateContractProps {
   Contract: IContractApiResponse | undefined;
@@ -58,11 +57,12 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     handleSubmit,
     formState: { submitCount, errors },
   } = useForm<IContract>(defaultvalue);
-
   const { fields, append, remove } = useFieldArray<IContract>({
     control,
     name: "reports",
   });
+  const [hasFormErrors, setFormErrors] = useState(false);
+
   const [isReportsPayment, setIsReportsPayment] = useState(false);
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
   const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
@@ -103,6 +103,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     });
     setIsExpended(fields.length);
   };
+
   const onSubmit = (data: IContract) => {
     const filteredReports = data.reports.map((report) => {
       const filteredReportsPayment = report.reportsPayment.filter((payment) => !Object.values(payment).every((value) => value === null || value === ""));
@@ -150,8 +151,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
         handleCloseReturnPayment();
       } else {
         await axiosInstance.post("/updateReports", { ...contract, id });
-        //console.log(localStorage.getItem("myToken"));
-
         handleCloseSnackBarUpdate();
         setTimeout(() => {
           router.back();
@@ -161,6 +160,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       handleCloseSnackBarServer();
     }
   };
+
   useEffect(() => {
     if (Contract) {
       const resetReports = (reports: IReportsApiResponse[]) => {
@@ -196,9 +196,24 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       console.log("add data");
     }
   }, [Contract]);
-
   const cardTitle = Contract ? (IsReturnPathName ? "ویرایش بازگشت وجه" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
+  //* use this useeffect for focus on textfiled when have error
+  // useEffect(() => {
+  //   const firstError = Object.keys(errors).reduce((field: any, a) => {
+  //     return !!errors[field] ? field : a;
+  //   }, null);
 
+  //   if (firstError) {
+  //     console.log(firstError);
+  //     setFocus(firstError);
+  //   }
+  // }, [errors, setFocus]);
+  useEffect(() => {
+    const hasFieldErrors = Object.keys(errors).length > 0;
+    if (hasFieldErrors) {
+      setFormErrors(true);
+    }
+  }, [errors, submitCount]);
   return (
     <Card>
       <CardHeader title={cardTitle} />
@@ -285,6 +300,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
           <Button type="submit" variant="contained" color="primary">
             ثبت
           </Button>
+
           <SnackBar horizontal={"center"} vertical={"top"} message={"قرارداد با موفقیت ثبت شد."} isOpen={isOpenSnackBar} handleClose={handleCloseSnackBar} color="rgb(11, 150, 30)" />
           <SnackBar
             horizontal={"center"}
@@ -301,6 +317,14 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
             message={"حداقل یک پرداخت وارد کنید."}
             isOpen={isOpenSnackBarReturnPayment}
             handleClose={handleCloseReturnPayment}
+            color={theme.palette.warning.main}
+          />
+          <SnackBar
+            horizontal={"center"}
+            vertical={"top"}
+            message={"لطفاً تمامی فیلدها را پر کنید."}
+            isOpen={hasFormErrors}
+            handleClose={() => setFormErrors(false)}
             color={theme.palette.warning.main}
           />
           <SnackBar horizontal={"center"} vertical={"top"} message={"سرور پاسخگو نیست."} isOpen={isOpenSnackBarServer} handleClose={handleCloseSnackBarServer} color={theme.palette.error.main} />

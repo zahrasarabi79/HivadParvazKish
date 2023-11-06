@@ -2,12 +2,13 @@
 import { Box, Drawer, List, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
 import SidebarItem, { HivadSidebarItems } from "./SidebarItem";
 import { IDrawerWidth, ISelectListItem, SidebarItemChildren } from "@/Interface/Interfaces";
-import { DrawerDesktop } from "@/Utils/style/stylecomponent";
+import { DrawerDesktop } from "@/style/StyleComponents/DrawerDesktopStyle";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import Navbar from "./Navbar";
-import DrawerItem from "../Components/DrawerItem";
+import DrawerItem from "@/Components/DrawerItem";
+import { set } from "date-fns-jalali";
 
 export const drawerWidth: IDrawerWidth = { desktop: 240, mobile: 60 };
 export default function Sidebar({ children }: { children: React.ReactNode }) {
@@ -15,7 +16,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const smDown = useMediaQuery(theme.breakpoints.up("sm"));
   const router = useRouter();
   const currentPath = usePathname();
-
+  const smUp = useMediaQuery(theme.breakpoints.up("sm"));
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(true);
   const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(
@@ -25,13 +26,14 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     setMobileOpen(!mobileOpen);
   };
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
     setSelectListItem((prevItems: ISelectListItem[]) =>
       prevItems.map((item) => ({
         ...item,
+        focusindex: false,
         openChildrenItem: false,
       }))
     );
+    setMobileOpen(!mobileOpen);
   };
   const handleCloseDrawer = () => {
     setOpen(!open);
@@ -46,6 +48,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       setSelectListItem((prevItems: ISelectListItem[]) =>
         prevItems.map((item) => ({
           ...item,
+          focusindex: true,
           openChildrenItem: true,
         }))
       );
@@ -59,12 +62,17 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           openChildrenItem: i === index ? !item.openChildrenItem : false,
           focusindex: i === index ? !item.focusindex : false,
         }));
+        console.log(updatedItems);
+
         return updatedItems;
       });
     } else {
       setOpen(!open);
     }
     itemRoute ? router.push(itemRoute) : "";
+    if (itemRoute && !smUp) {
+      handleDrawerToggle();
+    }
   };
 
   return (

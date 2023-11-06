@@ -1,14 +1,14 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid, IconButton, Stack, TextField, Typography, useTheme } from "@mui/material";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
-import Icon from "@/app/Components/Icon";
+import Icon from "@/Components/Icon";
 import { FieldError, useFieldArray, useWatch } from "react-hook-form";
 import { IContract, IReportAccordionProps } from "@/Interface/Interfaces";
 import ReportPayment from "./ReportPayment";
 import { v4 as uuidv4 } from "uuid";
 import ReportReturnPayment from "./ReportReturnPayment";
 import React, { useEffect, useState } from "react";
-import TextFildControler from "@/app/Components/textFildControler/textFildControler";
-import NumericFormatControler from "@/app/Components/textFildControler/NumericFormatControler";
+import TextFildControler from "@/Components/textFildControler/textFildControler";
+import NumericFormatControler from "@/Components/textFildControler/NumericFormatControler";
 
 const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsReturnPathName, isExpended, handleIsExpended, removeReport, control, errors, reportIndex }) => {
   const theme = useTheme();

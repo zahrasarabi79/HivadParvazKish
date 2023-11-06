@@ -1,6 +1,6 @@
-import "./globals.css";
+import "../style/globals.css";
 import type { Metadata } from "next";
-import Theme from "./Theme/themeRegistry";
+import Theme from "../Theme/themeRegistry";
 import { CssBaseline } from "@mui/material";
 import StyledComponentsRegistry from "./registry";
 export const metadata: Metadata = {

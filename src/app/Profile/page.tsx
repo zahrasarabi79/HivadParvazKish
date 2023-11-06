@@ -1,6 +1,7 @@
 "use client";
 import { Card, CardContent, Container, Grid } from "@mui/material";
 import ProfileForm from "./ProfileForm";
+import ProfileProviderContext from "@/context/ProfileContext/ProfileProviderContext";
 
 const Profile = () => {
   return (
@@ -9,7 +10,9 @@ const Profile = () => {
         <CardContent sx={{ margin: "0px 0px 16px 0px" }}>
           <Grid container direction="column" justifyContent="center" alignItems="center">
             <Grid item xs={12}>
-              <ProfileForm />
+              <ProfileProviderContext>
+                <ProfileForm />
+              </ProfileProviderContext>
             </Grid>
           </Grid>
         </CardContent>

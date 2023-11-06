@@ -1,10 +1,10 @@
 "use client";
-import axiosInstance from "@/AxiosInstance/AxiosInstance";
-import { StyledTableCell, StyledTableRow } from "@/Utils/style/stylecomponent";
-import { eventStory } from "@/app/Components/EventStory";
-import Icon from "@/app/Components/Icon";
-import PaginationComponent from "@/app/Components/Pagination";
-import { formatDate } from "@/app/Components/format date";
+import axiosInstance from "@/Services/Api/AxiosInstance";
+import { StyledTableCell, StyledTableRow } from "@/style/StyleComponents/TableStyle";
+import { eventStory } from "@/Components/EventStory";
+import Icon from "@/Components/Icon";
+import PaginationComponent from "@/Components/Pagination";
+import { formatDate } from "@/Components/format date";
 import {
   Button,
   Card,

@@ -1,5 +1,5 @@
-import { ISelectListItem, ISidebarItemComponent, SidebarItem, SidebarItemChildren, SidebarItemChildrenOfChildren } from "@/Interface/Interfaces";
-import Icon from "@/app/Components/Icon";
+import { ISidebarItemComponent, SidebarItem, SidebarItemChildren, SidebarItemChildrenOfChildren } from "@/Interface/Interfaces";
+import Icon from "@/Components/Icon";
 import { Box, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, useMediaQuery, useTheme } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -9,17 +9,22 @@ export const HivadSidebarItems: SidebarItem[] = [
     title: "قرارداد های هیواد",
     icon: "plainicon.svg",
     children: [
+      { title: "ایجاد قراردادها", route: "/Contracts/CreateContract" },
       {
         title: "لیست قراردادها",
         route: "/Contracts/ContractList",
       },
-      { title: "ایجاد قراردادها", route: "/Contracts/CreateContract" },
     ],
   },
   {
     title: "تاریخچه تغییرات",
     route: "/systemlog",
     icon: "dashboard.svg",
+  },
+  {
+    title: "ایجاد کاربر",
+    route: "/createUsers",
+    icon: "profile-add.svg",
   },
 ];
 const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedListItem, selectListItem, handleCloseDrawer }) => {
@@ -37,7 +42,6 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
     return false;
   };
 
- 
   const childrenCollapsItemButton = (childerItem: SidebarItemChildren) => {
     router.push(childerItem.route || "");
 

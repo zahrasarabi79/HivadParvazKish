@@ -93,7 +93,6 @@ export interface IChangePassFormValues {
 export interface INewUser {
   username: string;
   password: string;
-  
 }
 export interface SidebarItem {
   title: string;
@@ -147,3 +146,16 @@ export interface IReportPaymentComponent {
   remove: UseFieldArrayRemove;
   IsReturnPathName: boolean;
 }
+
+// SnackbarContext
+export type SnackbarContextType = {
+  state: { isOpen: boolean; message: string; color: string };
+  openSnackbar: (message: string, color: string) => void;
+  closeSnackbar: () => void;
+};
+export interface SnackbarState {
+  isOpen: boolean;
+  message: string;
+  color: string;
+}
+export type SnackbarAction = { type: "OPEN_SNACKBAR"; message: string; color: string } | { type: "CLOSE_SNACKBAR" };

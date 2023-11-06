@@ -1,5 +1,4 @@
 import { TextField } from "@mui/material";
-import { useMemo, useState } from "react";
 import { Control, Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
@@ -16,7 +15,6 @@ export interface INumericFormatControlerProps {
 const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
   requiredRule = "این فیلد الزامی است",
   control,
-
   IsReturnPathName = false,
   inputError,
   helperText,
@@ -25,7 +23,7 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
   label,
 }) => {
   const regex = /[0-9۰-۹]/;
-  const conv2EnNum = (s: string | null) => {
+  const conv2EnNum = (s: string) => {
     return s?.replace(/[۰-۹]/g, (d: string) => {
       return "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString();
     });
@@ -37,23 +35,26 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
       control={control}
       rules={{
         required: requiredRule,
-        validate: (value) => {
-          if (required && !regex.test(value)) {
-            return "این فیلد الزامی است";
-          } else {
-            return true;
-          }
-        },
+        // validate: (value) => {
+        //   if (required && !regex.test(value)) {
+        //     return "این فیلد الزامی است";
+        //   } else {
+        //     return true;
+        //   }
+        // },
       }}
       render={({ field }) => {
-        console.log(conv2EnNum(field.value));
-
         return (
           <NumericFormat
+            {...field}
             type="tel"
             value={field.value}
-            onInput={(val: React.ChangeEvent<HTMLInputElement>) => {
-              field.onChange(conv2EnNum(val.target.value));
+            onKeyDown={(val: any) => {
+              let s = val.nativeEvent.key;
+              let a: any = conv2EnNum(s);
+              if (isNaN(s) && !isNaN(a)) {
+                val.target.value += a;
+              }
             }}
             autoComplete="off"
             customInput={TextField}
@@ -65,7 +66,6 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
             error={inputError}
             helperText={helperText}
             inputProps={{ maxLength: 40 }}
-            style={{ textAlign: "right" }}
           />
         );
       }}

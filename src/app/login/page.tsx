@@ -2,12 +2,12 @@
 import { useForm } from "react-hook-form";
 import { Card, InputAdornment, IconButton, CardContent, Container, Grid, Typography, Button, useTheme } from "@mui/material";
 import Image from "next/image";
-import { TextFildCustom } from "../Components/textFildControler/TextFiledCustom";
+import { TextFildCustom } from "@/Components/textFildControler/TextFiledCustom";
 import { useEffect, useState } from "react";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { INewUser, Token } from "@/Interface/Interfaces";
 import { DevTool } from "@hookform/devtools";
-import axiosInstance from "@/AxiosInstance/AxiosInstance";
+import axiosInstance from "@/Services/Api/AxiosInstance";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 

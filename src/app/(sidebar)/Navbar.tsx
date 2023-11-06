@@ -8,7 +8,7 @@ import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { drawerWidth } from "./SideBar";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import axiosInstance from "@/AxiosInstance/AxiosInstance";
+import axiosInstance from "@/Services/Api/AxiosInstance";
 import { AxiosError } from "axios";
 export interface NavbarProps {
   isDesktopSidebarOpen: boolean;
@@ -17,17 +17,17 @@ export interface NavbarProps {
 
 const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) => {
   const [ProfileName, setProfileName] = useState("not Defind");
-    const getProfileName = async () => {
-      try {
-        const { data } = await axiosInstance.post("/profileinformation");
-        setProfileName(data.name)
-      } catch (error: AxiosError | any) {
-        console.error("API request error:", error);
-      }
-    };
-    useEffect(() => {
-      getProfileName();
-    }, []);
+  const getProfileName = async () => {
+    try {
+      const { data } = await axiosInstance.post("/profileinformation");
+      setProfileName(data.name);
+    } catch (error: AxiosError | any) {
+      console.error("API request error:", error);
+    }
+  };
+  useEffect(() => {
+    getProfileName();
+  }, []);
   const theme = useTheme();
   const [anchorElProfile, setAnchorElProfile] = useState<null | HTMLElement>(null);
   // const [anchorElNotification, setAnchorElNotification] = useState<null | HTMLElement>(null);
@@ -42,7 +42,6 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
     //}
   };
   const Profile = () => {
-    
     router.push("/Profile");
   };
 

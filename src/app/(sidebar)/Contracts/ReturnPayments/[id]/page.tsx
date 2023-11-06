@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import CreateContract from "../../CreateContract/page";
-import axiosInstance from "@/AxiosInstance/AxiosInstance";
+import axiosInstance from "@/Services/Api/AxiosInstance";
 import { AxiosError } from "axios";
 import { useParams } from "next/navigation";
 import { IContractApiResponse } from "@/Interface/Interfaces";

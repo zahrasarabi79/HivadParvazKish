@@ -1,7 +1,7 @@
 import { IconButton, List, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
 import Image from "next/image";
 import React from "react";
-import SidebarItem from "../(sidebar)/SidebarItem";
+import SidebarItem from "@/app/(sidebar)/SidebarItem";
 import { ISelectListItem } from "@/Interface/Interfaces";
 import Icon from "./Icon";
 import { useParams } from "next/navigation";
