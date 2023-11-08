@@ -1,6 +1,6 @@
+"use client";
 import { SnackbarAction, SnackbarContextType, SnackbarState } from "@/Interface/Interfaces";
 import React, { createContext, useContext, useReducer } from "react";
-
 
 const SnackbarContext = createContext<SnackbarContextType | null>(null);
 

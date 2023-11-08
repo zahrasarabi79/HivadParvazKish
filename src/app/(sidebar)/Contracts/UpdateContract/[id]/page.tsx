@@ -13,35 +13,35 @@ const page = () => {
   const getContract = async () => {
     try {
       const { data } = await axiosInstance.post("/showReports", { id });
-      const updated = {
-        numContract: "",
-        dateContract: "",
-        typeContract: "",
-        customer: "",
-        reports: [
-          {
-            reportDescription: "",
-            totalCost: "",
-            presenter: "",
-            reportsPayment: [
-              {
-                bank: "",
-                payments: "",
-                datepayment: "",
-                paymentDescription: "",
-              },
-            ],
-            reportsReturnPayment: [
-              {
-                returnPaymentsbank: "",
-                returnPayments: "",
-                dateReturnPayment: "",
-                returnPaymentDescription: "",
-              },
-            ],
-          },
-        ],
-      };
+      // const updated = {
+      //   numContract: "",
+      //   dateContract: "",
+      //   typeContract: "",
+      //   customer: "",
+      //   reports: [
+      //     {
+      //       reportDescription: "",
+      //       totalCost: "",
+      //       presenter: "",
+      //       reportsPayment: [
+      //         {
+      //           bank: "",
+      //           payments: "",
+      //           datepayment: "",
+      //           paymentDescription: "",
+      //         },
+      //       ],
+      //       reportsReturnPayment: [
+      //         {
+      //           returnPaymentsbank: "",
+      //           returnPayments: "",
+      //           dateReturnPayment: "",
+      //           returnPaymentDescription: "",
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // };
       setDataUpdated(data.Contracts[0]);
     } catch (error: AxiosError | any) {
       console.log("problem:", error);

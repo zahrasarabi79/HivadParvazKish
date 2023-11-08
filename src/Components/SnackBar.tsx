@@ -14,7 +14,7 @@ const SnackBar: React.FC<ISnackBarProps> = ({ vertical, horizontal, message, han
   return (
     <Snackbar
       dir="rtl"
-      autoHideDuration={2500}
+      autoHideDuration={2000}
       sx={{ "& .MuiPaper-root.MuiSnackbarContent-root": { minWidth: 0, backgroundColor: color, color: "white", fontSize: "14px", borderRadius: "12px" } }}
       anchorOrigin={{ vertical, horizontal }}
       open={isOpen}

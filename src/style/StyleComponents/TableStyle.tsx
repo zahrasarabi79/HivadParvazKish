@@ -4,12 +4,14 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#434255",
     color: theme.palette.common.white,
-    padding: "6px 16px 6px 16px",
+    padding: "6px 16px",
+  
+
     // borderBottom: "1px solid white",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
-    padding: "13px 16px 13px 16px",
+    padding: "13px 16px",
   },
 }));
 

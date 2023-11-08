@@ -8,7 +8,7 @@ import { IChangePassFormValues } from "@/Interface/Interfaces";
 import { TextFildCustom } from "@/Components/textFildControler/TextFiledCustom";
 import Icon from "@/Components/Icon";
 import SnackBar from "@/Components/SnackBar";
-import { useSnackbar } from "@/context/ProfileContext/SnackbarContext";
+import { useSnackbar } from "@/context/SnackbarContext";
 import { useShowPassword } from "@/context/ProfileContext/ShowPassword";
 
 const ProfileForm = () => {

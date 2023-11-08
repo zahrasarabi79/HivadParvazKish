@@ -2,6 +2,7 @@ import React, { Ref } from "react";
 import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
 import { TextFildCustom } from "./TextFiledCustom";
 import { IContract } from "@/Interface/Interfaces";
+
 export interface ITextFildControler {
   control: Control<any>;
   IsReturnPathName?: boolean;
@@ -12,6 +13,9 @@ export interface ITextFildControler {
   required?: boolean;
   requiredRule?: string;
   key?: any;
+  validateValue?: any;
+  length?: { maxLength: number; minLength: number };
+  
 }
 const TextFildControler: React.FC<ITextFildControler> = ({
   requiredRule = "این فیلد الزامی است.",
@@ -21,17 +25,19 @@ const TextFildControler: React.FC<ITextFildControler> = ({
   IsReturnPathName = false,
   inputError,
   inputName,
-
+  validateValue,
   label,
+  length,
+ 
 }) => {
   return (
     <Controller
       control={control}
       name={inputName}
       defaultValue={""}
-      rules={{ required: requiredRule }}
+      rules={{ required: requiredRule, validate: (v) => validateValue && validateValue(v), maxLength: length && length.maxLength, minLength: length && length.minLength }}
       render={({ field }) => {
-        return <TextFildCustom {...field} required={required} fullWidth disabled={IsReturnPathName} label={label} error={inputError} helperText={helperText} />;
+        return <TextFildCustom {...field}  autoComplete="off" required={required} fullWidth disabled={IsReturnPathName} label={label} error={inputError} helperText={helperText} />;
       }}
     />
   );

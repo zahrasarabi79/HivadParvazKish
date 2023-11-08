@@ -89,7 +89,7 @@ export interface IChangePassFormValues {
   repeatPassword: string;
   [index: number]: string;
 }
-
+export type roleType = "مدیر" | "کارمند" ;
 export interface INewUser {
   username: string;
   password: string;
@@ -98,6 +98,7 @@ export interface SidebarItem {
   title: string;
   icon: string;
   route?: string;
+  role: roleType[];
   children?: SidebarItemChildren[];
 }
 export interface SidebarItemChildren {

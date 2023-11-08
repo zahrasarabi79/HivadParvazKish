@@ -1,13 +1,16 @@
-import { ISidebarItemComponent, SidebarItem, SidebarItemChildren, SidebarItemChildrenOfChildren } from "@/Interface/Interfaces";
+import { ISidebarItemComponent, SidebarItem, SidebarItemChildren, SidebarItemChildrenOfChildren, roleType } from "@/Interface/Interfaces";
 import Icon from "@/Components/Icon";
 import { Box, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, useMediaQuery, useTheme } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import axiosInstance from "@/Services/Api/AxiosInstance";
+import { AxiosError } from "axios";
 
 export const HivadSidebarItems: SidebarItem[] = [
   {
     title: "قرارداد های هیواد",
     icon: "plainicon.svg",
+    role: ["کارمند", "مدیر"],
     children: [
       { title: "ایجاد قراردادها", route: "/Contracts/CreateContract" },
       {
@@ -20,11 +23,19 @@ export const HivadSidebarItems: SidebarItem[] = [
     title: "تاریخچه تغییرات",
     route: "/systemlog",
     icon: "dashboard.svg",
+    role: ["مدیر"],
   },
   {
-    title: "ایجاد کاربر",
-    route: "/createUsers",
+    title: "مدیریت کاربران",
     icon: "profile-add.svg",
+    role: ["مدیر"],
+    children: [
+      { title: "ایجاد کاربر", route: "/createUsers" },
+      {
+        title: "لیست کاربران",
+        route: "/usersList",
+      },
+    ],
   },
 ];
 const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedListItem, selectListItem, handleCloseDrawer }) => {
@@ -49,10 +60,23 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
       handleCloseDrawer();
     }
   };
-
+  const [ProfileRole, setProfileRole] = useState<roleType>("کارمند");
+  const getProfileRole = async () => {
+    try {
+      const { data } = await axiosInstance.post("/profileinformation");
+      setProfileRole(data.role);
+    } catch (error: AxiosError | any) {
+      console.error("API request error:", error);
+    }
+  };
+  useEffect(() => {
+    getProfileRole();
+  }, []);
   return HivadSidebarItems.map((item: SidebarItem, index: number) => {
     const isAnyChildMatched = open ? item.children?.some((childerItem) => currentPath === childerItem.route) : false;
-
+    if (!item.role?.includes(ProfileRole)) {
+      return null;
+    }
     return (
       <React.Fragment key={item.title}>
         <ListItem sx={{ paddingX: 1, paddingY: 0 }}>

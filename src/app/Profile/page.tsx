@@ -10,9 +10,7 @@ const Profile = () => {
         <CardContent sx={{ margin: "0px 0px 16px 0px" }}>
           <Grid container direction="column" justifyContent="center" alignItems="center">
             <Grid item xs={12}>
-              <ProfileProviderContext>
-                <ProfileForm />
-              </ProfileProviderContext>
+              <ProfileForm />
             </Grid>
           </Grid>
         </CardContent>
