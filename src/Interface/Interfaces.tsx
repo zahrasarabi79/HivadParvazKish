@@ -1,6 +1,7 @@
 import { Control, FieldErrors, UseFieldArrayAppend, UseFieldArrayRemove } from "react-hook-form";
 import { Dispatch, SetStateAction } from "react";
 import { StringLiteralType } from "typescript";
+import { IUserApiResponse } from "@/app/(sidebar)/(User management)/usersList/page";
 
 // api response
 export interface IContractApiResponse {
@@ -160,3 +161,13 @@ export interface SnackbarState {
   color: string;
 }
 export type SnackbarAction = { type: "OPEN_SNACKBAR"; message: string; color: string } | { type: "CLOSE_SNACKBAR" };
+
+export interface IUser {
+  name: string;
+  username: string;
+  password: string;
+  role: string;
+}
+export interface ICreateUsersProps {
+  user: IUserApiResponse | undefined;
+}

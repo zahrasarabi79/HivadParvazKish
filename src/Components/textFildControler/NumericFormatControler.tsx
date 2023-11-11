@@ -47,6 +47,7 @@ const NumericFormatControler: React.FC<INumericFormatControlerProps> = ({
         return (
           <NumericFormat
             {...field}
+            dir="rtl"
             type="tel"
             value={field.value}
             onKeyDown={(val: any) => {
