@@ -1,19 +1,16 @@
 "use client";
-import { Box, Drawer, List, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
-import SidebarItem, { HivadSidebarItems } from "./SidebarItem";
-import { IDrawerWidth, ISelectListItem, SidebarItemChildren } from "@/Interface/Interfaces";
+import { Box, Drawer, Toolbar, useMediaQuery, useTheme } from "@mui/material";
+import { HivadSidebarItems } from "./SidebarItem";
+import { IDrawerWidth, ISelectListItem } from "@/Interface/Interfaces";
 import { DrawerDesktop } from "@/style/StyleComponents/DrawerDesktopStyle";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import Image from "next/image";
 import Navbar from "./Navbar";
 import DrawerItem from "@/Components/DrawerItem";
-import { set } from "date-fns-jalali";
 
 export const drawerWidth: IDrawerWidth = { desktop: 240, mobile: 60 };
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.up("sm"));
   const router = useRouter();
   const currentPath = usePathname();
   const smUp = useMediaQuery(theme.breakpoints.up("sm"));

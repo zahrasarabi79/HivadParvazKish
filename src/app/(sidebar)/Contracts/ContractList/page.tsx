@@ -31,6 +31,10 @@ import React, { useEffect, useState } from "react";
 import KeepMountedModal from "./ShowModal";
 import { formatDate } from "@/Components/format date";
 import PaginationComponent from "@/Components/Pagination";
+import LoadingCard from "@/Components/LoadingCard";
+import EmptyListCardContent from "@/Components/EmptyListCard";
+import CustomTable from "@/Components/CustomTable";
+import TooltipList from "@/Components/TooltipList";
 
 const ListOfReport = () => {
   const router = useRouter();
@@ -78,7 +82,13 @@ const ListOfReport = () => {
     setPage(newPage);
     router.push(`/Contracts/ContractList?page=${newPage || "1"}`);
   };
-
+  const tableData = listOfContracts.map((contract) => [
+    contract.numContract,
+    formatDate(contract?.dateContract) || "",
+    <TooltipList tooltipTitle="ویرایش بازگشت وجه" route={`/Contracts/ReturnPayments/${contract.id}`} iconPath="paymentReturn.svg" />,
+    <TooltipList tooltipTitle="ویرایش" route={`/Contracts/UpdateContract/${contract.id}`} iconPath="edit.svg" />,
+    <TooltipList route="" tooltipTitle="مشاهده" onClick={() => handleViewContract(contract)} iconPath="eye.svg" />,
+  ]);
   return (
     <Card>
       <CardHeader
@@ -91,90 +101,22 @@ const ListOfReport = () => {
       />
       <Divider variant="middle" />
       {loading ? (
-        <Grid container>
-          <Grid item xs={12} sx={{ margin: 10, display: "flex", justifyContent: "center", alignContent: "center" }}>
-            <CircularProgress />
-          </Grid>
-        </Grid>
+        <LoadingCard />
       ) : listOfContracts.length > 0 ? (
         <CardContent sx={{ display: "flex", justifyContent: "space-between", flexDirection: "column", alignItems: "center", minHeight: "72vh" }}>
-          <TableContainer dir="rtl" sx={{ boxShadow: "none" }} component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell style={{ width: "3%" }} align="left">
-                    ردیف
-                  </StyledTableCell>
-                  <StyledTableCell align="left" style={{ width: mdUp ? "30%" : "50%" }}>
-                    شماره قراراداد
-                  </StyledTableCell>
-                  <StyledTableCell style={{ width: "90%" }} align="left">
-                    تاریخ قرارداد
-                  </StyledTableCell>
-
-                  <StyledTableCell align="center" colSpan={3}>
-                    عملیات
-                  </StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {listOfContracts.map((contract, index) => (
-                  <StyledTableRow key={contract.id}>
-                    <StyledTableCell component="th" scope="row" align="left">
-                      {index + 1 + (page > 1 ? paginationFetchData.limitPerPage * (page - 1) : 0)}
-                    </StyledTableCell>
-                    <StyledTableCell sortDirection={"desc"} align="left">
-                      {contract.numContract}
-                    </StyledTableCell>
-                    <StyledTableCell sortDirection={"asc"} align="left">
-                      {formatDate(contract?.dateContract) || ""}
-                    </StyledTableCell>
-                    <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
-                      <Tooltip title="ویرایش بازگشت وجه" placement="bottom-start">
-                        <IconButton onClick={() => router.push(`/Contracts/ReturnPayments/${contract.id}`)}>
-                          <Icon pathName="paymentReturn.svg" color={theme.palette.primary.main} />
-                        </IconButton>
-                      </Tooltip>
-                    </StyledTableCell>
-                    <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 8px 0px 0px" } }}>
-                      <Tooltip title="ویرایش" placement="bottom-start">
-                        <IconButton onClick={() => router.push(`/Contracts/UpdateContract/${contract.id}`)}>
-                          <Icon pathName="edit.svg" color={theme.palette.primary.main} />
-                        </IconButton>
-                      </Tooltip>
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center" sx={{ ["&.MuiTableCell-root"]: { padding: "0px 16px 0px 0px" } }}>
-                      <Tooltip title="مشاهده" placement="bottom-start">
-                        <IconButton onClick={() => handleViewContract(contract)}>
-                          <Icon pathName="eye.svg" color={theme.palette.primary.main} />
-                        </IconButton>
-                      </Tooltip>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-                {emptyRows > 0 && (
-                  <StyledTableRow
-                    style={{
-                      height: 50 * emptyRows,
-                      backgroundColor: "transparent",
-                    }}
-                  >
-                    <StyledTableCell colSpan={6} />
-                  </StyledTableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <CustomTable
+            tableData={tableData}
+            headers={["ردیف", "شماره قرارداد", "تاریخ قرارداد", "عملیات"]}
+            headerWidths={["3%", "30%", "90%"]}
+            page={page}
+            paginationFetchData={paginationFetchData}
+          />
           <CardActions>
             <PaginationComponent page={page} TotalPaginationPage={TotalPaginationPage} rowsPerPage={paginationFetchData.limitPerPage} handleChangePage={handleChangePage} />
           </CardActions>
         </CardContent>
       ) : (
-        <CardContent sx={{ minHeight: "72vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-          <Typography variant="h6">در حال حاضر قراردادی وجود ندارد.</Typography>
-          <Image src={"/icon/Vector.svg"} width={mdUp ? 400 : 300} height={mdUp ? 400 : 300} alt="Vector" />
-        </CardContent>
+        <EmptyListCardContent cardContentTitle="در حال حاضر قراردادی وجود ندارد." />
       )}
 
       <KeepMountedModal open={openModal} handleClose={handleCloseModal} handleOpen={handleOpenModal} data={modalData as IContractApiResponse} />

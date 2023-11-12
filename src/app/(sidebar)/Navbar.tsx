@@ -1,21 +1,21 @@
 "use client";
-import { AppBar, Avatar, Fade, IconButton, Menu, MenuItem, Stack, Toolbar, Typography, styled, useMediaQuery, useTheme } from "@mui/material";
+import { Avatar, Fade, IconButton, Menu, MenuItem, Stack, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
 import Image from "next/image";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
-import SmsFailedIcon from "@mui/icons-material/SmsFailed";
 import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { drawerWidth } from "./SideBar";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import axiosInstance from "@/Services/Api/AxiosInstance";
 import { AxiosError } from "axios";
-export interface NavbarProps {
-  isDesktopSidebarOpen: boolean;
-  onDrawerOpen: () => void;
-}
+import { NavbarProps } from "@/Interface/Interfaces";
+import { StyledAppBar } from "@/style/StyleComponents/StyledAppBar";
 
 const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) => {
+  const theme = useTheme();
+  const router = useRouter();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+  const [anchorElProfile, setAnchorElProfile] = useState<null | HTMLElement>(null);
   const [ProfileName, setProfileName] = useState("not Defind");
   const getProfileName = async () => {
     try {
@@ -28,12 +28,6 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
   useEffect(() => {
     getProfileName();
   }, []);
-  const theme = useTheme();
-  const [anchorElProfile, setAnchorElProfile] = useState<null | HTMLElement>(null);
-  // const [anchorElNotification, setAnchorElNotification] = useState<null | HTMLElement>(null);
-  const router = useRouter();
-  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
-
   const Logout = () => {
     localStorage.clear();
     //if (!localStorage.getItem("myToken")) {
@@ -46,21 +40,7 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
   };
 
   return (
-    <AppBar
-      sx={{
-        boxShadow: "none",
-        ...(open && {
-          marginLeft: drawerWidth.desktop,
-          width: isDesktop ? `calc(100% - ${drawerWidth.desktop}px)` : "100%",
-          transition: theme.transitions.create(["width", "margin"], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-          }),
-        }),
-      }}
-      dir="rtl"
-      position="fixed"
-    >
+    <StyledAppBar open={open} isDesktop={isDesktop} dir="rtl">
       <Toolbar variant="dense" sx={{ bgcolor: theme.palette.background.paper, justifyContent: "space-between" }}>
         <Stack>
           <IconButton onClick={onDrawerOpen} sx={{ display: { sm: "none", xs: "flex" } }}>
@@ -120,7 +100,7 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
           </Menu> */}
         </Stack>
       </Toolbar>
-    </AppBar>
+    </StyledAppBar>
   );
 };
 

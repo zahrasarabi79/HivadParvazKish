@@ -1,7 +1,6 @@
 import { Control, FieldErrors, UseFieldArrayAppend, UseFieldArrayRemove } from "react-hook-form";
 import { Dispatch, SetStateAction } from "react";
 import { StringLiteralType } from "typescript";
-import { IUserApiResponse } from "@/app/(sidebar)/(User management)/usersList/page";
 
 // api response
 export interface IContractApiResponse {
@@ -90,7 +89,7 @@ export interface IChangePassFormValues {
   repeatPassword: string;
   [index: number]: string;
 }
-export type roleType = "مدیر" | "کارمند" ;
+export type roleType = "مدیر" | "کارمند";
 export interface INewUser {
   username: string;
   password: string;
@@ -170,4 +169,24 @@ export interface IUser {
 }
 export interface ICreateUsersProps {
   user: IUserApiResponse | undefined;
+}
+export interface IUserApiResponse {
+  id: number;
+  name: string;
+  username: string;
+  password: string;
+  role: roleType;
+}
+export interface IListOfSystemLog {
+  id: number;
+  eventName: string;
+  contractId: number;
+  numContract: string;
+  username: string;
+  createdAt: Date;
+}
+
+export interface NavbarProps {
+  isDesktopSidebarOpen: boolean;
+  onDrawerOpen: () => void;
 }

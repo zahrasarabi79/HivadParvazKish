@@ -10,6 +10,7 @@ import { useSnackbar } from "@/context/SnackbarContext";
 import SnackBar from "@/Components/SnackBar";
 import { AxiosError } from "axios";
 import { ICreateUsersProps, IUser } from "@/Interface/Interfaces";
+import { watch } from "fs";
 
 const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
   const theme = useTheme();
@@ -21,6 +22,8 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
     handleSubmit,
     reset,
     setError,
+    getValues,
+    watch,
     formState: { errors },
   } = useForm<IUser>({ mode: "onChange" });
 
@@ -118,11 +121,12 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
       });
     }
   }, [user]);
+  
+
   return (
     <Card>
       <CardHeader title={user ? "ویرایش کاربر" : "ایجاد کاربر"} />
       <Divider variant="middle" />
-
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <CardContent>
           <Grid container spacing={2}>
@@ -135,14 +139,14 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
                 control={control}
                 label={"نام کاربری"}
                 inputError={!!errors.username}
-                helperText={(errors.username && errors.username.message) || ""}
+                helperText={errors.username ? errors.username.message : " "}
                 validateValue={validateUsername}
               />
             </Grid>
             <Grid item xs={6}>
               <TextFildControler
-                requiredRule={user ? false : "این فیلد الزامی است"}
-                required={user ? false : true}
+                requiredRule={!user && "این فیلد الزامی است"}
+                required={!user}
                 inputName="password"
                 control={control}
                 label={"رمز عبور"}
@@ -151,7 +155,7 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
                   (errors.password && errors.password.message) ||
                   (errors.password?.type === "minLength" ? "رمز عبور نباید کمتر از 8 کاراکتر باشد" : errors.password?.type === "maxLength" ? "رمز عبور نباید بیشتر از 8 کاراکتر باشد" : " ")
                 }
-                validateValue={user ? () => true : validateNewPassword}
+                validateValue={!user ? validateNewPassword : watch("password")?.length ? validateNewPassword : () => true}
               />
             </Grid>
             <Grid item xs={6}>
@@ -178,7 +182,6 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
           </Button>
         </CardActions>
       </form>
-
       {state.isOpen && <SnackBar horizontal={"center"} vertical={"top"} message={state.message} isOpen={state.isOpen} handleClose={closeSnackbar} color={state.color} />}
     </Card>
   );

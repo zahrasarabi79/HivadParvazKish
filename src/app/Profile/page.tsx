@@ -1,7 +1,6 @@
 "use client";
 import { Card, CardContent, Container, Grid } from "@mui/material";
 import ProfileForm from "./ProfileForm";
-import ProfileProviderContext from "@/context/ProfileContext/ProfileProviderContext";
 
 const Profile = () => {
   return (

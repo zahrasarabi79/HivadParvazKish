@@ -9,13 +9,12 @@ import { TextFildCustom } from "@/Components/textFildControler/TextFiledCustom";
 import Icon from "@/Components/Icon";
 import SnackBar from "@/Components/SnackBar";
 import { useSnackbar } from "@/context/SnackbarContext";
-import { useShowPassword } from "@/context/ProfileContext/ShowPassword";
+
 
 const ProfileForm = () => {
   const router = useRouter();
   const theme = useTheme();
   const { state, openSnackbar, closeSnackbar } = useSnackbar();
-  // const { showState, showPassword, hidePassword } = useShowPassword();
   const {
     register,
     handleSubmit,
@@ -47,7 +46,6 @@ const ProfileForm = () => {
   const onSubmit = (data: IChangePassFormValues) => {
     getResponse(data);
   };
-
   const getResponse = async (user: IChangePassFormValues) => {
     try {
       const { data } = await axiosInstance.post("/updatepassword", user);
@@ -64,7 +62,6 @@ const ProfileForm = () => {
       }
     }
   };
-
   const validateNewPassword = (value: string, oldPassword: string, repeatPassword: string, setError: any, clearErrors: UseFormClearErrors<IChangePassFormValues>) => {
     if (value === oldPassword) {
       return "رمز عبور تکراری است";

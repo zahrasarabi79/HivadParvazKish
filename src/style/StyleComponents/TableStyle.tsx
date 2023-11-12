@@ -5,7 +5,8 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     backgroundColor: "#434255",
     color: theme.palette.common.white,
     padding: "6px 16px",
-  
+    whiteSpace: "nowrap",
+    overflow: "hidden",
 
     // borderBottom: "1px solid white",
   },
