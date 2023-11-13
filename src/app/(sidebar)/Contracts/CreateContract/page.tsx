@@ -14,6 +14,7 @@ import { AxiosError } from "axios";
 import TextFildControler from "@/Components/textFildControler/textFildControler";
 import SelectTextFildControler from "@/Components/textFildControler/SelectTextFildControler";
 import DatePickerControler from "@/Components/textFildControler/DatePickerControler";
+import { useSnackbar } from "@/context/SnackbarContext";
 
 export interface ICreateContractProps {
   Contract: IContractApiResponse | undefined;
@@ -23,7 +24,11 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
+  const typeOfReport = ["خرید", "فروش"];
   const IsReturnPathName = pathname === `/Contracts/ReturnPayments/${Contract?.id}`;
+  const cardTitle = Contract ? (IsReturnPathName ? "ویرایش بازگشت وجه" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
+  const { state, openSnackbar, closeSnackbar } = useSnackbar();
+
   const defaultvalue = {
     defaultValues: {
       reports: [
@@ -62,7 +67,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     name: "reports",
   });
   const [hasFormErrors, setFormErrors] = useState(false);
-
   const [isReportsPayment, setIsReportsPayment] = useState(false);
   const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
   const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
@@ -70,7 +74,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const [isOpenSnackBarDeleteAccardion, setIsOpenSnackBarDeleteAccardion] = useState(false);
   const [isOpenSnackBarReturnPayment, setIsOpenSnackBarReturnPayment] = useState(false);
   const [isExpended, setIsExpended] = useState<number | null>(0);
-  const typeOfReport = ["خرید", "فروش"];
   const handleCloseReturnPayment = () => setIsOpenSnackBarReturnPayment((is) => !is);
   const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
   const handleCloseSnackBarServer = () => setIsOpenSnackBarServer((is) => !is);
@@ -125,20 +128,20 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const saveContract = async (contract: IContract) => {
     try {
       const isReportsPayment: boolean = contract.reports.some((report) => report.reportsPayment?.length === 0);
-
       if (contract.reports.length === 0) {
-        handleCloseSnackBarDeleteAccardion();
+        openSnackbar("حداقل یک شرح و مشخصات ایجاد کنید.", theme.palette.warning.main);
       } else if (isReportsPayment) {
-        handleCloseReturnPayment();
+        openSnackbar("حداقل یک پرداخت وارد کنید.", theme.palette.warning.main);
       } else {
         await axiosInstance.post("/AddReports", contract);
-        handleCloseSnackBar();
+        openSnackbar("قرارداد با موفقیت ثبت شد.", "rgb(11, 150, 30)");
+
         setTimeout(() => {
           router.push("/Contracts/ContractList");
         }, 2000);
       }
     } catch (error) {
-      handleCloseSnackBarServer();
+      openSnackbar("سرور پاسخگو نیست", theme.palette.error.main);
     }
   };
   const updateDataContract = async (contract: IContract, id: number) => {
@@ -146,21 +149,20 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       const isReportsPayment: boolean = contract.reports.some((report) => report.reportsPayment?.length === 0);
 
       if (contract.reports.length === 0) {
-        handleCloseSnackBarDeleteAccardion();
+        openSnackbar("حداقل یک پرداخت وارد کنید.", theme.palette.warning.main);
       } else if (isReportsPayment) {
-        handleCloseReturnPayment();
+        openSnackbar("حداقل یک پرداخت وارد کنید.", theme.palette.warning.main);
       } else {
         await axiosInstance.post("/updateReports", { ...contract, id });
-        handleCloseSnackBarUpdate();
+        openSnackbar("قرارداد با موفقیت ویرایش شد.", "rgb(11, 150, 30)");
         setTimeout(() => {
           router.back();
         }, 2000);
       }
     } catch (error: AxiosError | any) {
-      handleCloseSnackBarServer();
+      openSnackbar("سرور پاسخگو نیست", theme.palette.error.main);
     }
   };
-
   useEffect(() => {
     if (Contract) {
       const resetReports = (reports: IReportsApiResponse[]) => {
@@ -196,24 +198,14 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       console.log("add data");
     }
   }, [Contract]);
-  const cardTitle = Contract ? (IsReturnPathName ? "ویرایش بازگشت وجه" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
-  //* use this useeffect for focus on textfiled when have error
-  // useEffect(() => {
-  //   const firstError = Object.keys(errors).reduce((field: any, a) => {
-  //     return !!errors[field] ? field : a;
-  //   }, null);
 
-  //   if (firstError) {
-  //     console.log(firstError);
-  //     setFocus(firstError);
-  //   }
-  // }, [errors, setFocus]);
   useEffect(() => {
     const hasFieldErrors = Object.keys(errors).length > 0;
     if (hasFieldErrors) {
-      setFormErrors(true);
+      openSnackbar("لطفاً تمامی فیلدها را پر کنید.", theme.palette.warning.main);
     }
   }, [errors, submitCount]);
+
   return (
     <Card>
       <CardHeader title={cardTitle} />
@@ -270,7 +262,6 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
               />
             </Grid>
           </Grid>
-
           {fields.map((report, index: number) => (
             <ReportAccordion
               key={report.id}
@@ -300,34 +291,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
           <Button type="submit" variant="contained" color="primary">
             ثبت
           </Button>
-
-          <SnackBar horizontal={"center"} vertical={"top"} message={"قرارداد با موفقیت ثبت شد."} isOpen={isOpenSnackBar} handleClose={handleCloseSnackBar} color="rgb(11, 150, 30)" />
-          <SnackBar
-            horizontal={"center"}
-            vertical={"top"}
-            message={"حداقل یک شرح و مشخصات ایجاد کنید."}
-            isOpen={isOpenSnackBarDeleteAccardion}
-            handleClose={handleCloseSnackBarDeleteAccardion}
-            color={theme.palette.warning.main}
-          />
-          <SnackBar horizontal={"center"} vertical={"top"} message={"قرارداد با موفقیت ویرایش شد."} isOpen={isOpenSnackBarUpdate} handleClose={handleCloseSnackBarUpdate} color="rgb(11, 150, 30)" />
-          <SnackBar
-            horizontal={"center"}
-            vertical={"top"}
-            message={"حداقل یک پرداخت وارد کنید."}
-            isOpen={isOpenSnackBarReturnPayment}
-            handleClose={handleCloseReturnPayment}
-            color={theme.palette.warning.main}
-          />
-          <SnackBar
-            horizontal={"center"}
-            vertical={"top"}
-            message={"لطفاً تمامی فیلدها را پر کنید."}
-            isOpen={hasFormErrors}
-            handleClose={() => setFormErrors(false)}
-            color={theme.palette.warning.main}
-          />
-          <SnackBar horizontal={"center"} vertical={"top"} message={"سرور پاسخگو نیست."} isOpen={isOpenSnackBarServer} handleClose={handleCloseSnackBarServer} color={theme.palette.error.main} />
+          {state.isOpen && <SnackBar horizontal={"center"} vertical={"top"} message={state.message} isOpen={state.isOpen} handleClose={closeSnackbar} color={state.color} />}
         </CardActions>
       </form>
     </Card>
