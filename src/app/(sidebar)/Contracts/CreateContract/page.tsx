@@ -29,7 +29,41 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const cardTitle = Contract ? (IsReturnPathName ? "ویرایش بازگشت وجه" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
   const { state, openSnackbar, closeSnackbar } = useSnackbar();
 
-  const defaultvalue = {
+  // const defaultvalue = {
+  //   defaultValues: {
+  //     reports: [
+  //       {
+  //         reportDescription: "",
+  //         totalCost: "",
+  //         presenter: "",
+  //         reportsPayment: [
+  //           {
+  //             bank: "",
+  //             payments: "",
+  //             datepayment: null,
+  //             paymentDescription: "",
+  //           },
+  //         ],
+  //         reportsReturnPayment: [
+  //           {
+  //             returnPaymentsbank: "",
+  //             returnPayments: "",
+  //             dateReturnPayment: null,
+  //             returnPaymentDescription: "",
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  //   mode: "onChange",
+  // };
+  const {
+    control,
+    reset,
+    handleSubmit,
+    watch,
+    formState: { submitCount, errors },
+  } = useForm<IContract>({
     defaultValues: {
       reports: [
         {
@@ -55,30 +89,15 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
         },
       ],
     },
-  };
-  const {
-    control,
-    reset,
-    handleSubmit,
-    formState: { submitCount, errors },
-  } = useForm<IContract>(defaultvalue);
+    mode: "onChange",
+  });
   const { fields, append, remove } = useFieldArray<IContract>({
     control,
     name: "reports",
   });
-  const [hasFormErrors, setFormErrors] = useState(false);
-  const [isReportsPayment, setIsReportsPayment] = useState(false);
-  const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
-  const [isOpenSnackBarUpdate, setIsOpenSnackBarUpdate] = useState(false);
-  const [isOpenSnackBarServer, setIsOpenSnackBarServer] = useState(false);
-  const [isOpenSnackBarDeleteAccardion, setIsOpenSnackBarDeleteAccardion] = useState(false);
-  const [isOpenSnackBarReturnPayment, setIsOpenSnackBarReturnPayment] = useState(false);
+  console.log(errors?.reports);
+
   const [isExpended, setIsExpended] = useState<number | null>(0);
-  const handleCloseReturnPayment = () => setIsOpenSnackBarReturnPayment((is) => !is);
-  const handleCloseSnackBar = () => setIsOpenSnackBar((is) => !is);
-  const handleCloseSnackBarServer = () => setIsOpenSnackBarServer((is) => !is);
-  const handleCloseSnackBarUpdate = () => setIsOpenSnackBarUpdate((is) => !is);
-  const handleCloseSnackBarDeleteAccardion = () => setIsOpenSnackBarDeleteAccardion((is) => !is);
   const handleIsExpended: (index: number | null) => void = (index) => {
     setIsExpended((isExpended) => (isExpended === index ? null : index));
   };
@@ -106,7 +125,8 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     });
     setIsExpended(fields.length);
   };
-
+  const allInput = watch();
+  console.log(allInput);
   const onSubmit = (data: IContract) => {
     const filteredReports = data.reports.map((report) => {
       const filteredReportsPayment = report.reportsPayment.filter((payment) => !Object.values(payment).every((value) => value === null || value === ""));
@@ -138,7 +158,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
 
         setTimeout(() => {
           router.push("/Contracts/ContractList");
-        }, 2000);
+        }, 2500);
       }
     } catch (error) {
       openSnackbar("سرور پاسخگو نیست", theme.palette.error.main);
@@ -157,7 +177,7 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
         openSnackbar("قرارداد با موفقیت ویرایش شد.", "rgb(11, 150, 30)");
         setTimeout(() => {
           router.back();
-        }, 2000);
+        }, 2500);
       }
     } catch (error: AxiosError | any) {
       openSnackbar("سرور پاسخگو نیست", theme.palette.error.main);

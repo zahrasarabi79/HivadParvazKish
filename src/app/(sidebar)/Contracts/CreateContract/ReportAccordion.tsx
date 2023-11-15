@@ -1,10 +1,9 @@
-import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid, IconButton, Stack, TextField, Typography, useTheme } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import Icon from "@/Components/Icon";
 import { FieldError, useFieldArray, useWatch } from "react-hook-form";
 import { IContract, IReportAccordionProps } from "@/Interface/Interfaces";
 import ReportPayment from "./ReportPayment";
-import { v4 as uuidv4 } from "uuid";
 import ReportReturnPayment from "./ReportReturnPayment";
 import React, { useEffect, useState } from "react";
 import TextFildControler from "@/Components/textFildControler/textFildControler";
@@ -29,20 +28,18 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
     control,
     name: `reports.${reportIndex}.reportsReturnPayment`,
   });
-
   const [accordionError, setaccordionError] = useState<number[]>([]);
-  const [isOpenSnackBarDelete, setIsOpenSnackBarDelete] = useState(false);
-  const handleCloseSnackBarDelete = () => setIsOpenSnackBarDelete(true);
-
   const removeReports = (indexToRemove: number) => {
     removeReport(indexToRemove);
   };
+  
   // show error in Accordion summary
   useEffect(() => {
     if (errors?.reports && errors?.reports[reportIndex]) {
       setaccordionError((prevIndexes: number[]) => [...prevIndexes, reportIndex]);
     }
   }, [errors, submitCount]);
+  console.log(accordionError);
 
   const Describtion = useWatch({ control, name: `reports.${reportIndex}.reportDescription` });
   const totalcost = useWatch({ control, name: `reports.${reportIndex}.totalCost` });
