@@ -1,16 +1,16 @@
 import { INewUser, Token } from "@/Interface/Interfaces";
-import { Button, Grid, IconButton, InputAdornment, Typography, useTheme } from "@mui/material";
+import { Button, CircularProgress, Grid, IconButton, InputAdornment, Typography, useTheme } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useState } from "react";
-import axiosInstance from "@/Services/Api/AxiosInstance";
-import { AxiosError } from "axios";
 import { TextFildCustom } from "@/Components/textFildControler/TextFiledCustom";
 import Icon from "@/Components/Icon";
+import { useLoginMutation } from "@/Services/Api/authApi";
 
 const LoginForm = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [login, { isLoading }] = useLoginMutation();
   const {
     register,
     handleSubmit,
@@ -24,21 +24,14 @@ const LoginForm = () => {
     e.preventDefault();
     setShowPassword((show) => !show);
   };
-  const onSubmit = (user: INewUser) => {
-    getResponse(user);
-  };
-  const getResponse = async (user: INewUser) => {
+  const onSubmit: SubmitHandler<INewUser> = async (user) => {
+    const { username, password } = user;
     try {
-      const { data } = await axiosInstance.post("/login", user);
-      await getToken(data);
-    } catch (error: AxiosError | any) {
+      await login({ username, password }).unwrap();
+      router.push("/Contracts/ContractList");
+    } catch (error) {
       setError("password", { type: "text", message: "نام کاربری یا پسورد را مجددا وارد کنید." });
     }
-  };
-  const getToken = async (response: Token) => {
-    localStorage.setItem("myToken", response.token);
-    axiosInstance.defaults.headers.common.Authorization = `Bearer ${response.token}`;
-    router.push("/Contracts/ContractList");
   };
 
   return (
@@ -78,7 +71,14 @@ const LoginForm = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button type="submit" disabled={!WatchFilds} fullWidth variant="contained" sx={{ height: "45px", bgcolor: WatchFilds ? theme.palette.primary.main : "default", boxShadow: "none" }}>
+            <Button
+              type="submit"
+              disabled={!WatchFilds}
+              fullWidth
+              variant="contained"
+              endIcon={isLoading && <CircularProgress color="info" size={20} />}
+              sx={{ height: "45px", bgcolor: WatchFilds ? theme.palette.primary.main : "default", boxShadow: "none" }}
+            >
               ورود
             </Button>
           </Grid>

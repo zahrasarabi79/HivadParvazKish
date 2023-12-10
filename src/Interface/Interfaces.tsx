@@ -190,3 +190,8 @@ export interface NavbarProps {
   isDesktopSidebarOpen: boolean;
   onDrawerOpen: () => void;
 }
+export interface IAuthState {
+  token: string | null;
+  error: string | undefined;
+  isLoggedIn: boolean;
+}

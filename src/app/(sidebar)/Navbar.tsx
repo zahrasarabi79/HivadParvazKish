@@ -1,5 +1,16 @@
 "use client";
-import { Avatar, Fade, IconButton, Menu, MenuItem, Stack, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Avatar,
+  Fade,
+  IconButton,
+  Menu,
+  MenuItem,
+  Stack,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import Image from "next/image";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -10,10 +21,13 @@ import axiosInstance from "@/Services/Api/AxiosInstance";
 import { AxiosError } from "axios";
 import { NavbarProps } from "@/Interface/Interfaces";
 import { StyledAppBar } from "@/style/StyleComponents/StyledAppBar";
-
+import { useAppDispatch } from "../../redux/hook";
+import { logout } from "@/redux/slices/authSlice";
+import Cookies from "js-cookie";
 const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) => {
   const theme = useTheme();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [anchorElProfile, setAnchorElProfile] = useState<null | HTMLElement>(null);
   const [ProfileName, setProfileName] = useState("not Defind");
@@ -29,11 +43,10 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
     getProfileName();
   }, []);
   const Logout = () => {
-    localStorage.clear();
-    //if (!localStorage.getItem("myToken")) {
+    dispatch(logout());
+    Cookies.remove("token");
+    Cookies.remove("isLoggedIn");
     router.push("/login");
-    axiosInstance.defaults.headers.common.Authorization = "";
-    //}
   };
   const Profile = () => {
     router.push("/Profile");
