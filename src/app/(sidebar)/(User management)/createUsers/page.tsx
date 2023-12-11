@@ -11,18 +11,22 @@ import SnackBar from "@/Components/SnackBar";
 import { AxiosError } from "axios";
 import { ICreateUsersProps, IUser } from "@/Interface/Interfaces";
 import { watch } from "fs";
+import { useCreateUserMutation } from "@/Services/Api/userApi";
+import { useAppSelector } from "@/redux/hook";
 
 const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
   const theme = useTheme();
   const router = useRouter();
+  const [createUser] = useCreateUserMutation();
   const { state, openSnackbar, closeSnackbar } = useSnackbar();
   const typeOfReport = ["کارمند", "مدیر"];
+  const { color, isOpen, message } = useAppSelector((state) => state.snackbarState);
+
   const {
     control,
     handleSubmit,
     reset,
     setError,
-    getValues,
     watch,
     formState: { errors },
   } = useForm<IUser>({ mode: "onChange" });
@@ -96,8 +100,7 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
   };
   const saveUser = async (user: IUser) => {
     try {
-      await axiosInstance.post("/AddUsers", user);
-      openSnackbar("کاربر با موفقیت ایجاد شد.", "rgb(11, 150, 30)");
+      await createUser(user).unwrap();
       setTimeout(() => {
         router.push("/usersList");
       }, 2000);
@@ -121,7 +124,6 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
       });
     }
   }, [user]);
-  
 
   return (
     <Card>
@@ -131,7 +133,13 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
         <CardContent>
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <TextFildControler inputName="name" control={control} label={"نام و نام خانوادگی"} inputError={!!errors.name} helperText={errors.name ? (errors.name as FieldError).message : " "} />
+              <TextFildControler
+                inputName="name"
+                control={control}
+                label={"نام و نام خانوادگی"}
+                inputError={!!errors.name}
+                helperText={errors.name ? (errors.name as FieldError).message : " "}
+              />
             </Grid>
             <Grid item xs={6}>
               <TextFildControler
@@ -153,9 +161,15 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
                 inputError={!!errors.password}
                 helperText={
                   (errors.password && errors.password.message) ||
-                  (errors.password?.type === "minLength" ? "رمز عبور نباید کمتر از 8 کاراکتر باشد" : errors.password?.type === "maxLength" ? "رمز عبور نباید بیشتر از 8 کاراکتر باشد" : " ")
+                  (errors.password?.type === "minLength"
+                    ? "رمز عبور نباید کمتر از 8 کاراکتر باشد"
+                    : errors.password?.type === "maxLength"
+                    ? "رمز عبور نباید بیشتر از 8 کاراکتر باشد"
+                    : " ")
                 }
-                validateValue={!user ? validateNewPassword : watch("password")?.length ? validateNewPassword : () => true}
+                validateValue={
+                  !user ? validateNewPassword : watch("password")?.length ? validateNewPassword : () => true
+                }
               />
             </Grid>
             <Grid item xs={6}>
@@ -182,7 +196,16 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
           </Button>
         </CardActions>
       </form>
-      {state.isOpen && <SnackBar horizontal={"center"} vertical={"top"} message={state.message} isOpen={state.isOpen} handleClose={closeSnackbar} color={state.color} />}
+      {isOpen && (
+        <SnackBar
+          horizontal={"center"}
+          vertical={"top"}
+          message={message}
+          isOpen={isOpen}
+          
+          color={color}
+        />
+      )}
     </Card>
   );
 };

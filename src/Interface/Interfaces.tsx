@@ -154,7 +154,7 @@ export type SnackbarContextType = {
   openSnackbar: (message: string, color: string) => void;
   closeSnackbar: () => void;
 };
-export interface SnackbarState {
+export interface ISnackbarState {
   isOpen: boolean;
   message: string;
   color: string;
@@ -194,4 +194,13 @@ export interface IAuthState {
   token: string | null;
   error: string | undefined;
   isLoggedIn: boolean;
+}
+
+export interface IProfilInitialState {
+  name: string;
+  role: roleType ;
+}
+export interface IProfileRes {
+  name: string;
+  role: roleType;
 }

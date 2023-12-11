@@ -7,14 +7,15 @@ import { AxiosError } from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import TooltipList from "@/Components/TooltipList";
-import EmptyListCardContent from "@/Components/EmptyListCard"; 
+import EmptyListCardContent from "@/Components/EmptyListCard";
 import CustomTable from "@/Components/CustomTable";
 import LoadingCard from "@/Components/LoadingCard";
+import { useGetListOfUsersMutation } from "@/Services/Api/userApi";
 
 const UserList = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
   const [listOfUsers, setListOfUsers] = useState<IUserApiResponse[]>([]);
+  const [getlistOfUsers, { isLoading }] = useGetListOfUsersMutation();
   const searchParams = useSearchParams();
   const pageParams: string | null = searchParams.get("page");
   const peginationPage: number = parseInt(pageParams!) || 1;
@@ -26,16 +27,12 @@ const UserList = () => {
     router.push(`/usersList?page=${newPage || "1"}`);
   };
   const getListOfUsers = async () => {
-    setLoading(true);
     try {
-      const { data } = await axiosInstance.post("/usersList", paginationFetchData);
-      const { users, totalCount } = data;
+      const { users, totalCount } = await getlistOfUsers(paginationFetchData).unwrap();
       setTotalPaginationPage(totalCount);
       setListOfUsers(users);
     } catch (error: AxiosError | any) {
       console.error("API request error:", error);
-    } finally {
-      setLoading(false);
     }
   };
   useEffect(() => {
@@ -60,10 +57,18 @@ const UserList = () => {
         }
       />
       <Divider variant="middle" />
-      {loading ? (
+      {isLoading ? (
         <LoadingCard />
       ) : listOfUsers.length > 0 ? (
-        <CardContent sx={{ display: "flex", justifyContent: "space-between", flexDirection: "column", alignItems: "center", minHeight: "72vh" }}>
+        <CardContent
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "column",
+            alignItems: "center",
+            minHeight: "72vh",
+          }}
+        >
           <CustomTable
             tableData={tableData}
             headerWidths={["3%", "13%", "13%", "-60%", "10%"]}
@@ -72,7 +77,12 @@ const UserList = () => {
             paginationFetchData={paginationFetchData}
           />
           <CardActions>
-            <PaginationComponent page={page} TotalPaginationPage={TotalPaginationPage} rowsPerPage={paginationFetchData.limitPerPage} handleChangePage={handleChangePage} />
+            <PaginationComponent
+              page={page}
+              TotalPaginationPage={TotalPaginationPage}
+              rowsPerPage={paginationFetchData.limitPerPage}
+              handleChangePage={handleChangePage}
+            />
           </CardActions>
         </CardContent>
       ) : (

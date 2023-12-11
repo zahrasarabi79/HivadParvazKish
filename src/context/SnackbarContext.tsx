@@ -1,5 +1,5 @@
 "use client";
-import { SnackbarAction, SnackbarContextType, SnackbarState } from "@/Interface/Interfaces";
+import { ISnackbarState, SnackbarAction, SnackbarContextType } from "@/Interface/Interfaces";
 import React, { createContext, useContext, useReducer } from "react";
 
 const SnackbarContext = createContext<SnackbarContextType | null>(null);
@@ -10,7 +10,7 @@ const initialState = {
   color: "",
 };
 
-const snackbarReducer = (state: SnackbarState, action: SnackbarAction) => {
+const snackbarReducer = (state: ISnackbarState, action: SnackbarAction) => {
   switch (action.type) {
     case "OPEN_SNACKBAR":
       return {

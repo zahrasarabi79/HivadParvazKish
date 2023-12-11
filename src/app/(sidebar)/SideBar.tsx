@@ -17,7 +17,10 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(true);
   const [selectListItem, setSelectListItem] = useState<ISelectListItem[]>(
-    HivadSidebarItems.map((item) => ({ focusindex: false, openChildrenItem: item.route === currentPath || item.children?.some((child) => child.route === currentPath) }))
+    HivadSidebarItems.map((item) => ({
+      focusindex: false,
+      openChildrenItem: item.route === currentPath || item.children?.some((child) => child.route === currentPath),
+    }))
   );
   const handleDrawerOpen = () => {
     setMobileOpen(!mobileOpen);
@@ -59,7 +62,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           openChildrenItem: i === index ? !item.openChildrenItem : false,
           focusindex: i === index ? !item.focusindex : false,
         }));
-        console.log(updatedItems);
 
         return updatedItems;
       });
@@ -88,7 +90,13 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             direction: "initial",
           }}
         >
-          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleDrawerToggle} setSelectListItem={setSelectListItem} />
+          <DrawerItem
+            open={open}
+            selectListItem={selectListItem}
+            handleSelectedListItem={handleSelectedListItem}
+            handleCloseDrawer={handleDrawerToggle}
+            setSelectListItem={setSelectListItem}
+          />
         </Drawer>
         <DrawerDesktop
           variant="permanent"
@@ -99,10 +107,23 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             position: "relative",
           }}
         >
-          <DrawerItem open={open} selectListItem={selectListItem} handleSelectedListItem={handleSelectedListItem} handleCloseDrawer={handleCloseDrawer} setSelectListItem={setSelectListItem} />
+          <DrawerItem
+            open={open}
+            selectListItem={selectListItem}
+            handleSelectedListItem={handleSelectedListItem}
+            handleCloseDrawer={handleCloseDrawer}
+            setSelectListItem={setSelectListItem}
+          />
         </DrawerDesktop>
       </Box>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, width: open ? `calc(100% - ${drawerWidth.desktop}px)` : `calc(100% - ${drawerWidth.mobile}px)` }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: open ? `calc(100% - ${drawerWidth.desktop}px)` : `calc(100% - ${drawerWidth.mobile}px)`,
+        }}
+      >
         <Toolbar />
         {children}
       </Box>

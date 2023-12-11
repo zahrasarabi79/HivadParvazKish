@@ -17,31 +17,23 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import axiosInstance from "@/Services/Api/AxiosInstance";
-import { AxiosError } from "axios";
 import { NavbarProps } from "@/Interface/Interfaces";
 import { StyledAppBar } from "@/style/StyleComponents/StyledAppBar";
-import { useAppDispatch } from "../../redux/hook";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { logout } from "@/redux/slices/authSlice";
 import Cookies from "js-cookie";
+import { useGetProfileQuery } from "@/Services/Api/profileApi";
+import { RootState } from "@/redux/store";
 const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) => {
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [anchorElProfile, setAnchorElProfile] = useState<null | HTMLElement>(null);
-  const [ProfileName, setProfileName] = useState("not Defind");
-  const getProfileName = async () => {
-    try {
-      const { data } = await axiosInstance.post("/profileinformation");
-      setProfileName(data.name);
-    } catch (error: AxiosError | any) {
-      console.error("API request error:", error);
-    }
-  };
-  useEffect(() => {
-    getProfileName();
-  }, []);
+  useGetProfileQuery();
+  const { name: ProfileName } = useAppSelector((state: RootState) => state.profileState);
+
+  useEffect(() => {}, []);
   const Logout = () => {
     dispatch(logout());
     Cookies.remove("token");

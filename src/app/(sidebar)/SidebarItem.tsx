@@ -1,10 +1,30 @@
-import { ISidebarItemComponent, SidebarItem, SidebarItemChildren, SidebarItemChildrenOfChildren, roleType } from "@/Interface/Interfaces";
+import {
+  ISidebarItemComponent,
+  SidebarItem,
+  SidebarItemChildren,
+  SidebarItemChildrenOfChildren,
+  roleType,
+} from "@/Interface/Interfaces";
 import Icon from "@/Components/Icon";
-import { Box, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Collapse,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Theme,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import { useAppSelector } from "../../redux/hook";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "@/Services/Api/AxiosInstance";
 import { AxiosError } from "axios";
+import { profileApi, useGetProfileQuery } from "@/Services/Api/profileApi";
+import { RootState } from "@/redux/store";
 
 export const HivadSidebarItems: SidebarItem[] = [
   {
@@ -38,11 +58,18 @@ export const HivadSidebarItems: SidebarItem[] = [
     ],
   },
 ];
-const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedListItem, selectListItem, handleCloseDrawer }) => {
+const SidebarItem: React.FC<ISidebarItemComponent> = ({
+  open,
+  handleSelectedListItem,
+  selectListItem,
+  handleCloseDrawer,
+}) => {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up("sm"));
   const router = useRouter();
   const currentPath = usePathname();
+  const { role } = useAppSelector((state: RootState) => state.profileState);
+
   const isActive = (item: SidebarItem | SidebarItemChildren): boolean => {
     if (item.route) {
       return currentPath?.includes(item.route) ?? false;
@@ -60,21 +87,10 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
       handleCloseDrawer();
     }
   };
-  const [ProfileRole, setProfileRole] = useState<roleType>("کارمند");
-  const getProfileRole = async () => {
-    try {
-      const { data } = await axiosInstance.post("/profileinformation");
-      setProfileRole(data.role);
-    } catch (error: AxiosError | any) {
-      console.error("API request error:", error);
-    }
-  };
-  useEffect(() => {
-    getProfileRole();
-  }, []);
+
   return HivadSidebarItems.map((item: SidebarItem, index: number) => {
     const isAnyChildMatched = open ? item.children?.some((childerItem) => currentPath === childerItem.route) : false;
-    if (!item.role?.includes(ProfileRole)) {
+    if (!item.role?.includes(role)) {
       return null;
     }
     return (
@@ -132,11 +148,19 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
                   borderRadius: "50%",
                   transition: "transform 0.2s ease-in-out",
                   "&:hover": {
-                    bgcolor: !open ? (isActive(item) ? "rgba(43, 154, 255, 0.24)" : "rgba(255, 255, 255, 0.08)") : "rgba(255, 255, 255, 0.00)",
+                    bgcolor: !open
+                      ? isActive(item)
+                        ? "rgba(43, 154, 255, 0.24)"
+                        : "rgba(255, 255, 255, 0.08)"
+                      : "rgba(255, 255, 255, 0.00)",
                   },
                 }}
               >
-                <Icon pathName={item.icon} focused={open ? (item.children ? false : isActive(item)) : isActive(item)} style={{ marginRight: open ? "24px" : "0px" }} />
+                <Icon
+                  pathName={item.icon}
+                  focused={open ? (item.children ? false : isActive(item)) : isActive(item)}
+                  style={{ marginRight: open ? "24px" : "0px" }}
+                />
               </Box>
             </ListItemIcon>
           </ListItemButton>
@@ -168,15 +192,17 @@ const SidebarItem: React.FC<ISidebarItemComponent> = ({ open, handleSelectedList
                     <ListItemText inset primary={childerItem.title} />
                   </ListItemButton>
                   {childerItem.children &&
-                    childerItem.children.map((childerItemchildren: SidebarItemChildrenOfChildren, childIndex: number) => (
-                      <Collapse key={childIndex}>
-                        <List component="div" disablePadding>
-                          <ListItemButton onClick={() => router.push(childerItemchildren.route || "")}>
-                            <ListItemText inset primary={childerItemchildren.title} />
-                          </ListItemButton>
-                        </List>
-                      </Collapse>
-                    ))}
+                    childerItem.children.map(
+                      (childerItemchildren: SidebarItemChildrenOfChildren, childIndex: number) => (
+                        <Collapse key={childIndex}>
+                          <List component="div" disablePadding>
+                            <ListItemButton onClick={() => router.push(childerItemchildren.route || "")}>
+                              <ListItemText inset primary={childerItemchildren.title} />
+                            </ListItemButton>
+                          </List>
+                        </Collapse>
+                      )
+                    )}
                 </List>
               </Collapse>
             );

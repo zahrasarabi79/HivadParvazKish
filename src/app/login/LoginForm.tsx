@@ -9,6 +9,7 @@ import { useLoginMutation } from "@/Services/Api/authApi";
 
 const LoginForm = () => {
   const router = useRouter();
+  const theme = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
   const {
@@ -19,11 +20,12 @@ const LoginForm = () => {
     setError,
   } = useForm<INewUser>();
   const WatchFilds = Object.values(watch()).every((value) => value);
-  const theme = useTheme();
+ 
   const handleClickShowPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowPassword((show) => !show);
   };
+  
   const onSubmit: SubmitHandler<INewUser> = async (user) => {
     const { username, password } = user;
     try {
