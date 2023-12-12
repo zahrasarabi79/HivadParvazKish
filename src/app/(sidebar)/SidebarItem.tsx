@@ -3,7 +3,6 @@ import {
   SidebarItem,
   SidebarItemChildren,
   SidebarItemChildrenOfChildren,
-  roleType,
 } from "@/Interface/Interfaces";
 import Icon from "@/Components/Icon";
 import {
@@ -14,16 +13,12 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Theme,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { useAppSelector } from "../../redux/hook";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
-import axiosInstance from "@/Services/Api/AxiosInstance";
-import { AxiosError } from "axios";
-import { profileApi, useGetProfileQuery } from "@/Services/Api/profileApi";
+import React from "react";
 import { RootState } from "@/redux/store";
 
 export const HivadSidebarItems: SidebarItem[] = [

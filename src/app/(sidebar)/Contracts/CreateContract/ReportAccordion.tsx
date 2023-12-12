@@ -1,4 +1,15 @@
-import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid, IconButton, Stack, Typography, useTheme } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Divider,
+  Grid,
+  IconButton,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import Icon from "@/Components/Icon";
 import { FieldError, useFieldArray, useWatch } from "react-hook-form";
@@ -9,7 +20,16 @@ import React, { useEffect, useState } from "react";
 import TextFildControler from "@/Components/textFildControler/textFildControler";
 import NumericFormatControler from "@/Components/textFildControler/NumericFormatControler";
 
-const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsReturnPathName, isExpended, handleIsExpended, removeReport, control, errors, reportIndex }) => {
+const ReportAccordion: React.FC<IReportAccordionProps> = ({
+  submitCount,
+  IsReturnPathName,
+  isExpended,
+  handleIsExpended,
+  removeReport,
+  control,
+  errors,
+  reportIndex,
+}) => {
   const theme = useTheme();
   const {
     fields: reportsPaymentFields,
@@ -32,18 +52,13 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
   const removeReports = (indexToRemove: number) => {
     removeReport(indexToRemove);
   };
-  
   // show error in Accordion summary
   useEffect(() => {
     if (errors?.reports && errors?.reports[reportIndex]) {
       setaccordionError((prevIndexes: number[]) => [...prevIndexes, reportIndex]);
     }
   }, [errors, submitCount]);
-  console.log(accordionError);
-
   const Describtion = useWatch({ control, name: `reports.${reportIndex}.reportDescription` });
-  const totalcost = useWatch({ control, name: `reports.${reportIndex}.totalCost` });
-
   //* we can not use watch and instead of it ,we use "useWatch"
   //* const Describtion2 = watch(`reports.${reportIndex}.reportDescription`);
 
@@ -109,26 +124,12 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
                 IsReturnPathName={IsReturnPathName}
                 label="شرح و مشخصات"
                 inputError={!!errors.reports?.[reportIndex]?.reportDescription}
-                helperText={errors.reports?.[reportIndex]?.reportDescription ? (errors.reports?.[reportIndex]?.reportDescription as FieldError).message : " "}
+                helperText={
+                  errors.reports?.[reportIndex]?.reportDescription
+                    ? (errors.reports?.[reportIndex]?.reportDescription as FieldError).message
+                    : " "
+                }
               />
-
-              {/* <Controller
-                name={`reports.${reportIndex}.reportDescription`}
-                control={control}
-                rules={{ required: "این فیلدالزامی است." }}
-                render={({ field }) => (
-                  <TextFildCustom
-                    {...field}
-                    disabled={IsReturnPathName}
-                    onBlur={() => setFormDataChanged(true)}
-                    required
-                    fullWidth
-                    label={"شرح مشخصات"}
-                    error={!!errors.reports?.[reportIndex]?.reportDescription}
-                    helperText={errors.reports?.[reportIndex]?.reportDescription ? (errors.reports?.[reportIndex]?.reportDescription as FieldError).message : " "}
-                  />
-                )}
-              /> */}
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextFildControler
@@ -137,7 +138,11 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
                 IsReturnPathName={IsReturnPathName}
                 label="مجری"
                 inputError={!!errors.reports?.[reportIndex]?.presenter}
-                helperText={errors.reports?.[reportIndex]?.presenter ? (errors.reports?.[reportIndex]?.presenter as FieldError).message : " "}
+                helperText={
+                  errors.reports?.[reportIndex]?.presenter
+                    ? (errors.reports?.[reportIndex]?.presenter as FieldError).message
+                    : " "
+                }
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -147,7 +152,11 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
                 IsReturnPathName={IsReturnPathName}
                 label={"قیمت کل (ریال)"}
                 inputError={!!errors.reports?.[reportIndex]?.totalCost}
-                helperText={errors.reports?.[reportIndex]?.totalCost ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message : " "}
+                helperText={
+                  errors.reports?.[reportIndex]?.totalCost
+                    ? (errors.reports?.[reportIndex]?.totalCost as FieldError).message
+                    : " "
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -200,7 +209,14 @@ const ReportAccordion: React.FC<IReportAccordionProps> = ({ submitCount, IsRetur
             </Grid>
 
             {reportsReturnPaymentFields.map((reportReturnPayment, index) => (
-              <ReportReturnPayment key={reportReturnPayment.id} control={control} errors={errors} reportIndex={reportIndex} paymentIndex={index} remove={removeReportsReturnPayment} />
+              <ReportReturnPayment
+                key={reportReturnPayment.id}
+                control={control}
+                errors={errors}
+                reportIndex={reportIndex}
+                paymentIndex={index}
+                remove={removeReportsReturnPayment}
+              />
             ))}
           </Grid>
           <Grid

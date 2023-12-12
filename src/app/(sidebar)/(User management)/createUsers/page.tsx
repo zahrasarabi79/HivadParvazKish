@@ -4,21 +4,20 @@ import { Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, Menu
 import TextFildControler from "@/Components/textFildControler/textFildControler";
 import { FieldError, useForm } from "react-hook-form";
 import SelectTextFildControler from "@/Components/textFildControler/SelectTextFildControler";
-import axiosInstance from "@/Services/Api/AxiosInstance";
 import { useRouter } from "next/navigation";
-import { useSnackbar } from "@/context/SnackbarContext";
 import SnackBar from "@/Components/SnackBar";
 import { AxiosError } from "axios";
 import { ICreateUsersProps, IUser } from "@/Interface/Interfaces";
-import { watch } from "fs";
-import { useCreateUserMutation } from "@/Services/Api/userApi";
-import { useAppSelector } from "@/redux/hook";
+import { useCreateUserMutation, useUpdateUserMutation } from "@/Services/Api/userApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { openSnackbar } from "@/redux/slices/snackbarSlice";
 
 const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
   const theme = useTheme();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [createUser] = useCreateUserMutation();
-  const { state, openSnackbar, closeSnackbar } = useSnackbar();
+  const [updateUser] = useUpdateUserMutation();
   const typeOfReport = ["کارمند", "مدیر"];
   const { color, isOpen, message } = useAppSelector((state) => state.snackbarState);
 
@@ -33,7 +32,7 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
 
   const onSubmit = (data: IUser) => {
     if (user) {
-      updateUser(data, user?.id);
+      updateUsers(data, user?.id);
     } else {
       saveUser(data);
     }
@@ -78,23 +77,21 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
 
     return true; // Valid password
   };
-  const updateUser = async (user: IUser, id: number | undefined) => {
+  const updateUsers = async (user: IUser, id: number | undefined) => {
     try {
-      await axiosInstance.post("/updateUser", { ...user, id });
-      openSnackbar("کاربر با موفقیت ایجاد شد.", "rgb(11, 150, 30)");
+      await updateUser({ ...user, id }).unwrap();
       setTimeout(() => {
         router.push("/usersList");
       }, 2000);
     } catch (error: AxiosError | any) {
       if (error.response.data.error === "کاربر وجود ندارد") {
-        openSnackbar(error.response.data.error, theme.palette.error.main);
-
+        dispatch(openSnackbar({ color: theme.palette.warning.main, message: error.response.data.error }));
         setError("username", { message: error.response.data.error });
       }
       if (error.response.data.error === "رمز عبور تکراری است") {
         setError("password", { message: error.response.data.error });
       } else {
-        openSnackbar("سرور پاسخگو نیست", theme.palette.error.main);
+        dispatch(openSnackbar({ color: theme.palette.error.main, message: "سرور پاسخگو نیست" }));
       }
     }
   };
@@ -109,9 +106,9 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
         setError("username", { message: error.response.data.error });
       }
       if (error.response.data.error === "کاربر مجاز به ایجاد کاربر جدید نیست") {
-        openSnackbar(error.response.data.error, theme.palette.warning.main);
+        dispatch(openSnackbar({ color: theme.palette.warning.main, message: error.response.data.error }));
       } else {
-        openSnackbar("سرور پاسخگو نیست", theme.palette.error.main);
+        dispatch(openSnackbar({ color: theme.palette.error.main, message: "سرور پاسخگو نیست" }));
       }
     }
   };
@@ -196,16 +193,7 @@ const CreateUsers: React.FC<ICreateUsersProps> = ({ user }) => {
           </Button>
         </CardActions>
       </form>
-      {isOpen && (
-        <SnackBar
-          horizontal={"center"}
-          vertical={"top"}
-          message={message}
-          isOpen={isOpen}
-          
-          color={color}
-        />
-      )}
+      {isOpen && <SnackBar horizontal={"center"} vertical={"top"} message={message} isOpen={isOpen} color={color} />}
     </Card>
   );
 };

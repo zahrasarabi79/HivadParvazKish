@@ -1,30 +1,34 @@
-import { IContract } from "@/Interface/Interfaces";
+import React from "react";
+import { IReportReturnPaymentProps } from "@/Interface/Interfaces";
 import Icon from "@/Components/Icon";
 import DatePickerControler from "@/Components/textFildControler/DatePickerControler";
 import NumericFormatControler from "@/Components/textFildControler/NumericFormatControler";
-import { TextFildCustom } from "@/Components/textFildControler/TextFiledCustom";
 import TextFildControler from "@/Components/textFildControler/textFildControler";
-import { useTheme } from "@emotion/react";
-import { Divider, Grid, IconButton, Typography, useMediaQuery } from "@mui/material";
+import { Grid, IconButton, useMediaQuery } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
-import React from "react";
-import { Control, FieldError, FieldErrors, UseFieldArrayRemove } from "react-hook-form";
-export interface IReportReturnPaymentProps {
-  control: Control<any>;
-  errors: FieldErrors<IContract>;
-  reportIndex: number;
-  paymentIndex: number;
-  remove: UseFieldArrayRemove;
-}
+import { FieldError } from "react-hook-form";
 
-const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, remove, errors, reportIndex, paymentIndex }) => {
-  const theme = useTheme();
+const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({
+  control,
+  remove,
+  errors,
+  reportIndex,
+  paymentIndex,
+}) => {
   const mdDown = useMediaQuery("@media (max-width: 1200px)");
   return (
     <>
       <Grid item xs={mdDown ? 12 : 11.6}>
-        <Grid container sx={{ pr: mdDown ? 0 : 2, borderRight: !mdDown ? "1px solid rgba(190,196,209,1)" : 0, borderBottom: mdDown ? "1px solid rgba(190,196,209,1)" : 0 }} spacing={1}>
+        <Grid
+          container
+          sx={{
+            pr: mdDown ? 0 : 2,
+            borderRight: !mdDown ? "1px solid rgba(190,196,209,1)" : 0,
+            borderBottom: mdDown ? "1px solid rgba(190,196,209,1)" : 0,
+          }}
+          spacing={1}
+        >
           <Grid item xs={12} sm={4}>
             <TextFildControler
               inputName={`reports.${reportIndex}.reportsReturnPayment[${paymentIndex}].returnPaymentsbank`}
@@ -35,7 +39,10 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, rem
               inputError={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank}
               helperText={
                 errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank
-                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentsbank as FieldError).message
+                  ? (
+                      errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]
+                        ?.returnPaymentsbank as FieldError
+                    ).message
                   : " "
               }
             />
@@ -50,7 +57,8 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, rem
               inputError={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments}
               helperText={
                 errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments
-                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments as FieldError).message
+                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPayments as FieldError)
+                      .message
                   : " "
               }
             />
@@ -65,7 +73,10 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, rem
                 requiredRule={""}
                 helperText={
                   errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment
-                    ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.dateReturnPayment as FieldError).message
+                    ? (
+                        errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]
+                          ?.dateReturnPayment as FieldError
+                      ).message
                     : " "
                 }
               />
@@ -78,17 +89,26 @@ const ReportReturnPayment: React.FC<IReportReturnPaymentProps> = ({ control, rem
               requiredRule=""
               required={false}
               label={"توضیحات"}
-              inputError={!!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription}
+              inputError={
+                !!errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription
+              }
               helperText={
                 errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription
-                  ? (errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]?.returnPaymentDescription as FieldError).message
+                  ? (
+                      errors.reports?.[reportIndex]?.reportsReturnPayment?.[paymentIndex]
+                        ?.returnPaymentDescription as FieldError
+                    ).message
                   : " "
               }
             />
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={mdDown ? 12 : 0.4} sx={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "0px !important" }}>
+      <Grid
+        item
+        xs={mdDown ? 12 : 0.4}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "0px !important" }}
+      >
         <IconButton onClick={() => remove(paymentIndex)}>
           <Icon pathName="../icon/Trash.svg" focused={false} />
         </IconButton>

@@ -8,9 +8,7 @@ import StyledComponentsRegistry from "@/app/registry";
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <StyledComponentsRegistry>
-      <Provider store={ store}>
-        <SnackbarProvider>{children}</SnackbarProvider>
-      </Provider>
+      <Provider store={store}>{children}</Provider>
     </StyledComponentsRegistry>
   );
 };

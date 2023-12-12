@@ -6,6 +6,7 @@ import { useState } from "react";
 import { TextFildCustom } from "@/Components/textFildControler/TextFiledCustom";
 import Icon from "@/Components/Icon";
 import { useLoginMutation } from "@/Services/Api/authApi";
+import { useGetProfileQuery } from "@/Services/Api/profileApi";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -20,17 +21,18 @@ const LoginForm = () => {
     setError,
   } = useForm<INewUser>();
   const WatchFilds = Object.values(watch()).every((value) => value);
- 
+
   const handleClickShowPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowPassword((show) => !show);
   };
-  
+
   const onSubmit: SubmitHandler<INewUser> = async (user) => {
     const { username, password } = user;
     try {
       await login({ username, password }).unwrap();
       router.push("/Contracts/ContractList");
+      useGetProfileQuery();
     } catch (error) {
       setError("password", { type: "text", message: "نام کاربری یا پسورد را مجددا وارد کنید." });
     }

@@ -165,17 +165,25 @@ export interface IUser {
   name: string;
   username: string;
   password: string;
-  role: string;
+  role: roleType;
 }
 export interface ICreateUsersProps {
   user: IUserApiResponse | undefined;
 }
 export interface IUserApiResponse {
-  id: number;
+  id: number | undefined;
   name: string;
   username: string;
   password: string;
   role: roleType;
+}
+export interface IUserListApiRes {
+  users: IUserApiResponse[];
+  totalCount: number;
+}
+export interface IContractListApiRes {
+  Contracts: IContractApiResponse[];
+  totalCount: number;
 }
 export interface IListOfSystemLog {
   id: number;
@@ -185,7 +193,18 @@ export interface IListOfSystemLog {
   username: string;
   createdAt: Date;
 }
+export interface IEvent {
+  id: number;
+  eventName: string;
+  createdAt: Date;
+  username: string;
+  numContract: string;
+}
 
+export interface ApiSystemLogResponse {
+  Events: IEvent[];
+  totalCount: number;
+}
 export interface NavbarProps {
   isDesktopSidebarOpen: boolean;
   onDrawerOpen: () => void;
@@ -196,11 +215,22 @@ export interface IAuthState {
   isLoggedIn: boolean;
 }
 
+export interface ICreateContractProps {
+  Contract: IContractApiResponse | undefined;
+}
+
 export interface IProfilInitialState {
   name: string;
-  role: roleType ;
+  role: roleType;
 }
 export interface IProfileRes {
   name: string;
   role: roleType;
+}
+export interface IReportReturnPaymentProps {
+  control: Control<any>;
+  errors: FieldErrors<IContract>;
+  reportIndex: number;
+  paymentIndex: number;
+  remove: UseFieldArrayRemove;
 }

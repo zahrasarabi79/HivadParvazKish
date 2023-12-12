@@ -1,24 +1,33 @@
 "use client";
-import { Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, MenuItem, Stack, Typography, useTheme } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  MenuItem,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useEffect, useState } from "react";
 import Icon from "@/Components/Icon";
-import { IContract, IContractApiResponse, IReportsApiResponse } from "@/Interface/Interfaces";
+import { IContract, ICreateContractProps, IReportsApiResponse } from "@/Interface/Interfaces";
 import { useForm, FieldError, useFieldArray } from "react-hook-form";
 import ReportAccordion from "./ReportAccordion";
-import axiosInstance from "@/Services/Api/AxiosInstance";
 import SnackBar from "@/Components/SnackBar";
 import { usePathname, useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import TextFildControler from "@/Components/textFildControler/textFildControler";
 import SelectTextFildControler from "@/Components/textFildControler/SelectTextFildControler";
 import DatePickerControler from "@/Components/textFildControler/DatePickerControler";
-import { useSnackbar } from "@/context/SnackbarContext";
-
-export interface ICreateContractProps {
-  Contract: IContractApiResponse | undefined;
-}
+import { useCreateContractMutation, useUpdateContractMutation } from "@/Services/Api/contractApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { openSnackbar } from "@/redux/slices/snackbarSlice";
 
 const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const theme = useTheme();
@@ -27,36 +36,11 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
   const typeOfReport = ["خرید", "فروش"];
   const IsReturnPathName = pathname === `/Contracts/ReturnPayments/${Contract?.id}`;
   const cardTitle = Contract ? (IsReturnPathName ? "ویرایش بازگشت وجه" : "ویرایش قرار‌داد") : "ایجاد قرار‌داد";
-  const { state, openSnackbar, closeSnackbar } = useSnackbar();
+  const { color, isOpen, message } = useAppSelector((state) => state.snackbarState);
+  const [createContract] = useCreateContractMutation();
+  const [updateContract] = useUpdateContractMutation();
+  const dispatch = useAppDispatch();
 
-  // const defaultvalue = {
-  //   defaultValues: {
-  //     reports: [
-  //       {
-  //         reportDescription: "",
-  //         totalCost: "",
-  //         presenter: "",
-  //         reportsPayment: [
-  //           {
-  //             bank: "",
-  //             payments: "",
-  //             datepayment: null,
-  //             paymentDescription: "",
-  //           },
-  //         ],
-  //         reportsReturnPayment: [
-  //           {
-  //             returnPaymentsbank: "",
-  //             returnPayments: "",
-  //             dateReturnPayment: null,
-  //             returnPaymentDescription: "",
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  //   mode: "onChange",
-  // };
   const {
     control,
     reset,
@@ -91,12 +75,8 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     },
     mode: "onChange",
   });
-  const { fields, append, remove } = useFieldArray<IContract>({
-    control,
-    name: "reports",
-  });
-  console.log(errors?.reports);
-
+  const allInput = watch();
+  const { fields, append, remove } = useFieldArray<IContract>({ control, name: "reports" });
   const [isExpended, setIsExpended] = useState<number | null>(0);
   const handleIsExpended: (index: number | null) => void = (index) => {
     setIsExpended((isExpended) => (isExpended === index ? null : index));
@@ -125,12 +105,14 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     });
     setIsExpended(fields.length);
   };
-  const allInput = watch();
-  console.log(allInput);
-  const onSubmit = (data: IContract) => {
+   const onSubmit = (data: IContract) => {
     const filteredReports = data.reports.map((report) => {
-      const filteredReportsPayment = report.reportsPayment.filter((payment) => !Object.values(payment).every((value) => value === null || value === ""));
-      const filteredReportsReturnPayment = report.reportsReturnPayment.filter((returnPayment) => !Object.values(returnPayment).every((value) => value === null || value === ""));
+      const filteredReportsPayment = report.reportsPayment.filter(
+        (payment) => !Object.values(payment).every((value) => value === null || value === "")
+      );
+      const filteredReportsReturnPayment = report.reportsReturnPayment.filter(
+        (returnPayment) => !Object.values(returnPayment).every((value) => value === null || value === "")
+      );
       return {
         ...report,
         reportsPayment: filteredReportsPayment,
@@ -149,19 +131,18 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
     try {
       const isReportsPayment: boolean = contract.reports.some((report) => report.reportsPayment?.length === 0);
       if (contract.reports.length === 0) {
-        openSnackbar("حداقل یک شرح و مشخصات ایجاد کنید.", theme.palette.warning.main);
+        dispatch(openSnackbar({ color: theme.palette.warning.main, message: "حداقل یک شرح و مشخصات ایجاد کنید." }));
+        // theme.palette.warning.main
       } else if (isReportsPayment) {
-        openSnackbar("حداقل یک پرداخت وارد کنید.", theme.palette.warning.main);
+        dispatch(openSnackbar({ color: theme.palette.warning.main, message: "حداقل یک پرداخت وارد کنید." }));
       } else {
-        await axiosInstance.post("/AddReports", contract);
-        openSnackbar("قرارداد با موفقیت ثبت شد.", "rgb(11, 150, 30)");
-
+        await createContract(contract).unwrap();
         setTimeout(() => {
           router.push("/Contracts/ContractList");
         }, 2500);
       }
     } catch (error) {
-      openSnackbar("سرور پاسخگو نیست", theme.palette.error.main);
+      dispatch(openSnackbar({ color: theme.palette.error.main, message: "سرور پاسخگو نیست" }));
     }
   };
   const updateDataContract = async (contract: IContract, id: number) => {
@@ -169,18 +150,17 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
       const isReportsPayment: boolean = contract.reports.some((report) => report.reportsPayment?.length === 0);
 
       if (contract.reports.length === 0) {
-        openSnackbar("حداقل یک پرداخت وارد کنید.", theme.palette.warning.main);
+        dispatch(openSnackbar({ color: theme.palette.warning.main, message: "حداقل یک شرح و مشخصات ایجاد کنید." }));
       } else if (isReportsPayment) {
-        openSnackbar("حداقل یک پرداخت وارد کنید.", theme.palette.warning.main);
+        dispatch(openSnackbar({ color: theme.palette.warning.main, message: "حداقل یک پرداخت وارد کنید." }));
       } else {
-        await axiosInstance.post("/updateReports", { ...contract, id });
-        openSnackbar("قرارداد با موفقیت ویرایش شد.", "rgb(11, 150, 30)");
+        await updateContract({ ...contract, id });
         setTimeout(() => {
           router.back();
         }, 2500);
       }
     } catch (error: AxiosError | any) {
-      openSnackbar("سرور پاسخگو نیست", theme.palette.error.main);
+      dispatch(openSnackbar({ color: theme.palette.error.main, message: "سرور پاسخگو نیست" }));
     }
   };
   useEffect(() => {
@@ -201,7 +181,10 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
               returnPaymentsbank: reportReturnPayment?.returnPaymentsbank,
               returnPayments: reportReturnPayment?.returnPayments,
               returnPaymentDescription: reportReturnPayment?.returnPaymentDescription,
-              dateReturnPayment: reportReturnPayment?.dateReturnPayment !== null ? new Date(reportReturnPayment?.dateReturnPayment) : null,
+              dateReturnPayment:
+                reportReturnPayment?.dateReturnPayment !== null
+                  ? new Date(reportReturnPayment?.dateReturnPayment)
+                  : null,
             })),
           }));
         }
@@ -214,15 +197,12 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
         customer: Contract?.customer,
         reports: resetReports(Contract?.reports), // Assuming ContractId.reports is an array of objects
       });
-    } else {
-      console.log("add data");
     }
   }, [Contract]);
-
   useEffect(() => {
     const hasFieldErrors = Object.keys(errors).length > 0;
     if (hasFieldErrors) {
-      openSnackbar("لطفاً تمامی فیلدها را پر کنید.", theme.palette.warning.main);
+      dispatch(openSnackbar({ color: theme.palette.warning.main, message: "لطفاً تمامی فیلدها را پر کنید." }));
     }
   }, [errors, submitCount]);
 
@@ -296,7 +276,12 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
               appendReport={append}
             />
           ))}
-          <Grid item xs={12} onClick={handleOnClickAddAccordion} sx={{ pt: 5, display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <Grid
+            item
+            xs={12}
+            onClick={handleOnClickAddAccordion}
+            sx={{ pt: 5, display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
             {!IsReturnPathName && (
               <Stack justifyContent={"center"} alignItems={"center"}>
                 <Icon color={theme.palette.primary.main} pathName="addBtn.svg" size="40px" />
@@ -311,7 +296,9 @@ const CreateContract: React.FC<ICreateContractProps> = ({ Contract }) => {
           <Button type="submit" variant="contained" color="primary">
             ثبت
           </Button>
-          {state.isOpen && <SnackBar horizontal={"center"} vertical={"top"} message={state.message} isOpen={state.isOpen} handleClose={closeSnackbar} color={state.color} />}
+          {isOpen && (
+            <SnackBar horizontal={"center"} vertical={"top"} message={message} isOpen={isOpen} color={color} />
+          )}
         </CardActions>
       </form>
     </Card>

@@ -3,29 +3,31 @@ import { UseFormClearErrors, useForm } from "react-hook-form";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axiosInstance from "@/Services/Api/AxiosInstance";
 import { IChangePassFormValues } from "@/Interface/Interfaces";
 import { TextFildCustom } from "@/Components/textFildControler/TextFiledCustom";
 import Icon from "@/Components/Icon";
 import SnackBar from "@/Components/SnackBar";
 import { useSnackbar } from "@/context/SnackbarContext";
-
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { openSnackbar } from "@/redux/slices/snackbarSlice";
+import { useUpdatePasswordMutation } from "@/Services/Api/profileApi";
 
 const ProfileForm = () => {
   const router = useRouter();
   const theme = useTheme();
-  const { state, openSnackbar, closeSnackbar } = useSnackbar();
+  const dispatch = useAppDispatch();
+  const { color, isOpen, message } = useAppSelector((state) => state.snackbarState);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    control,
     watch,
     clearErrors,
     setError,
   } = useForm<IChangePassFormValues>({ mode: "onChange" });
   const WatchFilds = Object.values(watch()).every((value) => value);
-
+  const [updatePassword] = useUpdatePasswordMutation();
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -48,8 +50,7 @@ const ProfileForm = () => {
   };
   const getResponse = async (user: IChangePassFormValues) => {
     try {
-      const { data } = await axiosInstance.post("/updatepassword", user);
-      openSnackbar("رمز با موفقیت تغییر کرد", "rgb(11, 150, 30)");
+      await updatePassword(user);
       setTimeout(() => {
         router.push("/Contracts/ContractList");
       }, 2000);
@@ -58,11 +59,17 @@ const ProfileForm = () => {
         setError("oldPassword", { message: error.response.data.error });
       }
       if (error.response.status === 400) {
-        openSnackbar("نام کاربری معتبر نمی باشد", theme.palette.error.main);
+        dispatch(openSnackbar({ color: theme.palette.error.main, message: "نام کاربری معتبر نمی باشد" }));
       }
     }
   };
-  const validateNewPassword = (value: string, oldPassword: string, repeatPassword: string, setError: any, clearErrors: UseFormClearErrors<IChangePassFormValues>) => {
+  const validateNewPassword = (
+    value: string,
+    oldPassword: string,
+    repeatPassword: string,
+    setError: any,
+    clearErrors: UseFormClearErrors<IChangePassFormValues>
+  ) => {
     if (value === oldPassword) {
       return "رمز عبور تکراری است";
     }
@@ -107,7 +114,12 @@ const ProfileForm = () => {
             ویرایش رمز عبور
           </Typography>
           <IconButton onClick={() => router.push("/Contracts/ContractList")}>
-            <Icon pathName={"../icon/ArrowIcon.svg"} focused={false} color="white" style={{ transform: "rotate(180deg)" }} />
+            <Icon
+              pathName={"../icon/ArrowIcon.svg"}
+              focused={false}
+              color="white"
+              style={{ transform: "rotate(180deg)" }}
+            />
           </IconButton>
         </Stack>
         <Grid dir="rtl" container spacing={2}>
@@ -119,7 +131,11 @@ const ProfileForm = () => {
               error={!!errors.oldPassword}
               helperText={
                 (errors.oldPassword && errors.oldPassword.message) ||
-                (errors.oldPassword?.type === "minLength" ? "رمز عبور نباید کمتر از 8 کاراکتر باشد" : errors.oldPassword?.type === "maxLength" ? "رمز عبور نباید بیشتر از 20 کاراکتر باشد" : " ")
+                (errors.oldPassword?.type === "minLength"
+                  ? "رمز عبور نباید کمتر از 8 کاراکتر باشد"
+                  : errors.oldPassword?.type === "maxLength"
+                  ? "رمز عبور نباید بیشتر از 20 کاراکتر باشد"
+                  : " ")
               }
               type={showOldPassword ? "text" : "password"}
               {...register("oldPassword", {
@@ -146,7 +162,11 @@ const ProfileForm = () => {
               helperText={(!!errors.newPassword && errors.newPassword.message) || " "}
               error={!!errors.newPassword}
               type={showNewPassword ? "text" : "password"}
-              {...register("newPassword", { required: "این فیلد الزامی است", validate: (value) => validateNewPassword(value, watch("oldPassword"), watch("repeatPassword"), setError, clearErrors) })}
+              {...register("newPassword", {
+                required: "این فیلد الزامی است",
+                validate: (value) =>
+                  validateNewPassword(value, watch("oldPassword"), watch("repeatPassword"), setError, clearErrors),
+              })}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -180,7 +200,11 @@ const ProfileForm = () => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowRepeatPassword} edge="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowRepeatPassword}
+                      edge="end"
+                    >
                       {showRepeatPassword ? <Icon pathName="Bold/eye.svg" /> : <Icon pathName="Bold/eye-slash.svg" />}
                     </IconButton>
                   </InputAdornment>
@@ -189,13 +213,18 @@ const ProfileForm = () => {
             />
           </Grid>
           <Grid item xs={12} sx={{ justifyContent: "center", alignItems: "center" }}>
-            <Button type="submit" fullWidth variant="contained" sx={{ height: "40px", bgcolor: WatchFilds ? theme.palette.primary.main : "default", boxShadow: "none" }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ height: "40px", bgcolor: WatchFilds ? theme.palette.primary.main : "default", boxShadow: "none" }}
+            >
               ثبت
             </Button>
           </Grid>
         </Grid>
       </form>
-      {state.isOpen && <SnackBar horizontal={"center"} vertical={"top"} message={state.message} isOpen={state.isOpen} handleClose={closeSnackbar} color={state.color} />}
+      {isOpen && <SnackBar horizontal={"center"} vertical={"top"} message={message} isOpen={isOpen} color={color} />}
     </>
   );
 };

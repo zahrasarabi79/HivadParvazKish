@@ -2,8 +2,10 @@ import { fetchBaseQuery, createApi } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../redux/store";
 export const baseApi = createApi({
   reducerPath: "baseApi",
+  tagTypes: ["User"],
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).authState.token;
       if (token) {
