@@ -27,7 +27,7 @@ const ProfileForm = () => {
     setError,
   } = useForm<IChangePassFormValues>({ mode: "onChange" });
   const WatchFilds = Object.values(watch()).every((value) => value);
-  const [updatePassword] = useUpdatePasswordMutation();
+  const [updatePassword, { error }] = useUpdatePasswordMutation();
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -50,19 +50,19 @@ const ProfileForm = () => {
   };
   const getResponse = async (user: IChangePassFormValues) => {
     try {
-      await updatePassword(user);
+      await updatePassword(user).unwrap();
       setTimeout(() => {
         router.push("/Contracts/ContractList");
       }, 2000);
-    } catch (error: AxiosError | any) {
-      if (error.response.data.error === "رمز عبور معتبر نیست") {
-        setError("oldPassword", { message: error.response.data.error });
+    } catch (error) {
+      if (!!error && error?.data.error === "رمز عبور معتبر نیست") {
+        setError("oldPassword", { message: error?.data.error });
       }
-      if (error.response.status === 400) {
+      if (!!error && error?.status === 400) {
         dispatch(openSnackbar({ color: theme.palette.error.main, message: "نام کاربری معتبر نمی باشد" }));
       }
     }
-  };
+  }; 
   const validateNewPassword = (
     value: string,
     oldPassword: string,
@@ -128,7 +128,7 @@ const ProfileForm = () => {
               fullWidth
               required
               label={"رمز عبور فعلی"}
-              error={!!errors.oldPassword}
+              error={!!errors.oldPassword || !!error}
               helperText={
                 (errors.oldPassword && errors.oldPassword.message) ||
                 (errors.oldPassword?.type === "minLength"

@@ -8,7 +8,9 @@ const initialState: IProfilInitialState = {
 export const profileSlice = createSlice({
   name: "profile",
   initialState,
-  reducers: {},
+  reducers: {
+    resetProfile: (state) => initialState,
+  },
   extraReducers: (builder) => {
     builder.addMatcher(isAnyOf(getProfile.matchPending, getProfile.matchRejected), (state) => initialState);
     builder.addMatcher(getProfile.matchFulfilled, (state, { payload }) => {
@@ -17,4 +19,5 @@ export const profileSlice = createSlice({
     });
   },
 });
+export const { resetProfile } = profileSlice.actions;
 export default profileSlice.reducer; // just for exporting the slice

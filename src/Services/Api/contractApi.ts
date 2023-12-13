@@ -49,6 +49,7 @@ export const contractApi = baseApi.injectEndpoints({
             console.error("API request error:", error);
           });
       },
+ 
     }),
     getContract: build.mutation<IContractListApiRes, { id: string | string[] }>({
       query: (body) => ({

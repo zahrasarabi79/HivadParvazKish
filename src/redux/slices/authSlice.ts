@@ -17,17 +17,22 @@ export const authSlice = createSlice({
       state.isLoggedIn = false;
       state.token = null;
     },
+    setCredentials: (state, action) => {
+      const { token, isLoggedIn } = action.payload;
+      state.token = token;
+      state.isLoggedIn = isLoggedIn;
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(isAnyOf(login.matchPending, login.matchRejected), (state) => {
       state.isLoggedIn = false;
       state.token = null;
     });
-    builder.addMatcher(login.matchFulfilled, (state, { payload }) => {
+    builder.addMatcher(login.matchFulfilled, (state, action) => {
       state.isLoggedIn = true;
-      state.token = payload.data?.token;
+      state.token = action.payload?.token;
     });
   },
 });
-export const { logout } = authSlice.actions;
+export const { logout, setCredentials } = authSlice.actions;
 export default authSlice.reducer;

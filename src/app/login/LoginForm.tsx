@@ -26,13 +26,11 @@ const LoginForm = () => {
     e.preventDefault();
     setShowPassword((show) => !show);
   };
-
   const onSubmit: SubmitHandler<INewUser> = async (user) => {
     const { username, password } = user;
     try {
-      await login({ username, password }).unwrap();
-      router.push("/Contracts/ContractList");
-      useGetProfileQuery();
+     await login({ username, password }).unwrap();
+           router.push("/Contracts/ContractList");
     } catch (error) {
       setError("password", { type: "text", message: "نام کاربری یا پسورد را مجددا وارد کنید." });
     }

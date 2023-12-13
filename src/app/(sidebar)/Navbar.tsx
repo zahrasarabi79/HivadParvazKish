@@ -23,19 +23,20 @@ import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { logout } from "@/redux/slices/authSlice";
 import Cookies from "js-cookie";
 import { useGetProfileQuery } from "@/Services/Api/profileApi";
-import { RootState } from "@/redux/store";
+import { resetProfile } from "@/redux/slices/profileSlice";
 const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) => {
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [anchorElProfile, setAnchorElProfile] = useState<null | HTMLElement>(null);
-  useGetProfileQuery();
-  const { name: ProfileName } = useAppSelector((state: RootState) => state.profileState);
-
-  useEffect(() => {}, []);
+  const { data: profileData, refetch } = useGetProfileQuery();
+  useEffect(() => {
+    refetch();
+  }, []);
   const Logout = () => {
     dispatch(logout());
+    dispatch(resetProfile());
     Cookies.remove("token");
     Cookies.remove("isLoggedIn");
     router.push("/login");
@@ -71,7 +72,7 @@ const Navbar: FC<NavbarProps> = ({ onDrawerOpen, isDesktopSidebarOpen: open }) =
           >
             <MenuItem divider={true} sx={{ gap: 1 }}>
               <Avatar sx={{ width: 30, height: 30, bgcolor: theme.palette.primary.light }} alt={"zahra sarabi"} />
-              <Typography variant="body1">{ProfileName}</Typography>
+              <Typography variant="body1">{profileData?.name}</Typography>
             </MenuItem>
             <MenuItem onClick={Profile} sx={{ gap: 1, m: 1, transition: ".1s all", borderRadius: 1 }}>
               <ModeEditIcon sx={{ width: 22, height: 22 }} />

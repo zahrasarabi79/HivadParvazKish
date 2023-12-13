@@ -15,6 +15,7 @@ export const profileApi = baseApi.injectEndpoints({
             console.error("API request error:", error);
           });
       },
+      providesTags: ["profile"],
     }),
     updatePassword: build.mutation<void, IChangePassFormValues>({
       query: (body) => ({
@@ -28,7 +29,7 @@ export const profileApi = baseApi.injectEndpoints({
             dispatch(openSnackbar({ color: "rgb(11, 150, 30)", message: "رمز با موفقیت تغییر کرد" }));
           })
           .catch((error) => {
-            console.error("API request error:", error);
+            console.error("API request error for profile:", error);
           });
       },
     }),
