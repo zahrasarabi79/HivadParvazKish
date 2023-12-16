@@ -11,6 +11,12 @@ import { useSnackbar } from "@/context/SnackbarContext";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { openSnackbar } from "@/redux/slices/snackbarSlice";
 import { useUpdatePasswordMutation } from "@/Services/Api/profileApi";
+interface ErrorResponse {
+  status?: number;
+  data?: {
+    error?: string | undefined;
+  };
+}
 
 const ProfileForm = () => {
   const router = useRouter();
@@ -55,14 +61,16 @@ const ProfileForm = () => {
         router.push("/Contracts/ContractList");
       }, 2000);
     } catch (error) {
-      if (!!error && error?.data.error === "رمز عبور معتبر نیست") {
-        setError("oldPassword", { message: error?.data.error });
+      const typedError = error as ErrorResponse;
+
+      if (!!typedError && typedError?.data?.error === "رمز عبور معتبر نیست") {
+        setError("oldPassword", { message: typedError?.data?.error });
       }
-      if (!!error && error?.status === 400) {
+      if (!!typedError && typedError?.status === 400) {
         dispatch(openSnackbar({ color: theme.palette.error.main, message: "نام کاربری معتبر نمی باشد" }));
       }
     }
-  }; 
+  };
   const validateNewPassword = (
     value: string,
     oldPassword: string,
